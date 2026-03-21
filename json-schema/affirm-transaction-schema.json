@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://affirm.com/schemas/affirm/transaction.json",
+  "title": "Affirm Transaction",
+  "description": "Represents an Affirm payment transaction, capturing the full lifecycle from authorization through capture, refund, and void. Transactions are created by exchanging a checkout token via the Transactions API after a customer completes the Affirm checkout flow.",
+  "type": "object",
+  "required": ["id", "status", "amount", "currency", "created"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "A unique identifier representing the transaction, assigned by Affirm upon authorization."
+    },
+    "checkout_id": {
+      "type": "string",
+      "description": "A unique identifier referencing the Checkout object that originated this transaction."
+    },
+    "order_id": {
+      "type": "string",
+      "description": "Identifies the order within the merchant's order management system, used for reconciliation."
+    },
+    "status": {
+      "type": "string",
+      "description": "Current lifecycle state of the transaction.",
+      "enum": ["authorized", "captured", "voided", "refunded", "partially_refunded"]
+    },
+    "amount": {
+      "type": "integer",
+      "description": "The original amount financed to the customer, expressed in the smallest currency unit (e.g., cents for USD).",
+      "minimum": 0
+    },
+    "amount_refunded": {
+      "type": "integer",
+      "description": "The cumulative amount refunded to the customer from this transaction, in the smallest currency unit.",
+      "minimum": 0
+    },
+    "currency": {
+      "type": "string",
+      "description": "The ISO 4217 currency code for this transaction.",
+      "pattern": "^[A-Z]{3}$",
+      "examples": ["USD", "CAD", "GBP"]
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The timestamp when the transaction was created, in RFC 3339 format."
+    },
+    "authorization_expiration": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The timestamp after which the transaction authorization expires and can no longer be captured, in RFC 3339 format."
+    },
+    "provider_id": {
+      "type": "integer",
+      "description": "A unique identifier of the financing provider for this transaction."
+    },
+    "remove_tax": {
+      "type": "boolean",
+      "description": "Indicates whether tax was paid by the financing provider. Applicable to Affirm Connect integrations only."
+    },
+    "events": {
+      "type": "array",
+      "description": "Array of TransactionEvent objects documenting the full history of actions taken on this transaction.",
+      "items": {
+        "$ref": "#/$defs/TransactionEvent"
+      }
+    },
+    "token": {
+      "type": "string",
+      "description": "A JWT signing the JSON response body. When PII is included in the response, this token is also encrypted."
+    }
+  },
+  "$defs": {
+    "TransactionEvent": {
+      "type": "object",
+      "description": "A single event in the lifecycle of a transaction documenting an action such as authorization, capture, refund, or void.",
+      "required": ["id", "type", "amount", "currency", "created"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "A unique identifier for this transaction event."
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of action represented by this event.",
+          "enum": ["auth", "capture", "refund", "void", "update"]
+        },
+        "amount": {
+          "type": "integer",
+          "description": "The monetary amount associated with this event in the smallest currency unit.",
+          "minimum": 0
+        },
+        "currency": {
+          "type": "string",
+          "description": "The ISO 4217 currency code for this event.",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "fee": {
+          "type": "integer",
+          "description": "The Affirm transaction fee charged for this event, in the smallest currency unit.",
+          "minimum": 0
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when this event was created, in RFC 3339 format."
+        },
+        "reference_id": {
+          "type": "string",
+          "description": "An external reference identifier for this event, such as a merchant capture or refund reference."
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Arbitrary key-value metadata associated with this event.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "SettlementEvent": {
+      "type": "object",
+      "description": "A disbursement line item from Affirm to the merchant, associated with a specific transaction event.",
+      "required": ["id", "transaction_id", "amount", "currency", "created"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "A unique identifier for this settlement event."
+        },
+        "transaction_id": {
+          "type": "string",
+          "description": "The identifier of the transaction this settlement event is associated with."
+        },
+        "transaction_event_id": {
+          "type": "string",
+          "description": "The identifier of the specific transaction event that triggered this settlement."
+        },
+        "amount": {
+          "type": "integer",
+          "description": "The net disbursement amount in the smallest currency unit."
+        },
+        "currency": {
+          "type": "string",
+          "description": "The ISO 4217 currency code for this settlement.",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when this settlement event was created, in RFC 3339 format."
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of settlement event, corresponding to the originating transaction action.",
+          "enum": ["capture", "refund", "void"]
+        }
+      }
+    }
+  }
+}

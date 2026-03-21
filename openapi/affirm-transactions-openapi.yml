@@ -1,0 +1,624 @@
+openapi: 3.1.0
+info:
+  title: Affirm Transactions API
+  description: >-
+    The Affirm Transactions API provides server-side endpoints for managing the
+    full lifecycle of Affirm payment transactions after a customer completes
+    checkout. It supports authorization, capture, void, and refund operations,
+    as well as listing and retrieving transaction details and associated
+    settlement and transaction events. Merchants use this API to reconcile
+    charges, process partial or full refunds, and track disbursement activity.
+    The API uses HTTPS with HTTP Basic authentication using the merchant's
+    public and private API keys.
+  version: '1.0'
+  contact:
+    name: Affirm Developer Support
+    url: https://docs.affirm.com/developers/docs/development-quickstart
+  termsOfService: https://www.affirm.com/legal/merchant-terms
+externalDocs:
+  description: Affirm Transactions API Reference
+  url: https://docs.affirm.com/developers/reference/transaction-api-endpoints
+servers:
+  - url: https://api.affirm.com/api/v1
+    description: Production Server
+  - url: https://sandbox.affirm.com/api/v1
+    description: Sandbox Server
+tags:
+  - name: Transactions
+    description: >-
+      Operations for authorizing, capturing, voiding, refunding, and retrieving
+      Affirm payment transactions.
+  - name: Transaction Events
+    description: >-
+      Operations for listing transaction event records associated with
+      transaction lifecycle changes.
+  - name: Settlement Events
+    description: >-
+      Operations for listing settlement events and summaries that track
+      disbursement activity.
+security:
+  - basicAuth: []
+paths:
+  /transactions:
+    get:
+      operationId: listTransactions
+      summary: List transactions
+      description: >-
+        Returns a paginated list of all transactions for the authenticated
+        merchant. Transactions represent authorized Affirm loans that can be
+        captured, refunded, or voided. Results are sorted by creation date in
+        descending order.
+      tags:
+        - Transactions
+      parameters:
+        - $ref: '#/components/parameters/PageLimit'
+        - $ref: '#/components/parameters/PageCursor'
+      responses:
+        '200':
+          description: A list of transaction objects.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Transaction'
+                  total:
+                    type: integer
+                    description: Total number of transactions matching the query.
+                  next_cursor:
+                    type: string
+                    description: Cursor token for fetching the next page of results.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: authorizeTransaction
+      summary: Authorize a transaction
+      description: >-
+        Authorizes a new transaction using a checkout token obtained after a
+        customer completes the Affirm checkout flow. The checkout token is
+        a one-time-use token that must be exchanged server-side within the
+        authorization window. A successful authorization places a hold on the
+        customer's Affirm credit and returns a transaction object with status
+        "authorized". The transaction must subsequently be captured to initiate
+        transfer of funds to the merchant.
+      tags:
+        - Transactions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - checkout_token
+              properties:
+                checkout_token:
+                  type: string
+                  description: >-
+                    The one-time-use checkout token returned by the Affirm
+                    checkout flow after customer authorization.
+                order_id:
+                  type: string
+                  description: >-
+                    The merchant's internal order identifier to associate with
+                    this transaction for reconciliation.
+      responses:
+        '200':
+          description: Transaction successfully authorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /transactions/{id}:
+    get:
+      operationId: readTransaction
+      summary: Read a transaction
+      description: >-
+        Retrieves the full details of a specific transaction by its unique
+        identifier. Returns the transaction object including current status,
+        amounts, associated events, order metadata, and authorization
+        expiration time.
+      tags:
+        - Transactions
+      parameters:
+        - $ref: '#/components/parameters/TransactionId'
+      responses:
+        '200':
+          description: Transaction object retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      operationId: updateTransaction
+      summary: Update a transaction
+      description: >-
+        Updates mutable fields on an existing transaction, such as the
+        merchant order ID. Only fields included in the request body are
+        updated; omitted fields remain unchanged.
+      tags:
+        - Transactions
+      parameters:
+        - $ref: '#/components/parameters/TransactionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order_id:
+                  type: string
+                  description: >-
+                    Updated merchant order identifier to associate with this
+                    transaction.
+      responses:
+        '200':
+          description: Transaction updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /transactions/{id}/capture:
+    post:
+      operationId: captureTransaction
+      summary: Capture a transaction
+      description: >-
+        Captures a previously authorized transaction and initiates the transfer
+        of funds to the merchant. A capture can be for the full authorized
+        amount or a partial amount when split capture is configured. Once
+        captured, the transaction transitions to "captured" status and Affirm
+        initiates the settlement process. Partial captures leave the remaining
+        authorized amount available for subsequent captures.
+      tags:
+        - Transactions
+      parameters:
+        - $ref: '#/components/parameters/TransactionId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  description: >-
+                    Amount to capture in cents. If omitted, the full authorized
+                    amount is captured.
+                order_id:
+                  type: string
+                  description: >-
+                    Merchant order identifier to associate with this capture
+                    event.
+                shipping_carrier:
+                  type: string
+                  description: Name of the shipping carrier for the captured order.
+                shipping_confirmation:
+                  type: string
+                  description: Tracking number or confirmation for the shipment.
+      responses:
+        '200':
+          description: Transaction captured successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /transactions/{id}/refund:
+    post:
+      operationId: refundTransaction
+      summary: Refund a transaction
+      description: >-
+        Issues a full or partial refund on a captured transaction. Partial
+        refunds may be issued multiple times until the total refunded amount
+        equals the captured amount. The refund is applied to the customer's
+        Affirm account and the merchant's settlement is adjusted accordingly.
+        The transaction's amount_refunded field is updated to reflect the
+        cumulative refunded total.
+      tags:
+        - Transactions
+      parameters:
+        - $ref: '#/components/parameters/TransactionId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  description: >-
+                    Amount to refund in cents. If omitted, the full captured
+                    amount is refunded.
+      responses:
+        '200':
+          description: Transaction refunded successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /transactions/{id}/void:
+    post:
+      operationId: voidTransaction
+      summary: Void a transaction
+      description: >-
+        Voids an authorized transaction that has not yet been captured,
+        releasing the hold on the customer's Affirm credit. A voided
+        transaction cannot be subsequently captured or refunded. This
+        operation is typically used when an order is cancelled after
+        authorization but before fulfillment.
+      tags:
+        - Transactions
+      parameters:
+        - $ref: '#/components/parameters/TransactionId'
+      responses:
+        '200':
+          description: Transaction voided successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /transaction_events:
+    get:
+      operationId: listTransactionEvents
+      summary: List transaction events
+      description: >-
+        Returns a paginated list of transaction event records for the
+        authenticated merchant. Each event documents a change in a
+        transaction's lifecycle, such as an authorization, capture, refund,
+        or void. Events include timestamps, amounts, fees, and reference
+        identifiers for reconciliation.
+      tags:
+        - Transaction Events
+      parameters:
+        - $ref: '#/components/parameters/PageLimit'
+        - $ref: '#/components/parameters/PageCursor'
+      responses:
+        '200':
+          description: A list of transaction event objects.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TransactionEvent'
+                  next_cursor:
+                    type: string
+                    description: Cursor for the next page of results.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /settlement_events:
+    get:
+      operationId: listSettlementEvents
+      summary: List settlement events
+      description: >-
+        Returns a paginated list of settlement events representing individual
+        disbursement line items from Affirm to the merchant. Each settlement
+        event is tied to a transaction event and includes the net amount
+        disbursed after fees. Used for financial reconciliation and accounting.
+      tags:
+        - Settlement Events
+      parameters:
+        - $ref: '#/components/parameters/PageLimit'
+        - $ref: '#/components/parameters/PageCursor'
+      responses:
+        '200':
+          description: A list of settlement event objects.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SettlementEvent'
+                  next_cursor:
+                    type: string
+                    description: Cursor for the next page of results.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /settlement_event_summaries:
+    get:
+      operationId: listSettlementEventSummaries
+      summary: List settlement event summaries
+      description: >-
+        Returns a paginated list of settlement event summary records that
+        aggregate settlement activity by disbursement batch. Each summary
+        includes the total amount disbursed, the date of the disbursement,
+        and a count of associated settlement events. Used for high-level
+        financial reconciliation.
+      tags:
+        - Settlement Events
+      parameters:
+        - $ref: '#/components/parameters/PageLimit'
+        - $ref: '#/components/parameters/PageCursor'
+      responses:
+        '200':
+          description: A list of settlement event summary objects.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SettlementEventSummary'
+                  next_cursor:
+                    type: string
+                    description: Cursor for the next page of results.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: >-
+        HTTP Basic Authentication using the merchant's public API key as the
+        username and private API key as the password, Base64-encoded as
+        per RFC 7617.
+  parameters:
+    TransactionId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the transaction.
+      schema:
+        type: string
+    PageLimit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    PageCursor:
+      name: cursor
+      in: query
+      required: false
+      description: Pagination cursor returned from a previous list response.
+      schema:
+        type: string
+  responses:
+    BadRequest:
+      description: Bad request. The request body or parameters are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized. Authentication credentials are missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found. The requested resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Transaction:
+      type: object
+      description: >-
+        Represents an Affirm payment transaction, capturing the full lifecycle
+        from authorization through capture, refund, and void operations.
+      properties:
+        id:
+          type: string
+          description: A unique identifier representing the transaction.
+        checkout_id:
+          type: string
+          description: A unique identifier referencing the Checkout object that originated this transaction.
+        order_id:
+          type: string
+          description: Identifies the order within the merchant's order management system.
+        status:
+          type: string
+          description: Current state of the transaction.
+          enum:
+            - authorized
+            - captured
+            - voided
+            - refunded
+            - partially_refunded
+        amount:
+          type: integer
+          description: >-
+            The original amount financed to the customer in this transaction,
+            expressed in the smallest currency unit (e.g., cents for USD).
+        amount_refunded:
+          type: integer
+          description: >-
+            The cumulative amount refunded back to the customer from this
+            transaction, expressed in the smallest currency unit.
+        currency:
+          type: string
+          description: Local transaction currency following ISO 4217 standards.
+          example: USD
+        created:
+          type: string
+          format: date-time
+          description: The time when the transaction was created, in RFC 3339 format.
+        authorization_expiration:
+          type: string
+          format: date-time
+          description: >-
+            The time when the transaction authorization expires and can no
+            longer be captured, in RFC 3339 format.
+        provider_id:
+          type: integer
+          description: A unique identifier of the provider financing the transaction.
+        remove_tax:
+          type: boolean
+          description: >-
+            Indicates whether tax was paid by the provider (applicable to
+            Affirm Connect only).
+        events:
+          type: array
+          description: Array of TransactionEvent objects documenting the transaction history.
+          items:
+            $ref: '#/components/schemas/TransactionEvent'
+        token:
+          type: string
+          description: >-
+            A JWT signing the JSON response. If PII is included, this token
+            is also encrypted.
+    TransactionEvent:
+      type: object
+      description: >-
+        Represents a single event in the lifecycle of a transaction, such as
+        an authorization, capture, refund, or void.
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the transaction event.
+        type:
+          type: string
+          description: The type of transaction event.
+          enum:
+            - auth
+            - capture
+            - refund
+            - void
+            - update
+        amount:
+          type: integer
+          description: >-
+            The amount associated with this event in the smallest currency
+            unit.
+        currency:
+          type: string
+          description: The ISO 4217 currency code for this event.
+        fee:
+          type: integer
+          description: The fee charged by Affirm for this event in the smallest currency unit.
+        created:
+          type: string
+          format: date-time
+          description: The time when this event was created, in RFC 3339 format.
+        reference_id:
+          type: string
+          description: An external reference identifier associated with this event.
+        metadata:
+          type: object
+          description: >-
+            Additional key-value metadata associated with this event for
+            merchant tracking purposes.
+          additionalProperties:
+            type: string
+    SettlementEvent:
+      type: object
+      description: >-
+        Represents a single disbursement line item from Affirm to the merchant,
+        associated with a specific transaction event.
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the settlement event.
+        transaction_id:
+          type: string
+          description: The identifier of the transaction this settlement event belongs to.
+        transaction_event_id:
+          type: string
+          description: The identifier of the specific transaction event that triggered this settlement.
+        amount:
+          type: integer
+          description: Net disbursement amount in the smallest currency unit.
+        currency:
+          type: string
+          description: ISO 4217 currency code for this settlement.
+        created:
+          type: string
+          format: date-time
+          description: Timestamp when this settlement event was created, in RFC 3339 format.
+        type:
+          type: string
+          description: The type of settlement event corresponding to the transaction action.
+          enum:
+            - capture
+            - refund
+            - void
+    SettlementEventSummary:
+      type: object
+      description: >-
+        An aggregated summary of settlement activity for a single disbursement
+        batch from Affirm to the merchant.
+      properties:
+        id:
+          type: string
+          description: A unique identifier for this settlement event summary.
+        total_amount:
+          type: integer
+          description: Total amount disbursed in this batch in the smallest currency unit.
+        currency:
+          type: string
+          description: ISO 4217 currency code for this disbursement.
+        event_count:
+          type: integer
+          description: Number of individual settlement events included in this batch.
+        disbursed_at:
+          type: string
+          format: date-time
+          description: Timestamp when the disbursement was initiated, in RFC 3339 format.
+    Error:
+      type: object
+      description: Standard error response returned by the Affirm API.
+      properties:
+        status_code:
+          type: integer
+          description: HTTP status code of the error.
+        code:
+          type: string
+          description: Machine-readable error code string.
+        message:
+          type: string
+          description: Human-readable description of the error.
+        field:
+          type: string
+          description: The specific field that caused the error, if applicable.

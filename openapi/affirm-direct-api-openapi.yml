@@ -1,0 +1,530 @@
+openapi: 3.1.0
+info:
+  title: Affirm Direct API
+  description: >-
+    The Affirm Direct API is a flexible integration that allows merchants to
+    embed the full Affirm checkout and payment authorization flow directly into
+    their website, giving complete control over the front-end user experience
+    and back-end transaction processing logic. It supports inline checkout via
+    modal or redirect to affirm.com, and handles the full transaction lifecycle
+    including authorization, capture, void, and refund operations. This spec
+    covers the server-side endpoints used in the Direct API integration pattern,
+    including the checkout token exchange for authorization and subsequent
+    transaction management operations. Authentication is handled via HTTP Basic
+    Authentication using API keys from the Affirm Merchant Portal.
+  version: '1.0'
+  contact:
+    name: Affirm Developer Support
+    url: https://docs.affirm.com/developers/docs/development-quickstart
+  termsOfService: https://www.affirm.com/legal/merchant-terms
+externalDocs:
+  description: Affirm Direct API Overview
+  url: https://docs.affirm.com/payments/docs/direct-api-overview
+servers:
+  - url: https://api.affirm.com/api/v1
+    description: Production Server
+  - url: https://sandbox.affirm.com/api/v1
+    description: Sandbox Server
+tags:
+  - name: Authorization
+    description: >-
+      Server-side operations for authorizing Affirm transactions after a
+      customer completes the checkout flow and a checkout token is returned.
+  - name: Transactions
+    description: >-
+      Post-authorization transaction management operations including capture,
+      void, and refund.
+  - name: Cards
+    description: >-
+      Operations for managing virtual card numbers (VCN) issued via the
+      Affirm Lite integration pattern.
+security:
+  - basicAuth: []
+paths:
+  /transactions:
+    post:
+      operationId: authorizeDirectTransaction
+      summary: Authorize a transaction
+      description: >-
+        Exchanges a checkout token for a transaction authorization, completing
+        the server-side portion of the Direct API flow. This call must be made
+        from the merchant server after the browser-side affirm.js returns a
+        checkout token via the user_confirmation_url callback. The authorization
+        places a hold on the customer's Affirm credit. The resulting transaction
+        must be captured within the authorization window to transfer funds to
+        the merchant.
+      tags:
+        - Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - checkout_token
+              properties:
+                checkout_token:
+                  type: string
+                  description: >-
+                    The checkout token returned by the Affirm checkout flow
+                    via the user_confirmation_url callback. This token is
+                    single-use and expires after a short window.
+                order_id:
+                  type: string
+                  description: >-
+                    The merchant's internal order identifier to associate with
+                    this authorization for reconciliation purposes.
+      responses:
+        '200':
+          description: Transaction authorized successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /transactions/{id}/capture:
+    post:
+      operationId: captureDirectTransaction
+      summary: Capture a transaction
+      description: >-
+        Captures a previously authorized transaction to initiate transfer of
+        funds to the merchant. Capture may be for the full authorized amount
+        or a partial amount when split capture is in use. The merchant should
+        capture only upon order fulfillment or shipment to align with Affirm's
+        terms of service.
+      tags:
+        - Transactions
+      parameters:
+        - $ref: '#/components/parameters/TransactionId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  description: Amount to capture in cents. Defaults to the full authorized amount.
+                order_id:
+                  type: string
+                  description: Merchant order identifier for this capture event.
+                shipping_carrier:
+                  type: string
+                  description: Name of the shipping carrier for this fulfillment.
+                shipping_confirmation:
+                  type: string
+                  description: Tracking number or shipment confirmation.
+      responses:
+        '200':
+          description: Transaction captured successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /transactions/{id}/void:
+    post:
+      operationId: voidDirectTransaction
+      summary: Void a transaction
+      description: >-
+        Voids an authorized but uncaptured transaction, releasing the hold on
+        the customer's Affirm credit. Used when an order is cancelled prior to
+        fulfillment. A voided transaction cannot be captured or refunded.
+      tags:
+        - Transactions
+      parameters:
+        - $ref: '#/components/parameters/TransactionId'
+      responses:
+        '200':
+          description: Transaction voided successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /transactions/{id}/refund:
+    post:
+      operationId: refundDirectTransaction
+      summary: Refund a transaction
+      description: >-
+        Issues a full or partial refund on a captured Direct API transaction.
+        Partial refunds can be applied multiple times until the total refunded
+        amount equals the captured amount. The customer's Affirm account is
+        credited and the merchant's settlement is adjusted.
+      tags:
+        - Transactions
+      parameters:
+        - $ref: '#/components/parameters/TransactionId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  description: Amount to refund in cents. Defaults to the full captured amount.
+      responses:
+        '200':
+          description: Transaction refunded successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /cards/{id}:
+    get:
+      operationId: readCard
+      summary: Read a card
+      description: >-
+        Retrieves the details of a virtual card number (VCN) issued via
+        Affirm Lite. Returns card number, expiration, CVV, and billing
+        address information needed for payment processing through traditional
+        card networks.
+      tags:
+        - Cards
+      parameters:
+        - $ref: '#/components/parameters/CardId'
+      responses:
+        '200':
+          description: Card retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /cards/{id}/cancel:
+    post:
+      operationId: cancelCard
+      summary: Cancel a card
+      description: >-
+        Cancels a virtual card number (VCN) issued via Affirm Lite, rendering
+        it unusable for further charges. Used when an order is cancelled or
+        the card is no longer needed.
+      tags:
+        - Cards
+      parameters:
+        - $ref: '#/components/parameters/CardId'
+      responses:
+        '200':
+          description: Card cancelled successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /cards/{id}/finalize:
+    post:
+      operationId: finalizeCard
+      summary: Finalize a card
+      description: >-
+        Finalizes a virtual card number (VCN), updating the card details
+        with the final purchase amount and completing the Affirm Lite
+        transaction lifecycle.
+      tags:
+        - Cards
+      parameters:
+        - $ref: '#/components/parameters/CardId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  description: Final authorized amount in cents.
+                order_id:
+                  type: string
+                  description: Merchant order identifier for this finalization.
+      responses:
+        '200':
+          description: Card finalized successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /files:
+    post:
+      operationId: uploadFile
+      summary: Upload a file
+      description: >-
+        Uploads a file to Affirm's servers for use as dispute evidence. Returns
+        a file identifier that can be referenced when submitting evidence via
+        the Disputes API. Supported file types include images (JPEG, PNG) and
+        documents (PDF).
+      tags:
+        - Authorization
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The file to upload as binary data.
+                purpose:
+                  type: string
+                  description: The intended purpose of the uploaded file.
+                  enum:
+                    - dispute_evidence
+      responses:
+        '200':
+          description: File uploaded successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileObject'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /files/{id}:
+    get:
+      operationId: downloadFile
+      summary: Download a file
+      description: >-
+        Downloads a previously uploaded file by its identifier. Returns the
+        raw file content with the appropriate content type header.
+      tags:
+        - Authorization
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier of the file to download.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: File content returned successfully.
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: >-
+        HTTP Basic Authentication using the merchant's public API key as the
+        username and private API key as the password, Base64-encoded as
+        per RFC 7617.
+  parameters:
+    TransactionId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the transaction.
+      schema:
+        type: string
+    CardId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the virtual card.
+      schema:
+        type: string
+  responses:
+    BadRequest:
+      description: Bad request. The request body or parameters are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized. Authentication credentials are missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found. The requested resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Transaction:
+      type: object
+      description: Represents an Affirm payment transaction at any point in its lifecycle.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for this transaction.
+        checkout_id:
+          type: string
+          description: Identifier of the checkout session that originated this transaction.
+        order_id:
+          type: string
+          description: Merchant's internal order identifier.
+        status:
+          type: string
+          description: Current lifecycle status of the transaction.
+          enum:
+            - authorized
+            - captured
+            - voided
+            - refunded
+            - partially_refunded
+        amount:
+          type: integer
+          description: Original authorized amount in cents.
+        amount_refunded:
+          type: integer
+          description: Cumulative amount refunded in cents.
+        currency:
+          type: string
+          description: ISO 4217 currency code.
+        created:
+          type: string
+          format: date-time
+          description: Creation timestamp in RFC 3339 format.
+        authorization_expiration:
+          type: string
+          format: date-time
+          description: Timestamp after which the authorization can no longer be captured.
+    Card:
+      type: object
+      description: >-
+        Represents an Affirm-issued virtual card number (VCN) used in the
+        Affirm Lite integration pattern to process payments through traditional
+        card networks.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for this virtual card.
+        checkout_id:
+          type: string
+          description: Checkout session identifier associated with this card.
+        status:
+          type: string
+          description: Current status of the virtual card.
+          enum:
+            - active
+            - cancelled
+            - finalized
+        number:
+          type: string
+          description: Virtual card number (PAN).
+        cvv:
+          type: string
+          description: Card verification value.
+        expiration:
+          type: string
+          description: Card expiration date in MM/YY format.
+        billing:
+          type: object
+          description: Billing address associated with this virtual card.
+          properties:
+            address:
+              type: object
+              properties:
+                line1:
+                  type: string
+                  description: Street address line 1.
+                city:
+                  type: string
+                  description: City.
+                state:
+                  type: string
+                  description: State code.
+                zipcode:
+                  type: string
+                  description: ZIP or postal code.
+                country:
+                  type: string
+                  description: ISO 3166-1 alpha-2 country code.
+        amount:
+          type: integer
+          description: Authorized amount on this virtual card in cents.
+        currency:
+          type: string
+          description: ISO 4217 currency code.
+        created:
+          type: string
+          format: date-time
+          description: Card creation timestamp in RFC 3339 format.
+    FileObject:
+      type: object
+      description: Represents a file uploaded to Affirm's servers.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the uploaded file.
+        filename:
+          type: string
+          description: Original filename of the uploaded file.
+        size:
+          type: integer
+          description: File size in bytes.
+        content_type:
+          type: string
+          description: MIME type of the uploaded file.
+        purpose:
+          type: string
+          description: Intended purpose of the file.
+        created:
+          type: string
+          format: date-time
+          description: Upload timestamp in RFC 3339 format.
+    Error:
+      type: object
+      description: Standard error response returned by the Affirm API.
+      properties:
+        status_code:
+          type: integer
+          description: HTTP status code of the error.
+        code:
+          type: string
+          description: Machine-readable error code string.
+        message:
+          type: string
+          description: Human-readable description of the error.

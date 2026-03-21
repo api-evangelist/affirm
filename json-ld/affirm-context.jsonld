@@ -1,0 +1,307 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "affirm": "https://affirm.com/vocab/",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "payments": "https://schema.org/",
+
+    "Transaction": {
+      "@id": "affirm:Transaction",
+      "@context": {
+        "id": "@id",
+        "checkout_id": {
+          "@id": "affirm:checkoutId"
+        },
+        "order_id": {
+          "@id": "schema:orderNumber"
+        },
+        "status": {
+          "@id": "affirm:transactionStatus"
+        },
+        "amount": {
+          "@id": "schema:price",
+          "@type": "xsd:integer"
+        },
+        "amount_refunded": {
+          "@id": "affirm:amountRefunded",
+          "@type": "xsd:integer"
+        },
+        "currency": {
+          "@id": "schema:priceCurrency"
+        },
+        "created": {
+          "@id": "dcterms:created",
+          "@type": "xsd:dateTime"
+        },
+        "authorization_expiration": {
+          "@id": "affirm:authorizationExpiration",
+          "@type": "xsd:dateTime"
+        },
+        "provider_id": {
+          "@id": "affirm:providerId"
+        },
+        "events": {
+          "@id": "affirm:transactionEvents",
+          "@container": "@set"
+        }
+      }
+    },
+
+    "TransactionEvent": {
+      "@id": "affirm:TransactionEvent",
+      "@context": {
+        "id": "@id",
+        "type": {
+          "@id": "affirm:eventType"
+        },
+        "amount": {
+          "@id": "schema:price",
+          "@type": "xsd:integer"
+        },
+        "currency": {
+          "@id": "schema:priceCurrency"
+        },
+        "fee": {
+          "@id": "affirm:transactionFee",
+          "@type": "xsd:integer"
+        },
+        "created": {
+          "@id": "dcterms:created",
+          "@type": "xsd:dateTime"
+        },
+        "reference_id": {
+          "@id": "dcterms:identifier"
+        },
+        "metadata": {
+          "@id": "affirm:metadata"
+        }
+      }
+    },
+
+    "Checkout": {
+      "@id": "affirm:Checkout",
+      "@context": {
+        "checkout_id": "@id",
+        "checkout_status": {
+          "@id": "schema:orderStatus"
+        },
+        "order_id": {
+          "@id": "schema:orderNumber"
+        },
+        "currency": {
+          "@id": "schema:priceCurrency"
+        },
+        "total": {
+          "@id": "schema:totalPrice",
+          "@type": "xsd:integer"
+        },
+        "shipping_amount": {
+          "@id": "schema:shippingRate",
+          "@type": "xsd:integer"
+        },
+        "tax_amount": {
+          "@id": "schema:taxValue",
+          "@type": "xsd:integer"
+        },
+        "created": {
+          "@id": "dcterms:created",
+          "@type": "xsd:dateTime"
+        },
+        "checkout_expiration": {
+          "@id": "affirm:checkoutExpiration",
+          "@type": "xsd:dateTime"
+        },
+        "items": {
+          "@id": "schema:orderedItem",
+          "@container": "@set"
+        },
+        "merchant": {
+          "@id": "affirm:merchant"
+        },
+        "shipping": {
+          "@id": "schema:shippingDetails"
+        },
+        "billing": {
+          "@id": "schema:billingAddress"
+        },
+        "financing_program": {
+          "@id": "affirm:financingProgram"
+        },
+        "metadata": {
+          "@id": "affirm:metadata"
+        }
+      }
+    },
+
+    "CheckoutItem": {
+      "@id": "affirm:CheckoutItem",
+      "@context": {
+        "display_name": {
+          "@id": "schema:name"
+        },
+        "sku": {
+          "@id": "schema:sku"
+        },
+        "unit_price": {
+          "@id": "schema:price",
+          "@type": "xsd:integer"
+        },
+        "qty": {
+          "@id": "schema:orderQuantity",
+          "@type": "xsd:integer"
+        },
+        "item_image_url": {
+          "@id": "schema:image",
+          "@type": "@id"
+        },
+        "item_url": {
+          "@id": "schema:url",
+          "@type": "@id"
+        }
+      }
+    },
+
+    "Dispute": {
+      "@id": "affirm:Dispute",
+      "@context": {
+        "id": "@id",
+        "transaction_id": {
+          "@id": "affirm:transactionId"
+        },
+        "status": {
+          "@id": "affirm:disputeStatus"
+        },
+        "reason_code": {
+          "@id": "affirm:reasonCode"
+        },
+        "amount": {
+          "@id": "schema:price",
+          "@type": "xsd:integer"
+        },
+        "currency": {
+          "@id": "schema:priceCurrency"
+        },
+        "created": {
+          "@id": "dcterms:created",
+          "@type": "xsd:dateTime"
+        },
+        "evidence_due_by": {
+          "@id": "affirm:evidenceDueBy",
+          "@type": "xsd:dateTime"
+        },
+        "closed_at": {
+          "@id": "affirm:closedAt",
+          "@type": "xsd:dateTime"
+        },
+        "outcome": {
+          "@id": "affirm:disputeOutcome"
+        },
+        "evidence": {
+          "@id": "affirm:evidence",
+          "@container": "@set"
+        }
+      }
+    },
+
+    "PromoOffer": {
+      "@id": "affirm:PromoOffer",
+      "@context": {
+        "ala": {
+          "@id": "affirm:asLowAs"
+        },
+        "html_ala": {
+          "@id": "affirm:htmlAsLowAs"
+        },
+        "headline": {
+          "@id": "schema:headline"
+        },
+        "description": {
+          "@id": "schema:description"
+        },
+        "minimum_loan_amount": {
+          "@id": "affirm:minimumLoanAmount",
+          "@type": "xsd:decimal"
+        },
+        "maximum_loan_amount": {
+          "@id": "affirm:maximumLoanAmount",
+          "@type": "xsd:decimal"
+        }
+      }
+    },
+
+    "FinancingTerm": {
+      "@id": "affirm:FinancingTerm",
+      "@context": {
+        "loan_type": {
+          "@id": "affirm:loanType"
+        },
+        "apr": {
+          "@id": "schema:annualPercentageRate",
+          "@type": "xsd:decimal"
+        },
+        "installment_amount": {
+          "@id": "affirm:installmentAmount",
+          "@type": "xsd:integer"
+        },
+        "installment_count": {
+          "@id": "affirm:installmentCount",
+          "@type": "xsd:integer"
+        },
+        "interest_amount": {
+          "@id": "affirm:interestAmount",
+          "@type": "xsd:integer"
+        },
+        "total_amount": {
+          "@id": "affirm:totalAmount",
+          "@type": "xsd:integer"
+        }
+      }
+    },
+
+    "VirtualCard": {
+      "@id": "affirm:VirtualCard",
+      "@context": {
+        "id": "@id",
+        "checkout_id": {
+          "@id": "affirm:checkoutId"
+        },
+        "status": {
+          "@id": "affirm:cardStatus"
+        },
+        "amount": {
+          "@id": "schema:price",
+          "@type": "xsd:integer"
+        },
+        "currency": {
+          "@id": "schema:priceCurrency"
+        },
+        "created": {
+          "@id": "dcterms:created",
+          "@type": "xsd:dateTime"
+        }
+      }
+    },
+
+    "Merchant": {
+      "@id": "affirm:Merchant",
+      "@context": {
+        "user_confirmation_url": {
+          "@id": "affirm:userConfirmationUrl",
+          "@type": "@id"
+        },
+        "user_cancel_url": {
+          "@id": "affirm:userCancelUrl",
+          "@type": "@id"
+        },
+        "name": {
+          "@id": "schema:name"
+        },
+        "public_api_key": {
+          "@id": "affirm:publicApiKey"
+        }
+      }
+    }
+  }
+}

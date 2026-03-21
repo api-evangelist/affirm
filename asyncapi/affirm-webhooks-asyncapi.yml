@@ -1,0 +1,373 @@
+asyncapi: 2.6.0
+info:
+  title: Affirm Webhooks
+  description: >-
+    Affirm uses webhooks to notify merchant endpoints in real time when events
+    occur during the customer checkout and prequalification flows. Webhooks are
+    available to Key and Enterprise merchants. Affirm sends two types of
+    webhooks: checkout events delivered as application/x-www-form-urlencoded
+    and prequalification events delivered as application/json. Checkout events
+    fire as customers move through the Affirm financing flow, including opened,
+    approved, not_approved, and confirmed status transitions. Prequalification
+    events fire during the Affirm prequal flow, indicating approval decisions
+    and expiry. Each webhook request includes an X-Affirm-Signature header
+    containing a Base64-encoded HMAC signature that merchants can use to
+    verify the request originated from Affirm. Merchant webhook endpoints must
+    support TLS 1.2 and respond with a 2xx status code to acknowledge receipt.
+    Affirm does not retry failed webhook deliveries.
+  version: '1.0'
+  contact:
+    name: Affirm Developer Support
+    url: https://docs.affirm.com/developers/docs/development-quickstart
+servers:
+  merchantWebhookEndpoint:
+    url: '{webhookUrl}'
+    protocol: https
+    description: >-
+      The merchant-configured HTTPS endpoint that receives webhook event
+      notifications from Affirm. Must support TLS 1.2 and respond with
+      a 2xx HTTP status to acknowledge receipt.
+    variables:
+      webhookUrl:
+        description: >-
+          The merchant's configured webhook endpoint URL, set up via the
+          Affirm Merchant Portal or through the merchant's Technical Account
+          Manager.
+    security:
+      - affirm_signature: []
+channels:
+  /webhooks/checkout:
+    description: >-
+      Channel for Affirm checkout lifecycle events. Affirm sends POST requests
+      with content-type application/x-www-form-urlencoded to the merchant's
+      configured webhook endpoint as customers progress through the checkout
+      flow.
+    publish:
+      operationId: receiveCheckoutEvent
+      summary: Receive a checkout event
+      description: >-
+        A checkout event fired by Affirm when the customer's checkout status
+        changes. Covers the full lifecycle from checkout initiation through
+        approval and customer confirmation. The event payload is delivered as
+        URL-encoded form data and includes customer PII, loan terms, and order
+        details as configured in the merchant's Data Sharing Agreement.
+      message:
+        oneOf:
+          - $ref: '#/components/messages/CheckoutOpenedEvent'
+          - $ref: '#/components/messages/CheckoutApprovedEvent'
+          - $ref: '#/components/messages/CheckoutNotApprovedEvent'
+          - $ref: '#/components/messages/CheckoutConfirmedEvent'
+  /webhooks/prequal:
+    description: >-
+      Channel for Affirm prequalification events. Affirm sends POST requests
+      with content-type application/json to the merchant's configured webhook
+      endpoint as customers complete or expire from the prequalification flow.
+    publish:
+      operationId: receivePrequalEvent
+      summary: Receive a prequalification event
+      description: >-
+        A prequalification event fired by Affirm when a customer completes
+        or expires from the Affirm prequalification flow. Events include an
+        approval decision with loan terms and a prequalification expiry
+        notification.
+      message:
+        oneOf:
+          - $ref: '#/components/messages/PrequalDecisionEvent'
+          - $ref: '#/components/messages/PrequalExpiryEvent'
+components:
+  securitySchemes:
+    affirm_signature:
+      type: httpApiKey
+      in: header
+      name: X-Affirm-Signature
+      description: >-
+        Base64-encoded HMAC signature included in every webhook request from
+        Affirm. Merchants can verify this signature to confirm the request
+        originated from Affirm rather than a third party. The signature is
+        computed using the merchant's private API key as the HMAC secret.
+  messages:
+    CheckoutOpenedEvent:
+      name: CheckoutOpenedEvent
+      title: Checkout Opened
+      summary: Fired when a customer opens the Affirm checkout flow.
+      description: >-
+        Affirm fires this event when a customer initiates the Affirm checkout
+        flow and is presented with the login screen. This is the first event
+        in the checkout webhook lifecycle.
+      contentType: application/x-www-form-urlencoded
+      headers:
+        type: object
+        properties:
+          X-Affirm-Signature:
+            type: string
+            description: Base64-encoded HMAC signature for request verification.
+          User-Agent:
+            type: string
+            description: Always set to "Affirm-Webhook" for Affirm webhook requests.
+            example: Affirm-Webhook
+      payload:
+        $ref: '#/components/schemas/CheckoutEventPayload'
+    CheckoutApprovedEvent:
+      name: CheckoutApprovedEvent
+      title: Checkout Approved
+      summary: Fired when a customer receives a positive credit decision from Affirm.
+      description: >-
+        Affirm fires this event when the customer's credit application is
+        approved and financing terms are offered. The payload includes the
+        approved loan amount, APR, payment terms, and customer information
+        as configured in the Data Sharing Agreement.
+      contentType: application/x-www-form-urlencoded
+      headers:
+        type: object
+        properties:
+          X-Affirm-Signature:
+            type: string
+            description: Base64-encoded HMAC signature for request verification.
+          User-Agent:
+            type: string
+            example: Affirm-Webhook
+      payload:
+        $ref: '#/components/schemas/CheckoutApprovedPayload'
+    CheckoutNotApprovedEvent:
+      name: CheckoutNotApprovedEvent
+      title: Checkout Not Approved
+      summary: Fired when a customer receives a negative credit decision from Affirm.
+      description: >-
+        Affirm fires this event when the customer's credit application is
+        not approved and financing cannot be offered for the requested amount.
+        The merchant can use this event to present alternative payment options
+        to the customer.
+      contentType: application/x-www-form-urlencoded
+      headers:
+        type: object
+        properties:
+          X-Affirm-Signature:
+            type: string
+            description: Base64-encoded HMAC signature for request verification.
+          User-Agent:
+            type: string
+            example: Affirm-Webhook
+      payload:
+        $ref: '#/components/schemas/CheckoutEventPayload'
+    CheckoutConfirmedEvent:
+      name: CheckoutConfirmedEvent
+      title: Checkout Confirmed
+      summary: Fired when a customer confirms their financing and is redirected back to the merchant.
+      description: >-
+        Affirm fires this event when the customer clicks confirm at the end of
+        the Affirm checkout flow and is redirected back to the merchant's
+        user_confirmation_url. This is the final checkout event and indicates
+        the customer has accepted the loan terms. The checkout token can now
+        be exchanged server-side for a transaction authorization.
+      contentType: application/x-www-form-urlencoded
+      headers:
+        type: object
+        properties:
+          X-Affirm-Signature:
+            type: string
+            description: Base64-encoded HMAC signature for request verification.
+          User-Agent:
+            type: string
+            example: Affirm-Webhook
+      payload:
+        $ref: '#/components/schemas/CheckoutConfirmedPayload'
+    PrequalDecisionEvent:
+      name: PrequalDecisionEvent
+      title: Prequalification Decision
+      summary: Fired when a customer receives an approval decision during prequalification.
+      description: >-
+        Affirm fires this event when a customer completes the prequalification
+        flow and receives a financing decision. The payload includes approved
+        amount, APR, remaining credit, and customer information as configured
+        in the merchant's Data Sharing Agreement.
+      contentType: application/json
+      headers:
+        type: object
+        properties:
+          X-Affirm-Signature:
+            type: string
+            description: Base64-encoded HMAC signature for request verification.
+          User-Agent:
+            type: string
+            example: Affirm-Webhook
+      payload:
+        $ref: '#/components/schemas/PrequalEventPayload'
+    PrequalExpiryEvent:
+      name: PrequalExpiryEvent
+      title: Prequalification Expiry
+      summary: Fired when a customer's prequalification expires.
+      description: >-
+        Affirm fires this event when a prequalification offer expires. This
+        can occur within the prequalification session or up to 7 days after
+        the prequalification was completed. Merchants can use this event to
+        prompt customers to re-qualify.
+      contentType: application/json
+      headers:
+        type: object
+        properties:
+          X-Affirm-Signature:
+            type: string
+            description: Base64-encoded HMAC signature for request verification.
+          User-Agent:
+            type: string
+            example: Affirm-Webhook
+      payload:
+        $ref: '#/components/schemas/PrequalEventPayload'
+  schemas:
+    CheckoutEventPayload:
+      type: object
+      description: >-
+        Base payload for Affirm checkout webhook events, delivered as
+        URL-encoded form data. Field availability depends on the merchant's
+        Data Sharing Agreement configuration.
+      properties:
+        checkout_status:
+          type: string
+          description: The current status of the checkout that triggered this event.
+          enum:
+            - opened
+            - approved
+            - not_approved
+            - confirmed
+        order_id:
+          type: string
+          description: The merchant's order identifier associated with this checkout.
+        total:
+          type: integer
+          description: Total checkout amount in cents.
+        first_name:
+          type: string
+          description: Customer's first name (included per Data Sharing Agreement).
+        last_name:
+          type: string
+          description: Customer's last name (included per Data Sharing Agreement).
+        email:
+          type: string
+          description: Customer's email address (included per Data Sharing Agreement).
+    CheckoutApprovedPayload:
+      type: object
+      description: >-
+        Payload for the checkout approved event including loan terms and
+        customer financing details.
+      properties:
+        checkout_status:
+          type: string
+          description: Set to "approved" for this event type.
+          enum:
+            - approved
+        order_id:
+          type: string
+          description: The merchant's order identifier.
+        total:
+          type: integer
+          description: Total checkout amount in cents.
+        first_name:
+          type: string
+          description: Customer's first name.
+        last_name:
+          type: string
+          description: Customer's last name.
+        email:
+          type: string
+          description: Customer's email address.
+        approved_amount:
+          type: integer
+          description: Total loan amount approved by Affirm in cents.
+        amount_financed:
+          type: integer
+          description: Amount being financed by Affirm in cents.
+        down_payment_amount:
+          type: integer
+          description: Down payment amount in cents, if applicable.
+        has_down_payment:
+          type: boolean
+          description: Indicates whether a down payment is required for this loan.
+        apr:
+          type: number
+          description: Annual percentage rate for the approved financing.
+        number_of_payments:
+          type: integer
+          description: Total number of scheduled payments.
+        installment_amount:
+          type: integer
+          description: Amount of each installment payment in cents.
+        finance_charge:
+          type: integer
+          description: Total finance charge (interest) in cents.
+        first_payment_date:
+          type: string
+          format: date
+          description: Date of the first scheduled payment.
+        expiration_date:
+          type: string
+          format: date-time
+          description: Date and time when the approved loan offer expires.
+    CheckoutConfirmedPayload:
+      type: object
+      description: >-
+        Payload for the checkout confirmed event, including the checkout token
+        to be exchanged for a transaction authorization.
+      properties:
+        checkout_status:
+          type: string
+          description: Set to "confirmed" for this event type.
+          enum:
+            - confirmed
+        checkout_token:
+          type: string
+          description: >-
+            The one-time checkout token to be exchanged server-side for a
+            transaction authorization via the Transactions API.
+        order_id:
+          type: string
+          description: The merchant's order identifier.
+        total:
+          type: integer
+          description: Total checkout amount in cents.
+        first_name:
+          type: string
+          description: Customer's first name.
+        last_name:
+          type: string
+          description: Customer's last name.
+        email:
+          type: string
+          description: Customer's email address.
+    PrequalEventPayload:
+      type: object
+      description: >-
+        Payload for Affirm prequalification webhook events, delivered as
+        JSON. Field availability depends on the merchant's Data Sharing
+        Agreement.
+      properties:
+        event_type:
+          type: string
+          description: Type of prequalification event.
+          enum:
+            - prequal_decision
+            - prequal_expiry
+        first_name:
+          type: string
+          description: Customer's first name.
+        last_name:
+          type: string
+          description: Customer's last name.
+        email:
+          type: string
+          description: Customer's email address.
+        approved_amount:
+          type: integer
+          description: Approved prequalification amount in cents.
+        remaining_credit_amount:
+          type: integer
+          description: Remaining available credit in cents after this prequalification.
+        apr:
+          type: number
+          description: Annual percentage rate associated with the prequalification decision.
+        prequal_terms:
+          type: string
+          description: Summary of the prequalification loan terms offered to the customer.
+        expiration_date:
+          type: string
+          format: date-time
+          description: Date and time when this prequalification offer expires.

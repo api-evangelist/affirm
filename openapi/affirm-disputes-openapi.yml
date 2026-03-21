@@ -1,0 +1,362 @@
+openapi: 3.1.0
+info:
+  title: Affirm Disputes API
+  description: >-
+    The Affirm Disputes API (V3) provides merchants with programmatic access
+    to manage payment disputes initiated by customers. It supports listing and
+    retrieving individual dispute records, submitting evidence to contest a
+    dispute, and closing disputes. The API integrates with the Files API so
+    merchants can attach supporting documentation as evidence when responding
+    to disputes. This interface allows merchants to handle chargeback workflows
+    programmatically rather than relying solely on the Merchant Portal UI.
+    Authentication uses HTTP Basic Authentication with the merchant's public
+    and private API keys.
+  version: '3.0'
+  contact:
+    name: Affirm Developer Support
+    url: https://docs.affirm.com/developers/docs/development-quickstart
+  termsOfService: https://www.affirm.com/legal/merchant-terms
+externalDocs:
+  description: Affirm Disputes API V3 Reference
+  url: https://docs.affirm.com/developers/reference/introduction
+servers:
+  - url: https://api.affirm.com/api/v3
+    description: Production Server
+  - url: https://sandbox.affirm.com/api/v3
+    description: Sandbox Server
+tags:
+  - name: Disputes
+    description: >-
+      Operations for listing, retrieving, contesting, and closing payment
+      disputes initiated by customers.
+security:
+  - basicAuth: []
+paths:
+  /disputes:
+    get:
+      operationId: listDisputes
+      summary: List disputes
+      description: >-
+        Returns a paginated list of all payment disputes for the authenticated
+        merchant. Disputes represent customer-initiated challenges to Affirm
+        transactions. Results include dispute status, associated transaction
+        identifiers, dispute reason codes, and submission deadlines for evidence.
+        Use filtering parameters to narrow results by status or date range.
+      tags:
+        - Disputes
+      parameters:
+        - name: status
+          in: query
+          required: false
+          description: Filter disputes by their current status.
+          schema:
+            type: string
+            enum:
+              - open
+              - closed
+              - won
+              - lost
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of dispute records to return per page.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: cursor
+          in: query
+          required: false
+          description: Pagination cursor returned from a previous list response.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of dispute objects.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Dispute'
+                  next_cursor:
+                    type: string
+                    description: Cursor token for fetching the next page of results.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /disputes/{dispute_id}:
+    get:
+      operationId: getDispute
+      summary: Get a dispute
+      description: >-
+        Retrieves the full details of a specific dispute by its unique
+        identifier. Returns dispute status, reason code, associated transaction
+        and charge information, evidence submission deadline, evidence already
+        submitted, and the dispute resolution outcome if the dispute has been
+        closed.
+      tags:
+        - Disputes
+      parameters:
+        - $ref: '#/components/parameters/DisputeId'
+      responses:
+        '200':
+          description: Dispute object retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dispute'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /disputes/{dispute_id}/close:
+    post:
+      operationId: closeDispute
+      summary: Close a dispute
+      description: >-
+        Closes a dispute and transitions it to the merchant-lost state,
+        indicating the merchant accepts the dispute and concedes to the
+        customer's claim. This action is irreversible and results in the
+        disputed amount being returned to the customer. Use this endpoint
+        when the merchant chooses not to contest the dispute or determines
+        the customer's claim is valid.
+      tags:
+        - Disputes
+      parameters:
+        - $ref: '#/components/parameters/DisputeId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  description: >-
+                    Optional explanation for why the merchant is closing the
+                    dispute without contesting it.
+      responses:
+        '200':
+          description: Dispute closed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dispute'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /disputes/{dispute_id}/evidence:
+    post:
+      operationId: submitDisputeEvidence
+      summary: Submit dispute evidence
+      description: >-
+        Submits supporting evidence to contest an open dispute on behalf of
+        the merchant. Evidence may include uploaded file references (obtained
+        from the Files API), text descriptions, tracking information, and
+        other supporting documentation. Evidence must be submitted before the
+        dispute's evidence submission deadline. The submitted evidence is
+        reviewed by Affirm to determine the dispute outcome.
+      tags:
+        - Disputes
+      parameters:
+        - $ref: '#/components/parameters/DisputeId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EvidenceRequest'
+      responses:
+        '200':
+          description: Evidence submitted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dispute'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: >-
+        HTTP Basic Authentication using the merchant's public API key as the
+        username and private API key as the password, Base64-encoded as
+        per RFC 7617.
+  parameters:
+    DisputeId:
+      name: dispute_id
+      in: path
+      required: true
+      description: The unique identifier of the dispute.
+      schema:
+        type: string
+  responses:
+    BadRequest:
+      description: Bad request. The request body or parameters are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized. Authentication credentials are missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found. The requested resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Dispute:
+      type: object
+      description: >-
+        Represents a payment dispute filed by a customer against an Affirm
+        transaction, including its current status, reason, and any evidence
+        submitted by the merchant.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for this dispute.
+        transaction_id:
+          type: string
+          description: The identifier of the Affirm transaction being disputed.
+        charge_id:
+          type: string
+          description: The identifier of the charge associated with this dispute.
+        status:
+          type: string
+          description: Current status of the dispute.
+          enum:
+            - open
+            - closed
+            - won
+            - lost
+        reason_code:
+          type: string
+          description: >-
+            Standardized reason code categorizing the nature of the dispute
+            (e.g., item_not_received, item_not_as_described, unauthorized).
+        amount:
+          type: integer
+          description: The disputed amount in cents.
+        currency:
+          type: string
+          description: ISO 4217 currency code for the disputed amount.
+        created:
+          type: string
+          format: date-time
+          description: Timestamp when this dispute was created, in RFC 3339 format.
+        evidence_due_by:
+          type: string
+          format: date-time
+          description: >-
+            Deadline by which the merchant must submit evidence to contest
+            this dispute, in RFC 3339 format.
+        closed_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Timestamp when this dispute was closed, if applicable.
+        outcome:
+          type: string
+          nullable: true
+          description: >-
+            Final outcome of the dispute after review. Only set when status
+            is won or lost.
+          enum:
+            - merchant_won
+            - merchant_lost
+        evidence:
+          type: array
+          description: List of evidence items submitted by the merchant for this dispute.
+          items:
+            $ref: '#/components/schemas/EvidenceItem'
+    EvidenceRequest:
+      type: object
+      description: >-
+        Request body for submitting evidence to contest a dispute. May include
+        file references, textual explanations, and shipping/tracking details.
+      properties:
+        files:
+          type: array
+          description: >-
+            Array of file identifiers uploaded via the Files API to attach
+            as documentary evidence.
+          items:
+            type: string
+        explanation:
+          type: string
+          description: >-
+            Textual explanation of the merchant's position and why the
+            dispute should be decided in the merchant's favor.
+        tracking_number:
+          type: string
+          description: >-
+            Shipment tracking number demonstrating that the order was
+            delivered as expected.
+        shipping_carrier:
+          type: string
+          description: Name of the shipping carrier used for the disputed order.
+        customer_communication:
+          type: string
+          description: >-
+            Description or summary of communications with the customer
+            regarding the disputed order.
+        refund_policy_disclosure:
+          type: string
+          description: >-
+            Description of the merchant's refund policy as shown to the
+            customer at the time of purchase.
+    EvidenceItem:
+      type: object
+      description: A single piece of evidence associated with a dispute.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for this evidence item.
+        type:
+          type: string
+          description: Type of evidence (file, text, tracking).
+          enum:
+            - file
+            - text
+            - tracking
+        content:
+          type: string
+          description: >-
+            For text evidence, the content of the explanation. For file
+            evidence, the file identifier.
+        submitted_at:
+          type: string
+          format: date-time
+          description: Timestamp when this evidence was submitted, in RFC 3339 format.
+    Error:
+      type: object
+      description: Standard error response returned by the Affirm API.
+      properties:
+        status_code:
+          type: integer
+          description: HTTP status code of the error.
+        code:
+          type: string
+          description: Machine-readable error code string.
+        message:
+          type: string
+          description: Human-readable description of the error.
