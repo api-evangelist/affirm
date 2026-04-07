@@ -30,14 +30,14 @@ tags:
     description: >-
       Server-side operations for authorizing Affirm transactions after a
       customer completes the checkout flow and a checkout token is returned.
-  - name: Transactions
-    description: >-
-      Post-authorization transaction management operations including capture,
-      void, and refund.
   - name: Cards
     description: >-
       Operations for managing virtual card numbers (VCN) issued via the
       Affirm Lite integration pattern.
+  - name: Transactions
+    description: >-
+      Post-authorization transaction management operations including capture,
+      void, and refund.
 security:
   - basicAuth: []
 paths:

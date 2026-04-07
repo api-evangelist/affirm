@@ -1,18 +1,16 @@
 aid: affirm
-url: 
-  https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/apis.yml
+url: https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/apis.yml
 modified: '2026-03-21'
 apis:
   - aid: affirm:direct-api
     name: Affirm Direct API
     tags:
       - Buy Now Pay Later
-      - Payments
       - Checkout
       - Fintech
       - Merchant
-    image: 
-      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+      - Payments
+    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://api.affirm.com
     humanURL: https://docs.affirm.com/payments/docs/direct-api-overview
     properties:
@@ -31,13 +29,12 @@ apis:
   - aid: affirm:checkout-api
     name: Affirm Checkout API
     tags:
-      - Checkout
       - Buy Now Pay Later
-      - Payments
+      - Checkout
       - Fintech
       - Merchant
-    image: 
-      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+      - Payments
+    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://api.affirm.com
     humanURL: https://docs.affirm.com/developers/docs/home-introduction
     properties:
@@ -58,14 +55,13 @@ apis:
   - aid: affirm:transactions-api
     name: Affirm Transactions API
     tags:
-      - Transactions
-      - Payments
       - Authorization
       - Capture
-      - Refunds
       - Fintech
-    image: 
-      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+      - Payments
+      - Refunds
+      - Transactions
+    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://api.affirm.com
     humanURL: https://docs.affirm.com/developers/reference/introduction
     properties:
@@ -86,19 +82,16 @@ apis:
   - aid: affirm:promos-api
     name: Affirm Promos API
     tags:
-      - Promotions
-      - Messaging
-      - Marketing
       - Buy Now Pay Later
+      - Marketing
       - Merchant
-    image: 
-      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+      - Messaging
+      - Promotions
+    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://www.affirm.com/api/promos/v2
-    humanURL: 
-      https://docs.affirm.com/developers/docs/promos-api-integration-overview
+    humanURL: https://docs.affirm.com/developers/docs/promos-api-integration-overview
     properties:
-      - url: 
-          https://docs.affirm.com/developers/docs/promos-api-integration-overview
+      - url: https://docs.affirm.com/developers/docs/promos-api-integration-overview
         type: Documentation
       - url: openapi/affirm-promos-openapi.yml
         type: OpenAPI
@@ -114,13 +107,12 @@ apis:
   - aid: affirm:disputes-api
     name: Affirm Disputes API
     tags:
-      - Disputes
       - Chargebacks
-      - Payments
+      - Disputes
       - Fintech
       - Merchant
-    image: 
-      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+      - Payments
+    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://api.affirm.com
     humanURL: https://docs.affirm.com/developers/reference/introduction
     properties:
@@ -140,14 +132,13 @@ apis:
   - aid: affirm:mobile-sdk-ios
     name: Affirm iOS SDK
     tags:
+      - Buy Now Pay Later
       - iOS
       - Mobile
+      - Objective-C
       - SDK
       - Swift
-      - Objective-C
-      - Buy Now Pay Later
-    image: 
-      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://api.example.com
     humanURL: https://docs.affirm.com/developers/docs/ios-sdk-overview
     properties:
@@ -164,13 +155,12 @@ apis:
     name: Affirm Android SDK
     tags:
       - Android
-      - Mobile
-      - SDK
+      - Buy Now Pay Later
       - Java
       - Kotlin
-      - Buy Now Pay Later
-    image: 
-      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+      - Mobile
+      - SDK
+    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://api.example.com
     humanURL: https://docs.affirm.com/developers/docs/android-sdk-overview
     properties:

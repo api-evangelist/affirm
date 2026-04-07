@@ -24,18 +24,18 @@ servers:
   - url: https://sandbox.affirm.com/api/v1
     description: Sandbox Server
 tags:
-  - name: Transactions
-    description: >-
-      Operations for authorizing, capturing, voiding, refunding, and retrieving
-      Affirm payment transactions.
-  - name: Transaction Events
-    description: >-
-      Operations for listing transaction event records associated with
-      transaction lifecycle changes.
   - name: Settlement Events
     description: >-
       Operations for listing settlement events and summaries that track
       disbursement activity.
+  - name: Transaction Events
+    description: >-
+      Operations for listing transaction event records associated with
+      transaction lifecycle changes.
+  - name: Transactions
+    description: >-
+      Operations for authorizing, capturing, voiding, refunding, and retrieving
+      Affirm payment transactions.
 security:
   - basicAuth: []
 paths:
