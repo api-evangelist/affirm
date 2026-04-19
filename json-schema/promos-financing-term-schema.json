@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-schema/promos-financing-term-schema.json",
+  "title": "FinancingTerm",
+  "description": "A single available financing term option including APR and payment details.",
+  "type": "object",
+  "properties": {
+    "amount": {
+      "type": "integer",
+      "description": "Purchase amount this term applies to, in cents.",
+      "example": 1
+    },
+    "loan_type": {
+      "type": "string",
+      "description": "Type of financing loan (e.g., split_pay, installment).",
+      "example": "standard"
+    },
+    "apr": {
+      "type": "number",
+      "description": "Annual percentage rate for this financing term.",
+      "minimum": 0,
+      "example": 1
+    },
+    "installment_amount": {
+      "type": "integer",
+      "description": "Monthly installment payment amount in cents.",
+      "example": 1
+    },
+    "installment_count": {
+      "type": "integer",
+      "description": "Total number of installment payments.",
+      "example": 1
+    },
+    "interest_amount": {
+      "type": "integer",
+      "description": "Total interest charged over the life of the loan in cents.",
+      "example": 1
+    },
+    "total_amount": {
+      "type": "integer",
+      "description": "Total amount paid including principal and interest, in cents.",
+      "example": 1
+    }
+  }
+}

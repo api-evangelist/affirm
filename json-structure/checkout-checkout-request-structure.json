@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-structure/checkout-checkout-request-structure.json",
+  "name": "CheckoutRequest",
+  "description": "Request body for creating or updating an Affirm checkout session, containing all order and customer information required to initiate the Affirm financing flow.",
+  "type": "object",
+  "properties": {
+    "merchant": {
+      "$ref": "#/components/schemas/MerchantObject"
+    },
+    "shipping": {
+      "$ref": "#/components/schemas/ContactObject"
+    },
+    "billing": {
+      "$ref": "#/components/schemas/ContactObject"
+    },
+    "store": {
+      "$ref": "#/components/schemas/StoreObject"
+    },
+    "items": {
+      "type": "array",
+      "description": "Array of item objects representing the products being purchased in this checkout.",
+      "items": {
+        "$ref": "#/components/schemas/ItemObject"
+      },
+      "example": [
+        "example_value"
+      ]
+    },
+    "discounts": {
+      "type": "object",
+      "description": "A map of discount codes to discount objects. Each key is the discount code and each value contains the discount amount and name.",
+      "additionalProperties": {
+        "$ref": "#/components/schemas/DiscountObject"
+      },
+      "example": {}
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Arbitrary key-value metadata for merchant tracking. Values must be strings.",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "example": {}
+    },
+    "order_id": {
+      "type": "string",
+      "description": "The merchant's internal order identifier. Stored for future reference and reconciliation.",
+      "example": "500123"
+    },
+    "currency": {
+      "type": "string",
+      "description": "Three-letter ISO 4217 currency code in uppercase. Supported values are USD, CAD, and GBP.",
+      "enum": [
+        "USD",
+        "CAD",
+        "GBP"
+      ],
+      "example": "USD"
+    },
+    "financing_program": {
+      "type": "string",
+      "description": "Financing program code to apply to this checkout, if applicable. Determines the available loan terms presented to the customer.",
+      "example": "example_value"
+    },
+    "shipping_amount": {
+      "type": "int32",
+      "description": "The total shipping amount in cents.",
+      "minimum": 0,
+      "example": 1
+    },
+    "tax_amount": {
+      "type": "int32",
+      "description": "The total tax amount in cents.",
+      "minimum": 0,
+      "example": 1
+    },
+    "total": {
+      "type": "int32",
+      "description": "The total amount of the checkout in cents (USD, CAD) or pence (GBP).",
+      "minimum": 0,
+      "example": 1
+    },
+    "checkout_expiration": {
+      "type": "datetime",
+      "description": "ISO 8601 timestamp specifying when the checkout session expires.",
+      "example": "2025-03-15T14:30:00Z"
+    },
+    "expiration_time": {
+      "type": "datetime",
+      "description": "Time-to-live deadline by which the customer must confirm the checkout.",
+      "example": "2025-03-15T14:30:00Z"
+    }
+  },
+  "required": [
+    "merchant",
+    "items",
+    "currency",
+    "total"
+  ]
+}

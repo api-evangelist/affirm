@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-schema/checkout-contact-object-schema.json",
+  "title": "ContactObject",
+  "description": "Contact information for shipping or billing, including name, address, email, and phone number.",
+  "type": "object",
+  "properties": {
+    "name": {
+      "$ref": "#/components/schemas/NameObject"
+    },
+    "address": {
+      "$ref": "#/components/schemas/AddressObject"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email address for the contact.",
+      "example": "merchant@example.com"
+    },
+    "phone_number": {
+      "type": "string",
+      "description": "Phone number for the contact in E.164 format.",
+      "example": "example_value"
+    }
+  }
+}

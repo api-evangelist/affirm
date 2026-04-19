@@ -20,22 +20,22 @@ externalDocs:
   description: Affirm Disputes API V3 Reference
   url: https://docs.affirm.com/developers/reference/introduction
 servers:
-  - url: https://api.affirm.com/api/v3
-    description: Production Server
-  - url: https://sandbox.affirm.com/api/v3
-    description: Sandbox Server
+- url: https://api.affirm.com/api/v3
+  description: Production Server
+- url: https://sandbox.affirm.com/api/v3
+  description: Sandbox Server
 tags:
-  - name: Disputes
-    description: >-
-      Operations for listing, retrieving, contesting, and closing payment
-      disputes initiated by customers.
+- name: Disputes
+  description: >-
+    Operations for listing, retrieving, contesting, and closing payment
+    disputes initiated by customers.
 security:
-  - basicAuth: []
+- basicAuth: []
 paths:
   /disputes:
     get:
       operationId: listDisputes
-      summary: List disputes
+      summary: Affirm List Disputes
       description: >-
         Returns a paginated list of all payment disputes for the authenticated
         merchant. Disputes represent customer-initiated challenges to Affirm
@@ -43,34 +43,37 @@ paths:
         identifiers, dispute reason codes, and submission deadlines for evidence.
         Use filtering parameters to narrow results by status or date range.
       tags:
-        - Disputes
+      - Disputes
       parameters:
-        - name: status
-          in: query
-          required: false
-          description: Filter disputes by their current status.
-          schema:
-            type: string
-            enum:
-              - open
-              - closed
-              - won
-              - lost
-        - name: limit
-          in: query
-          required: false
-          description: Maximum number of dispute records to return per page.
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 20
-        - name: cursor
-          in: query
-          required: false
-          description: Pagination cursor returned from a previous list response.
-          schema:
-            type: string
+      - name: status
+        in: query
+        required: false
+        description: Filter disputes by their current status.
+        schema:
+          type: string
+          enum:
+          - open
+          - closed
+          - won
+          - lost
+        example: open
+      - name: limit
+        in: query
+        required: false
+        description: Maximum number of dispute records to return per page.
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+        example: 1
+      - name: cursor
+        in: query
+        required: false
+        description: Pagination cursor returned from a previous list response.
+        schema:
+          type: string
+        example: example_value
       responses:
         '200':
           description: A list of dispute objects.
@@ -86,12 +89,34 @@ paths:
                   next_cursor:
                     type: string
                     description: Cursor token for fetching the next page of results.
+              examples:
+                listDisputes200Example:
+                  summary: Default listDisputes 200 response
+                  x-microcks-default: true
+                  value:
+                    data:
+                    - id: {}
+                      transaction_id: {}
+                      charge_id: {}
+                      status: {}
+                      reason_code: {}
+                      amount: {}
+                      currency: {}
+                      created: {}
+                      evidence_due_by: {}
+                      closed_at: {}
+                      outcome: {}
+                      evidence: {}
+                    next_cursor: example_value
         '401':
           $ref: '#/components/responses/Unauthorized'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
   /disputes/{dispute_id}:
     get:
       operationId: getDispute
-      summary: Get a dispute
+      summary: Affirm Get a Dispute
       description: >-
         Retrieves the full details of a specific dispute by its unique
         identifier. Returns dispute status, reason code, associated transaction
@@ -99,9 +124,9 @@ paths:
         submitted, and the dispute resolution outcome if the dispute has been
         closed.
       tags:
-        - Disputes
+      - Disputes
       parameters:
-        - $ref: '#/components/parameters/DisputeId'
+      - $ref: '#/components/parameters/DisputeId'
       responses:
         '200':
           description: Dispute object retrieved successfully.
@@ -109,14 +134,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Dispute'
+              examples:
+                getDispute200Example:
+                  summary: Default getDispute 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    transaction_id: '500123'
+                    charge_id: '500123'
+                    status: open
+                    reason_code: example_value
+                    amount: 1
+                    currency: USD
+                    created: '2025-03-15T14:30:00Z'
+                    evidence_due_by: '2025-03-15T14:30:00Z'
+                    closed_at: '2025-03-15T14:30:00Z'
+                    outcome: merchant_won
+                    evidence:
+                    - {}
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
   /disputes/{dispute_id}/close:
     post:
       operationId: closeDispute
-      summary: Close a dispute
+      summary: Affirm Close a Dispute
       description: >-
         Closes a dispute and transitions it to the merchant-lost state,
         indicating the merchant accepts the dispute and concedes to the
@@ -125,9 +171,9 @@ paths:
         when the merchant chooses not to contest the dispute or determines
         the customer's claim is valid.
       tags:
-        - Disputes
+      - Disputes
       parameters:
-        - $ref: '#/components/parameters/DisputeId'
+      - $ref: '#/components/parameters/DisputeId'
       requestBody:
         required: false
         content:
@@ -140,6 +186,12 @@ paths:
                   description: >-
                     Optional explanation for why the merchant is closing the
                     dispute without contesting it.
+            examples:
+              closeDisputeRequestExample:
+                summary: Default closeDispute request
+                x-microcks-default: true
+                value:
+                  reason: example_value
       responses:
         '200':
           description: Dispute closed successfully.
@@ -147,16 +199,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Dispute'
+              examples:
+                closeDispute200Example:
+                  summary: Default closeDispute 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    transaction_id: '500123'
+                    charge_id: '500123'
+                    status: open
+                    reason_code: example_value
+                    amount: 1
+                    currency: USD
+                    created: '2025-03-15T14:30:00Z'
+                    evidence_due_by: '2025-03-15T14:30:00Z'
+                    closed_at: '2025-03-15T14:30:00Z'
+                    outcome: merchant_won
+                    evidence:
+                    - {}
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
   /disputes/{dispute_id}/evidence:
     post:
       operationId: submitDisputeEvidence
-      summary: Submit dispute evidence
+      summary: Affirm Submit Dispute Evidence
       description: >-
         Submits supporting evidence to contest an open dispute on behalf of
         the merchant. Evidence may include uploaded file references (obtained
@@ -165,15 +238,27 @@ paths:
         dispute's evidence submission deadline. The submitted evidence is
         reviewed by Affirm to determine the dispute outcome.
       tags:
-        - Disputes
+      - Disputes
       parameters:
-        - $ref: '#/components/parameters/DisputeId'
+      - $ref: '#/components/parameters/DisputeId'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/EvidenceRequest'
+            examples:
+              submitDisputeEvidenceRequestExample:
+                summary: Default submitDisputeEvidence request
+                x-microcks-default: true
+                value:
+                  files:
+                  - example_value
+                  explanation: example_value
+                  tracking_number: example_value
+                  shipping_carrier: example_value
+                  customer_communication: example_value
+                  refund_policy_disclosure: example_value
       responses:
         '200':
           description: Evidence submitted successfully.
@@ -181,12 +266,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Dispute'
+              examples:
+                submitDisputeEvidence200Example:
+                  summary: Default submitDisputeEvidence 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    transaction_id: '500123'
+                    charge_id: '500123'
+                    status: open
+                    reason_code: example_value
+                    amount: 1
+                    currency: USD
+                    created: '2025-03-15T14:30:00Z'
+                    evidence_due_by: '2025-03-15T14:30:00Z'
+                    closed_at: '2025-03-15T14:30:00Z'
+                    outcome: merchant_won
+                    evidence:
+                    - {}
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
 components:
   securitySchemes:
     basicAuth:
@@ -234,46 +340,56 @@ components:
         id:
           type: string
           description: Unique identifier for this dispute.
+          example: '500123'
         transaction_id:
           type: string
           description: The identifier of the Affirm transaction being disputed.
+          example: '500123'
         charge_id:
           type: string
           description: The identifier of the charge associated with this dispute.
+          example: '500123'
         status:
           type: string
           description: Current status of the dispute.
           enum:
-            - open
-            - closed
-            - won
-            - lost
+          - open
+          - closed
+          - won
+          - lost
+          example: open
         reason_code:
           type: string
           description: >-
             Standardized reason code categorizing the nature of the dispute
             (e.g., item_not_received, item_not_as_described, unauthorized).
+          example: example_value
         amount:
           type: integer
           description: The disputed amount in cents.
+          example: 1
         currency:
           type: string
           description: ISO 4217 currency code for the disputed amount.
+          example: USD
         created:
           type: string
           format: date-time
           description: Timestamp when this dispute was created, in RFC 3339 format.
+          example: '2025-03-15T14:30:00Z'
         evidence_due_by:
           type: string
           format: date-time
           description: >-
             Deadline by which the merchant must submit evidence to contest
             this dispute, in RFC 3339 format.
+          example: '2025-03-15T14:30:00Z'
         closed_at:
           type: string
           format: date-time
           nullable: true
           description: Timestamp when this dispute was closed, if applicable.
+          example: '2025-03-15T14:30:00Z'
         outcome:
           type: string
           nullable: true
@@ -281,13 +397,16 @@ components:
             Final outcome of the dispute after review. Only set when status
             is won or lost.
           enum:
-            - merchant_won
-            - merchant_lost
+          - merchant_won
+          - merchant_lost
+          example: merchant_won
         evidence:
           type: array
           description: List of evidence items submitted by the merchant for this dispute.
           items:
             $ref: '#/components/schemas/EvidenceItem'
+          example:
+          - example_value
     EvidenceRequest:
       type: object
       description: >-
@@ -301,29 +420,36 @@ components:
             as documentary evidence.
           items:
             type: string
+          example:
+          - example_value
         explanation:
           type: string
           description: >-
             Textual explanation of the merchant's position and why the
             dispute should be decided in the merchant's favor.
+          example: example_value
         tracking_number:
           type: string
           description: >-
             Shipment tracking number demonstrating that the order was
             delivered as expected.
+          example: example_value
         shipping_carrier:
           type: string
           description: Name of the shipping carrier used for the disputed order.
+          example: example_value
         customer_communication:
           type: string
           description: >-
             Description or summary of communications with the customer
             regarding the disputed order.
+          example: example_value
         refund_policy_disclosure:
           type: string
           description: >-
             Description of the merchant's refund policy as shown to the
             customer at the time of purchase.
+          example: example_value
     EvidenceItem:
       type: object
       description: A single piece of evidence associated with a dispute.
@@ -331,22 +457,26 @@ components:
         id:
           type: string
           description: Unique identifier for this evidence item.
+          example: '500123'
         type:
           type: string
           description: Type of evidence (file, text, tracking).
           enum:
-            - file
-            - text
-            - tracking
+          - file
+          - text
+          - tracking
+          example: file
         content:
           type: string
           description: >-
             For text evidence, the content of the explanation. For file
             evidence, the file identifier.
+          example: example_value
         submitted_at:
           type: string
           format: date-time
           description: Timestamp when this evidence was submitted, in RFC 3339 format.
+          example: '2025-03-15T14:30:00Z'
     Error:
       type: object
       description: Standard error response returned by the Affirm API.
@@ -354,9 +484,12 @@ components:
         status_code:
           type: integer
           description: HTTP status code of the error.
+          example: 1
         code:
           type: string
           description: Machine-readable error code string.
+          example: example_value
         message:
           type: string
           description: Human-readable description of the error.
+          example: example_value

@@ -1,0 +1,16 @@
+{
+  "id": "500123",
+  "transaction_id": "500123",
+  "charge_id": "500123",
+  "status": "open",
+  "reason_code": "example_value",
+  "amount": 1000,
+  "currency": "USD",
+  "created": "2025-03-15T14:30:00Z",
+  "evidence_due_by": "2025-03-15T14:30:00Z",
+  "closed_at": "2025-03-15T14:30:00Z",
+  "outcome": "merchant_won",
+  "evidence": [
+    "example_value"
+  ]
+}

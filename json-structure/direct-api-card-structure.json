@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-structure/direct-api-card-structure.json",
+  "name": "Card",
+  "description": "Represents an Affirm-issued virtual card number (VCN) used in the Affirm Lite integration pattern to process payments through traditional card networks.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this virtual card.",
+      "example": "500123"
+    },
+    "checkout_id": {
+      "type": "string",
+      "description": "Checkout session identifier associated with this card.",
+      "example": "500123"
+    },
+    "status": {
+      "type": "string",
+      "description": "Current status of the virtual card.",
+      "enum": [
+        "active",
+        "cancelled",
+        "finalized"
+      ],
+      "example": "active"
+    },
+    "number": {
+      "type": "string",
+      "description": "Virtual card number (PAN).",
+      "example": "example_value"
+    },
+    "cvv": {
+      "type": "string",
+      "description": "Card verification value.",
+      "example": "example_value"
+    },
+    "expiration": {
+      "type": "string",
+      "description": "Card expiration date in MM/YY format.",
+      "example": "example_value"
+    },
+    "billing": {
+      "type": "object",
+      "description": "Billing address associated with this virtual card.",
+      "properties": {
+        "address": {
+          "type": "object",
+          "properties": {
+            "line1": {
+              "type": "string",
+              "description": "Street address line 1."
+            },
+            "city": {
+              "type": "string",
+              "description": "City."
+            },
+            "state": {
+              "type": "string",
+              "description": "State code."
+            },
+            "zipcode": {
+              "type": "string",
+              "description": "ZIP or postal code."
+            },
+            "country": {
+              "type": "string",
+              "description": "ISO 3166-1 alpha-2 country code."
+            }
+          }
+        }
+      },
+      "example": {
+        "address": {
+          "line1": "example_value",
+          "city": "example_value",
+          "state": "example_value",
+          "zipcode": "example_value",
+          "country": "example_value"
+        }
+      }
+    },
+    "amount": {
+      "type": "int32",
+      "description": "Authorized amount on this virtual card in cents.",
+      "example": 1
+    },
+    "currency": {
+      "type": "string",
+      "description": "ISO 4217 currency code.",
+      "example": "USD"
+    },
+    "created": {
+      "type": "datetime",
+      "description": "Card creation timestamp in RFC 3339 format.",
+      "example": "2025-03-15T14:30:00Z"
+    }
+  }
+}

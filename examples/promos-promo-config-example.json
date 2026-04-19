@@ -1,0 +1,16 @@
+{
+  "promo_prequal_enabled": true,
+  "merchant_name": "example_value",
+  "merchant_ari": "example_value",
+  "user_ari": "example_value",
+  "toast_enabled": true,
+  "enabled_integrations": [
+    "example_value"
+  ],
+  "images": {
+    "hero": "example_value",
+    "hero2x": "example_value",
+    "logo": "example_value",
+    "logo2x": "example_value"
+  }
+}

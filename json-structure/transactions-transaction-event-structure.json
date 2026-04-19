@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-structure/transactions-transaction-event-structure.json",
+  "name": "TransactionEvent",
+  "description": "Represents a single event in the lifecycle of a transaction, such as an authorization, capture, refund, or void.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "A unique identifier for the transaction event.",
+      "example": "500123"
+    },
+    "type": {
+      "type": "string",
+      "description": "The type of transaction event.",
+      "enum": [
+        "auth",
+        "capture",
+        "refund",
+        "void",
+        "update"
+      ],
+      "example": "auth"
+    },
+    "amount": {
+      "type": "int32",
+      "description": "The amount associated with this event in the smallest currency unit.",
+      "example": 1
+    },
+    "currency": {
+      "type": "string",
+      "description": "The ISO 4217 currency code for this event.",
+      "example": "USD"
+    },
+    "fee": {
+      "type": "int32",
+      "description": "The fee charged by Affirm for this event in the smallest currency unit.",
+      "example": 1
+    },
+    "created": {
+      "type": "datetime",
+      "description": "The time when this event was created, in RFC 3339 format.",
+      "example": "2025-03-15T14:30:00Z"
+    },
+    "reference_id": {
+      "type": "string",
+      "description": "An external reference identifier associated with this event.",
+      "example": "500123"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional key-value metadata associated with this event for merchant tracking purposes.",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "example": {}
+    }
+  }
+}

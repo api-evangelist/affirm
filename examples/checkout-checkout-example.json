@@ -1,0 +1,23 @@
+{
+  "checkout_id": "500123",
+  "checkout_status": "pending",
+  "checkout_flow_type": "example_value",
+  "currency": "USD",
+  "total": 1000,
+  "shipping_amount": 1000,
+  "tax_amount": 1000,
+  "order_id": "500123",
+  "financial_program_name": "example_value",
+  "financial_program_external_name": "example_value",
+  "billing_frequency": "example_value",
+  "api_version": "example_value",
+  "product_type": "example_value",
+  "billing": "example_value",
+  "shipping": "example_value",
+  "merchant": "example_value",
+  "metadata": {},
+  "meta": {
+    "user_timezone": "example_value",
+    "tracking_uuid": "example_value"
+  }
+}

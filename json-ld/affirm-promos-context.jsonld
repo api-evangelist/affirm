@@ -1,0 +1,137 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "affirm": "https://affirm.com/schema/",
+    "schema": "https://schema.org/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "PromoConfig": "affirm:PromoConfig",
+    "promoPrequalEnabled": {
+      "@id": "affirm:promo_prequal_enabled",
+      "@type": "xsd:boolean"
+    },
+    "merchantName": {
+      "@id": "affirm:merchant_name",
+      "@type": "xsd:string"
+    },
+    "merchantAri": {
+      "@id": "affirm:merchant_ari",
+      "@type": "xsd:string"
+    },
+    "userAri": {
+      "@id": "affirm:user_ari",
+      "@type": "xsd:string"
+    },
+    "toastEnabled": {
+      "@id": "affirm:toast_enabled",
+      "@type": "xsd:boolean"
+    },
+    "enabledIntegrations": {
+      "@id": "affirm:enabled_integrations",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "images": {
+      "@id": "affirm:images",
+      "@type": "@id"
+    },
+    "hero": {
+      "@id": "affirm:hero",
+      "@type": "@id"
+    },
+    "hero2x": {
+      "@id": "affirm:hero2x",
+      "@type": "@id"
+    },
+    "logo": {
+      "@id": "affirm:logo",
+      "@type": "@id"
+    },
+    "logo2x": {
+      "@id": "affirm:logo2x",
+      "@type": "@id"
+    },
+    "FinancingTerm": "affirm:FinancingTerm",
+    "amount": {
+      "@id": "affirm:amount",
+      "@type": "xsd:integer"
+    },
+    "loanType": {
+      "@id": "affirm:loan_type",
+      "@type": "xsd:string"
+    },
+    "apr": {
+      "@id": "affirm:apr",
+      "@type": "xsd:decimal"
+    },
+    "installmentAmount": {
+      "@id": "affirm:installment_amount",
+      "@type": "xsd:integer"
+    },
+    "installmentCount": {
+      "@id": "affirm:installment_count",
+      "@type": "xsd:integer"
+    },
+    "interestAmount": {
+      "@id": "affirm:interest_amount",
+      "@type": "xsd:integer"
+    },
+    "totalAmount": {
+      "@id": "affirm:total_amount",
+      "@type": "xsd:integer"
+    },
+    "PromoResponse": "affirm:PromoResponse",
+    "promo": {
+      "@id": "affirm:promo",
+      "@type": "xsd:string"
+    },
+    "offer": {
+      "@id": "affirm:offer",
+      "@type": "xsd:string"
+    },
+    "PromoContent": "affirm:PromoContent",
+    "ala": {
+      "@id": "affirm:ala",
+      "@type": "xsd:string"
+    },
+    "htmlAla": {
+      "@id": "affirm:html_ala",
+      "@type": "xsd:string"
+    },
+    "headline": {
+      "@id": "affirm:headline",
+      "@type": "xsd:string"
+    },
+    "tagline": {
+      "@id": "affirm:tagline",
+      "@type": "xsd:string"
+    },
+    "button": {
+      "@id": "affirm:button",
+      "@type": "xsd:string"
+    },
+    "htmlFooter": {
+      "@id": "affirm:html_footer",
+      "@type": "xsd:string"
+    },
+    "description": "schema:description",
+    "config": {
+      "@id": "affirm:config",
+      "@type": "xsd:string"
+    },
+    "OfferContent": "affirm:OfferContent",
+    "minimumLoanAmount": {
+      "@id": "affirm:minimum_loan_amount",
+      "@type": "xsd:decimal"
+    },
+    "maximumLoanAmount": {
+      "@id": "affirm:maximum_loan_amount",
+      "@type": "xsd:decimal"
+    },
+    "terms": {
+      "@id": "affirm:terms",
+      "@container": "@set",
+      "@type": "xsd:string"
+    }
+  }
+}

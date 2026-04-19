@@ -20,22 +20,22 @@ externalDocs:
   description: Affirm Promos API Integration Overview
   url: https://docs.affirm.com/developers/docs/promos-api-integration-overview
 servers:
-  - url: https://www.affirm.com/api/promos/v2/{public_api_key}
-    description: Production Server
-    variables:
-      public_api_key:
-        default: YOUR_PUBLIC_KEY
-        description: The merchant's public API key obtained from the Affirm Merchant Portal.
+- url: https://www.affirm.com/api/promos/v2/{public_api_key}
+  description: Production Server
+  variables:
+    public_api_key:
+      default: YOUR_PUBLIC_KEY
+      description: The merchant's public API key obtained from the Affirm Merchant Portal.
 tags:
-  - name: Promos
-    description: >-
-      Operations for retrieving dynamic promotional messaging and financing
-      term information to display on merchant web pages.
+- name: Promos
+  description: >-
+    Operations for retrieving dynamic promotional messaging and financing
+    term information to display on merchant web pages.
 paths:
   /:
     get:
       operationId: getPromo
-      summary: Get promotional messaging
+      summary: Affirm Get Promotional Messaging
       description: >-
         Returns dynamic promotional financing messaging and modal content
         for a given purchase amount. The response includes "as low as" (ALA)
@@ -45,89 +45,96 @@ paths:
         pages to inform customers about available buy now pay later financing
         options before reaching checkout.
       tags:
-        - Promos
+      - Promos
       parameters:
-        - name: amount
-          in: query
-          required: true
-          description: >-
-            Purchase amount in the smallest currency unit (e.g., cents for
-            USD or CAD). The API uses this to calculate available financing
-            terms and monthly payment messaging.
-          schema:
-            type: integer
-            minimum: 0
-            example: 50000
-        - name: page_type
-          in: query
-          required: false
-          description: >-
-            The type of page on which the promotional messaging will be
-            displayed. Controls which financing messaging template is returned.
-          schema:
-            type: string
-            enum:
-              - homepage
-              - landing
-              - search
-              - category
-              - product
-              - cart
-              - payment
-              - banner
-              - marketplace
-            default: product
-        - name: template_field
-          in: query
-          required: false
-          description: >-
-            Locale identifier controlling the language and currency of the
-            returned promotional content.
-          schema:
-            type: string
-            enum:
-              - en_US
-              - en_CA
-              - fr_CA
-              - en_GB
-        - name: field
-          in: query
-          required: false
-          description: >-
-            Specifies which content fields to include in the response. Use
-            "ala" for as-low-as messaging only, "modal" for modal content
-            only, or "all" for both.
-          schema:
-            type: string
-            enum:
-              - ala
-              - modal
-              - all
-        - name: use_best_terms
-          in: query
-          required: false
-          description: >-
-            When true, returns the most favorable available financing terms
-            for the given amount rather than the default program terms.
-          schema:
-            type: boolean
-        - name: show_cta
-          in: query
-          required: false
-          description: >-
-            When true, includes a call-to-action element in the modal
-            content response.
-          schema:
-            type: boolean
-        - name: items
-          in: query
-          required: false
-          description: >-
-            Stringified JSON array of item objects to enable item-level
-            financing evaluation. Each item should include sku, display_name,
-            qty, and unit_price fields.
-          schema:
-            type: string
+      - name: amount
+        in: query
+        required: true
+        description: >-
+          Purchase amount in the smallest currency unit (e.g., cents for
+          USD or CAD). The API uses this to calculate available financing
+          terms and monthly payment messaging.
+        schema:
+          type: integer
+          minimum: 0
+          example: 50000
+        example: 1
+      - name: page_type
+        in: query
+        required: false
+        description: >-
+          The type of page on which the promotional messaging will be
+          displayed. Controls which financing messaging template is returned.
+        schema:
+          type: string
+          enum:
+          - homepage
+          - landing
+          - search
+          - category
+          - product
+          - cart
+          - payment
+          - banner
+          - marketplace
+          default: product
+        example: homepage
+      - name: template_field
+        in: query
+        required: false
+        description: >-
+          Locale identifier controlling the language and currency of the
+          returned promotional content.
+        schema:
+          type: string
+          enum:
+          - en_US
+          - en_CA
+          - fr_CA
+          - en_GB
+        example: en_US
+      - name: field
+        in: query
+        required: false
+        description: >-
+          Specifies which content fields to include in the response. Use
+          "ala" for as-low-as messaging only, "modal" for modal content
+          only, or "all" for both.
+        schema:
+          type: string
+          enum:
+          - ala
+          - modal
+          - all
+        example: ala
+      - name: use_best_terms
+        in: query
+        required: false
+        description: >-
+          When true, returns the most favorable available financing terms
+          for the given amount rather than the default program terms.
+        schema:
+          type: boolean
+        example: true
+      - name: show_cta
+        in: query
+        required: false
+        description: >-
+          When true, includes a call-to-action element in the modal
+          content response.
+        schema:
+          type: boolean
+        example: true
+      - name: items
+        in: query
+        required: false
+        description: >-
+          Stringified JSON array of item objects to enable item-level
+          financing evaluation. Each item should include sku, display_name,
+          qty, and unit_price fields.
+        schema:
+          type: string
+        example: example_value
       responses:
         '200':
           description: Promotional messaging content retrieved successfully.
@@ -135,10 +142,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PromoResponse'
+              examples:
+                getPromo200Example:
+                  summary: Default getPromo 200 response
+                  x-microcks-default: true
+                  value:
+                    promo:
+                      ala: {}
+                      html_ala: {}
+                      headline: {}
+                      tagline: {}
+                      button: {}
+                      html_footer: {}
+                      description: {}
+                      config: {}
+                    offer:
+                      minimum_loan_amount: {}
+                      maximum_loan_amount: {}
+                      terms: {}
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
 components:
   responses:
     BadRequest:
@@ -173,26 +201,33 @@ components:
           description: >-
             Plain text "as low as" monthly payment message, suitable for
             inline display on product and cart pages.
+          example: example_value
         html_ala:
           type: string
           description: >-
             HTML-formatted "as low as" monthly payment message with
             appropriate markup for web display.
+          example: example_value
         headline:
           type: string
           description: Modal headline text displayed at the top of the Affirm educational modal.
+          example: example_value
         tagline:
           type: string
           description: Modal tagline or subheading text.
+          example: example_value
         button:
           type: string
           description: Call-to-action button label text for the modal.
+          example: example_value
         html_footer:
           type: string
           description: HTML-formatted legal disclosure footer for the modal.
+          example: example_value
         description:
           type: string
           description: Full description text for the educational modal explaining Affirm financing.
+          example: Example description text
         config:
           $ref: '#/components/schemas/PromoConfig'
     PromoConfig:
@@ -202,23 +237,30 @@ components:
         promo_prequal_enabled:
           type: boolean
           description: Indicates whether prequalification is enabled for this merchant.
+          example: true
         merchant_name:
           type: string
           description: The merchant's display name.
+          example: Example Merchant
         merchant_ari:
           type: string
           description: Affirm Resource Identifier for the merchant.
+          example: example_value
         user_ari:
           type: string
           description: Affirm Resource Identifier for the current user session.
+          example: example_value
         toast_enabled:
           type: boolean
           description: Indicates whether toast notifications are enabled for this integration.
+          example: true
         enabled_integrations:
           type: array
           description: List of enabled Affirm integration features for this merchant.
           items:
             type: string
+          example:
+          - example_value
         images:
           type: object
           description: Image asset URLs for use in the promotional modal.
@@ -239,6 +281,11 @@ components:
               type: string
               format: uri
               description: High resolution (2x) Affirm logo URL.
+          example:
+            hero: https://example.com
+            hero2x: https://example.com
+            logo: https://example.com
+            logo2x: https://example.com
     OfferContent:
       type: object
       description: Available financing offer details for the requested purchase amount.
@@ -246,14 +293,18 @@ components:
         minimum_loan_amount:
           type: number
           description: Minimum purchase amount eligible for Affirm financing.
+          example: 1
         maximum_loan_amount:
           type: number
           description: Maximum purchase amount eligible for Affirm financing.
+          example: 1
         terms:
           type: array
           description: Array of available financing term options for this amount.
           items:
             $ref: '#/components/schemas/FinancingTerm'
+          example:
+          - example_value
     FinancingTerm:
       type: object
       description: A single available financing term option including APR and payment details.
@@ -261,25 +312,32 @@ components:
         amount:
           type: integer
           description: Purchase amount this term applies to, in cents.
+          example: 1
         loan_type:
           type: string
           description: Type of financing loan (e.g., split_pay, installment).
+          example: standard
         apr:
           type: number
           description: Annual percentage rate for this financing term.
           minimum: 0
+          example: 1
         installment_amount:
           type: integer
           description: Monthly installment payment amount in cents.
+          example: 1
         installment_count:
           type: integer
           description: Total number of installment payments.
+          example: 1
         interest_amount:
           type: integer
           description: Total interest charged over the life of the loan in cents.
+          example: 1
         total_amount:
           type: integer
           description: Total amount paid including principal and interest, in cents.
+          example: 1
     Error:
       type: object
       description: Standard error response returned by the Affirm API.
@@ -287,9 +345,12 @@ components:
         status_code:
           type: integer
           description: HTTP status code of the error.
+          example: 1
         code:
           type: string
           description: Machine-readable error code string.
+          example: example_value
         message:
           type: string
           description: Human-readable description of the error.
+          example: example_value

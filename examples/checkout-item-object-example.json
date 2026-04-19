@@ -1,0 +1,13 @@
+{
+  "display_name": "example_value",
+  "sku": "example_value",
+  "unit_price": 1000,
+  "qty": 1,
+  "item_image_url": "https://example.com/callback",
+  "item_url": "https://example.com/callback",
+  "categories": [
+    [
+      "example_value"
+    ]
+  ]
+}

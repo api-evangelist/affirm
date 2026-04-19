@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-schema/checkout-checkout-schema.json",
+  "title": "Checkout",
+  "description": "Represents an Affirm checkout session with full order details, customer information, and current checkout status.",
+  "type": "object",
+  "properties": {
+    "checkout_id": {
+      "type": "string",
+      "description": "Unique identifier for this checkout session.",
+      "example": "500123"
+    },
+    "checkout_status": {
+      "type": "string",
+      "description": "Current status of the checkout session.",
+      "enum": [
+        "pending",
+        "confirmed",
+        "failed",
+        "expired"
+      ],
+      "example": "pending"
+    },
+    "checkout_flow_type": {
+      "type": "string",
+      "description": "The checkout flow type used for this session.",
+      "example": "classic"
+    },
+    "currency": {
+      "type": "string",
+      "description": "ISO 4217 currency code for the checkout.",
+      "example": "USD"
+    },
+    "total": {
+      "type": "integer",
+      "description": "Total checkout amount in cents.",
+      "example": 1
+    },
+    "shipping_amount": {
+      "type": "integer",
+      "description": "Shipping cost in cents.",
+      "example": 1
+    },
+    "tax_amount": {
+      "type": "integer",
+      "description": "Tax amount in cents.",
+      "example": 1
+    },
+    "order_id": {
+      "type": "string",
+      "description": "Merchant's internal order identifier.",
+      "example": "500123"
+    },
+    "financial_program_name": {
+      "type": "string",
+      "description": "Internal financing program identifier applied to this checkout.",
+      "example": "Example Merchant"
+    },
+    "financial_program_external_name": {
+      "type": "string",
+      "description": "Customer-facing financing program name.",
+      "example": "Example Merchant"
+    },
+    "billing_frequency": {
+      "type": "string",
+      "description": "Loan billing frequency for the financing applied.",
+      "example": "example_value"
+    },
+    "api_version": {
+      "type": "string",
+      "description": "Version of the Affirm API used to create this checkout.",
+      "example": "example_value"
+    },
+    "product_type": {
+      "type": "string",
+      "nullable": true,
+      "description": "Product category associated with this checkout, if set.",
+      "example": "standard"
+    },
+    "billing": {
+      "$ref": "#/components/schemas/ContactObject"
+    },
+    "shipping": {
+      "$ref": "#/components/schemas/ContactObject"
+    },
+    "merchant": {
+      "$ref": "#/components/schemas/MerchantObject"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional checkout metadata.",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "example": {}
+    },
+    "meta": {
+      "type": "object",
+      "description": "Affirm internal tracking information.",
+      "properties": {
+        "user_timezone": {
+          "type": "string",
+          "description": "The user's timezone at time of checkout."
+        },
+        "tracking_uuid": {
+          "type": "string",
+          "description": "Internal tracking UUID for this checkout session."
+        }
+      },
+      "example": {
+        "user_timezone": "2025-03-15T14:30:00Z",
+        "tracking_uuid": "550e8400-e29b-41d4-a716-446655440000"
+      }
+    }
+  }
+}

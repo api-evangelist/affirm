@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-schema/promos-offer-content-schema.json",
+  "title": "OfferContent",
+  "description": "Available financing offer details for the requested purchase amount.",
+  "type": "object",
+  "properties": {
+    "minimum_loan_amount": {
+      "type": "number",
+      "description": "Minimum purchase amount eligible for Affirm financing.",
+      "example": 1
+    },
+    "maximum_loan_amount": {
+      "type": "number",
+      "description": "Maximum purchase amount eligible for Affirm financing.",
+      "example": 1
+    },
+    "terms": {
+      "type": "array",
+      "description": "Array of available financing term options for this amount.",
+      "items": {
+        "$ref": "#/components/schemas/FinancingTerm"
+      },
+      "example": [
+        "example_value"
+      ]
+    }
+  }
+}

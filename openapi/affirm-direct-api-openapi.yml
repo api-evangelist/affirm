@@ -21,30 +21,30 @@ externalDocs:
   description: Affirm Direct API Overview
   url: https://docs.affirm.com/payments/docs/direct-api-overview
 servers:
-  - url: https://api.affirm.com/api/v1
-    description: Production Server
-  - url: https://sandbox.affirm.com/api/v1
-    description: Sandbox Server
+- url: https://api.affirm.com/api/v1
+  description: Production Server
+- url: https://sandbox.affirm.com/api/v1
+  description: Sandbox Server
 tags:
-  - name: Authorization
-    description: >-
-      Server-side operations for authorizing Affirm transactions after a
-      customer completes the checkout flow and a checkout token is returned.
-  - name: Cards
-    description: >-
-      Operations for managing virtual card numbers (VCN) issued via the
-      Affirm Lite integration pattern.
-  - name: Transactions
-    description: >-
-      Post-authorization transaction management operations including capture,
-      void, and refund.
+- name: Authorization
+  description: >-
+    Server-side operations for authorizing Affirm transactions after a
+    customer completes the checkout flow and a checkout token is returned.
+- name: Cards
+  description: >-
+    Operations for managing virtual card numbers (VCN) issued via the
+    Affirm Lite integration pattern.
+- name: Transactions
+  description: >-
+    Post-authorization transaction management operations including capture,
+    void, and refund.
 security:
-  - basicAuth: []
+- basicAuth: []
 paths:
   /transactions:
     post:
       operationId: authorizeDirectTransaction
-      summary: Authorize a transaction
+      summary: Affirm Authorize a Transaction
       description: >-
         Exchanges a checkout token for a transaction authorization, completing
         the server-side portion of the Direct API flow. This call must be made
@@ -54,7 +54,7 @@ paths:
         must be captured within the authorization window to transfer funds to
         the merchant.
       tags:
-        - Authorization
+      - Authorization
       requestBody:
         required: true
         content:
@@ -62,7 +62,7 @@ paths:
             schema:
               type: object
               required:
-                - checkout_token
+              - checkout_token
               properties:
                 checkout_token:
                   type: string
@@ -75,6 +75,13 @@ paths:
                   description: >-
                     The merchant's internal order identifier to associate with
                     this authorization for reconciliation purposes.
+            examples:
+              authorizeDirectTransactionRequestExample:
+                summary: Default authorizeDirectTransaction request
+                x-microcks-default: true
+                value:
+                  checkout_token: abc123def456abc123def456abc123de
+                  order_id: '500123'
       responses:
         '200':
           description: Transaction authorized successfully.
@@ -82,14 +89,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Transaction'
+              examples:
+                authorizeDirectTransaction200Example:
+                  summary: Default authorizeDirectTransaction 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    checkout_id: '500123'
+                    order_id: '500123'
+                    status: authorized
+                    amount: 1
+                    amount_refunded: 1
+                    currency: USD
+                    created: '2025-03-15T14:30:00Z'
+                    authorization_expiration: '2025-03-15T14:30:00Z'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
   /transactions/{id}/capture:
     post:
       operationId: captureDirectTransaction
-      summary: Capture a transaction
+      summary: Affirm Capture a Transaction
       description: >-
         Captures a previously authorized transaction to initiate transfer of
         funds to the merchant. Capture may be for the full authorized amount
@@ -97,9 +121,9 @@ paths:
         capture only upon order fulfillment or shipment to align with Affirm's
         terms of service.
       tags:
-        - Transactions
+      - Transactions
       parameters:
-        - $ref: '#/components/parameters/TransactionId'
+      - $ref: '#/components/parameters/TransactionId'
       requestBody:
         required: false
         content:
@@ -119,6 +143,15 @@ paths:
                 shipping_confirmation:
                   type: string
                   description: Tracking number or shipment confirmation.
+            examples:
+              captureDirectTransactionRequestExample:
+                summary: Default captureDirectTransaction request
+                x-microcks-default: true
+                value:
+                  amount: 1
+                  order_id: '500123'
+                  shipping_carrier: example_value
+                  shipping_confirmation: example_value
       responses:
         '200':
           description: Transaction captured successfully.
@@ -126,24 +159,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Transaction'
+              examples:
+                captureDirectTransaction200Example:
+                  summary: Default captureDirectTransaction 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    checkout_id: '500123'
+                    order_id: '500123'
+                    status: authorized
+                    amount: 1
+                    amount_refunded: 1
+                    currency: USD
+                    created: '2025-03-15T14:30:00Z'
+                    authorization_expiration: '2025-03-15T14:30:00Z'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
   /transactions/{id}/void:
     post:
       operationId: voidDirectTransaction
-      summary: Void a transaction
+      summary: Affirm Void a Transaction
       description: >-
         Voids an authorized but uncaptured transaction, releasing the hold on
         the customer's Affirm credit. Used when an order is cancelled prior to
         fulfillment. A voided transaction cannot be captured or refunded.
       tags:
-        - Transactions
+      - Transactions
       parameters:
-        - $ref: '#/components/parameters/TransactionId'
+      - $ref: '#/components/parameters/TransactionId'
       responses:
         '200':
           description: Transaction voided successfully.
@@ -151,25 +201,42 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Transaction'
+              examples:
+                voidDirectTransaction200Example:
+                  summary: Default voidDirectTransaction 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    checkout_id: '500123'
+                    order_id: '500123'
+                    status: authorized
+                    amount: 1
+                    amount_refunded: 1
+                    currency: USD
+                    created: '2025-03-15T14:30:00Z'
+                    authorization_expiration: '2025-03-15T14:30:00Z'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
   /transactions/{id}/refund:
     post:
       operationId: refundDirectTransaction
-      summary: Refund a transaction
+      summary: Affirm Refund a Transaction
       description: >-
         Issues a full or partial refund on a captured Direct API transaction.
         Partial refunds can be applied multiple times until the total refunded
         amount equals the captured amount. The customer's Affirm account is
         credited and the merchant's settlement is adjusted.
       tags:
-        - Transactions
+      - Transactions
       parameters:
-        - $ref: '#/components/parameters/TransactionId'
+      - $ref: '#/components/parameters/TransactionId'
       requestBody:
         required: false
         content:
@@ -180,6 +247,12 @@ paths:
                 amount:
                   type: integer
                   description: Amount to refund in cents. Defaults to the full captured amount.
+            examples:
+              refundDirectTransactionRequestExample:
+                summary: Default refundDirectTransaction request
+                x-microcks-default: true
+                value:
+                  amount: 1
       responses:
         '200':
           description: Transaction refunded successfully.
@@ -187,25 +260,42 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Transaction'
+              examples:
+                refundDirectTransaction200Example:
+                  summary: Default refundDirectTransaction 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    checkout_id: '500123'
+                    order_id: '500123'
+                    status: authorized
+                    amount: 1
+                    amount_refunded: 1
+                    currency: USD
+                    created: '2025-03-15T14:30:00Z'
+                    authorization_expiration: '2025-03-15T14:30:00Z'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
   /cards/{id}:
     get:
       operationId: readCard
-      summary: Read a card
+      summary: Affirm Read a Card
       description: >-
         Retrieves the details of a virtual card number (VCN) issued via
         Affirm Lite. Returns card number, expiration, CVV, and billing
         address information needed for payment processing through traditional
         card networks.
       tags:
-        - Cards
+      - Cards
       parameters:
-        - $ref: '#/components/parameters/CardId'
+      - $ref: '#/components/parameters/CardId'
       responses:
         '200':
           description: Card retrieved successfully.
@@ -213,22 +303,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Card'
+              examples:
+                readCard200Example:
+                  summary: Default readCard 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    checkout_id: '500123'
+                    status: active
+                    number: example_value
+                    cvv: example_value
+                    expiration: example_value
+                    billing:
+                      address:
+                        line1: {}
+                        city: {}
+                        state: {}
+                        zipcode: {}
+                        country: {}
+                    amount: 1
+                    currency: USD
+                    created: '2025-03-15T14:30:00Z'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
   /cards/{id}/cancel:
     post:
       operationId: cancelCard
-      summary: Cancel a card
+      summary: Affirm Cancel a Card
       description: >-
         Cancels a virtual card number (VCN) issued via Affirm Lite, rendering
         it unusable for further charges. Used when an order is cancelled or
         the card is no longer needed.
       tags:
-        - Cards
+      - Cards
       parameters:
-        - $ref: '#/components/parameters/CardId'
+      - $ref: '#/components/parameters/CardId'
       responses:
         '200':
           description: Card cancelled successfully.
@@ -236,24 +350,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Card'
+              examples:
+                cancelCard200Example:
+                  summary: Default cancelCard 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    checkout_id: '500123'
+                    status: active
+                    number: example_value
+                    cvv: example_value
+                    expiration: example_value
+                    billing:
+                      address:
+                        line1: {}
+                        city: {}
+                        state: {}
+                        zipcode: {}
+                        country: {}
+                    amount: 1
+                    currency: USD
+                    created: '2025-03-15T14:30:00Z'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
   /cards/{id}/finalize:
     post:
       operationId: finalizeCard
-      summary: Finalize a card
+      summary: Affirm Finalize a Card
       description: >-
         Finalizes a virtual card number (VCN), updating the card details
         with the final purchase amount and completing the Affirm Lite
         transaction lifecycle.
       tags:
-        - Cards
+      - Cards
       parameters:
-        - $ref: '#/components/parameters/CardId'
+      - $ref: '#/components/parameters/CardId'
       requestBody:
         required: false
         content:
@@ -267,6 +405,13 @@ paths:
                 order_id:
                   type: string
                   description: Merchant order identifier for this finalization.
+            examples:
+              finalizeCardRequestExample:
+                summary: Default finalizeCard request
+                x-microcks-default: true
+                value:
+                  amount: 1
+                  order_id: '500123'
       responses:
         '200':
           description: Card finalized successfully.
@@ -274,23 +419,47 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Card'
+              examples:
+                finalizeCard200Example:
+                  summary: Default finalizeCard 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    checkout_id: '500123'
+                    status: active
+                    number: example_value
+                    cvv: example_value
+                    expiration: example_value
+                    billing:
+                      address:
+                        line1: {}
+                        city: {}
+                        state: {}
+                        zipcode: {}
+                        country: {}
+                    amount: 1
+                    currency: USD
+                    created: '2025-03-15T14:30:00Z'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
   /files:
     post:
       operationId: uploadFile
-      summary: Upload a file
+      summary: Affirm Upload a File
       description: >-
         Uploads a file to Affirm's servers for use as dispute evidence. Returns
         a file identifier that can be referenced when submitting evidence via
         the Disputes API. Supported file types include images (JPEG, PNG) and
         documents (PDF).
       tags:
-        - Authorization
+      - Authorization
       requestBody:
         required: true
         content:
@@ -298,7 +467,7 @@ paths:
             schema:
               type: object
               required:
-                - file
+              - file
               properties:
                 file:
                   type: string
@@ -308,7 +477,7 @@ paths:
                   type: string
                   description: The intended purpose of the uploaded file.
                   enum:
-                    - dispute_evidence
+                  - dispute_evidence
       responses:
         '200':
           description: File uploaded successfully.
@@ -316,26 +485,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FileObject'
+              examples:
+                uploadFile200Example:
+                  summary: Default uploadFile 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    filename: Example Merchant
+                    size: 1
+                    content_type: standard
+                    purpose: example_value
+                    created: '2025-03-15T14:30:00Z'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
   /files/{id}:
     get:
       operationId: downloadFile
-      summary: Download a file
+      summary: Affirm Download a File
       description: >-
         Downloads a previously uploaded file by its identifier. Returns the
         raw file content with the appropriate content type header.
       tags:
-        - Authorization
+      - Authorization
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: The unique identifier of the file to download.
-          schema:
-            type: string
+      - name: id
+        in: path
+        required: true
+        description: The unique identifier of the file to download.
+        schema:
+          type: string
+        example: '500123'
       responses:
         '200':
           description: File content returned successfully.
@@ -348,6 +532,9 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
 components:
   securitySchemes:
     basicAuth:
@@ -399,38 +586,47 @@ components:
         id:
           type: string
           description: Unique identifier for this transaction.
+          example: '500123'
         checkout_id:
           type: string
           description: Identifier of the checkout session that originated this transaction.
+          example: '500123'
         order_id:
           type: string
           description: Merchant's internal order identifier.
+          example: '500123'
         status:
           type: string
           description: Current lifecycle status of the transaction.
           enum:
-            - authorized
-            - captured
-            - voided
-            - refunded
-            - partially_refunded
+          - authorized
+          - captured
+          - voided
+          - refunded
+          - partially_refunded
+          example: authorized
         amount:
           type: integer
           description: Original authorized amount in cents.
+          example: 1
         amount_refunded:
           type: integer
           description: Cumulative amount refunded in cents.
+          example: 1
         currency:
           type: string
           description: ISO 4217 currency code.
+          example: USD
         created:
           type: string
           format: date-time
           description: Creation timestamp in RFC 3339 format.
+          example: '2025-03-15T14:30:00Z'
         authorization_expiration:
           type: string
           format: date-time
           description: Timestamp after which the authorization can no longer be captured.
+          example: '2025-03-15T14:30:00Z'
     Card:
       type: object
       description: >-
@@ -441,25 +637,31 @@ components:
         id:
           type: string
           description: Unique identifier for this virtual card.
+          example: '500123'
         checkout_id:
           type: string
           description: Checkout session identifier associated with this card.
+          example: '500123'
         status:
           type: string
           description: Current status of the virtual card.
           enum:
-            - active
-            - cancelled
-            - finalized
+          - active
+          - cancelled
+          - finalized
+          example: active
         number:
           type: string
           description: Virtual card number (PAN).
+          example: example_value
         cvv:
           type: string
           description: Card verification value.
+          example: example_value
         expiration:
           type: string
           description: Card expiration date in MM/YY format.
+          example: example_value
         billing:
           type: object
           description: Billing address associated with this virtual card.
@@ -482,16 +684,26 @@ components:
                 country:
                   type: string
                   description: ISO 3166-1 alpha-2 country code.
+          example:
+            address:
+              line1: example_value
+              city: example_value
+              state: example_value
+              zipcode: example_value
+              country: example_value
         amount:
           type: integer
           description: Authorized amount on this virtual card in cents.
+          example: 1
         currency:
           type: string
           description: ISO 4217 currency code.
+          example: USD
         created:
           type: string
           format: date-time
           description: Card creation timestamp in RFC 3339 format.
+          example: '2025-03-15T14:30:00Z'
     FileObject:
       type: object
       description: Represents a file uploaded to Affirm's servers.
@@ -499,22 +711,28 @@ components:
         id:
           type: string
           description: Unique identifier for the uploaded file.
+          example: '500123'
         filename:
           type: string
           description: Original filename of the uploaded file.
+          example: Example Merchant
         size:
           type: integer
           description: File size in bytes.
+          example: 1
         content_type:
           type: string
           description: MIME type of the uploaded file.
+          example: standard
         purpose:
           type: string
           description: Intended purpose of the file.
+          example: example_value
         created:
           type: string
           format: date-time
           description: Upload timestamp in RFC 3339 format.
+          example: '2025-03-15T14:30:00Z'
     Error:
       type: object
       description: Standard error response returned by the Affirm API.
@@ -522,9 +740,12 @@ components:
         status_code:
           type: integer
           description: HTTP status code of the error.
+          example: 1
         code:
           type: string
           description: Machine-readable error code string.
+          example: example_value
         message:
           type: string
           description: Human-readable description of the error.
+          example: example_value

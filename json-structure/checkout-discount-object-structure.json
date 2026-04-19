@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-structure/checkout-discount-object-structure.json",
+  "name": "DiscountObject",
+  "description": "Represents a discount applied to the checkout.",
+  "type": "object",
+  "properties": {
+    "discount_amount": {
+      "type": "int32",
+      "description": "The discount amount in cents.",
+      "minimum": 0,
+      "example": 1
+    },
+    "discount_display_name": {
+      "type": "string",
+      "description": "Customer-facing name or description of the discount.",
+      "example": "Example Merchant"
+    }
+  }
+}

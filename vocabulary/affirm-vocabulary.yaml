@@ -1,0 +1,338 @@
+vocabulary: "1.0.0"
+
+info:
+  provider: "Affirm"
+  description: "Unified taxonomy of the Affirm BNPL API platform covering operational dimensions (OpenAPI resources, actions, schemas) and capability dimensions (Naftiko workflows, personas, domains)."
+  created: "2026-04-19"
+  modified: "2026-04-19"
+
+operational:
+  apis:
+    - namespace: affirm-checkout
+      name: Affirm Checkout API
+      version: "1.0"
+      baseUrl: https://api.affirm.com/api/v1
+      status: active
+    - namespace: affirm-transactions
+      name: Affirm Transactions API
+      version: "1.0"
+      baseUrl: https://api.affirm.com/api/v1
+      status: active
+    - namespace: affirm-disputes
+      name: Affirm Disputes API
+      version: "v3"
+      baseUrl: https://api.affirm.com/api/v1
+      status: active
+    - namespace: affirm-promos
+      name: Affirm Promos API
+      version: "v2"
+      baseUrl: https://www.affirm.com/api/promos/v2
+      status: active
+    - namespace: affirm-direct-api
+      name: Affirm Direct API
+      version: "1.0"
+      baseUrl: https://api.affirm.com/api/v1
+      status: active
+
+  resources:
+    - name: checkouts
+      description: "BNPL checkout sessions created to initiate the Affirm financing flow."
+      apis:
+        - affirm-checkout
+        - affirm-direct-api
+      actions:
+        - store
+        - read
+        - update
+        - resend
+    - name: transactions
+      description: "Payment transactions representing the full lifecycle of an Affirm-financed purchase."
+      apis:
+        - affirm-transactions
+        - affirm-direct-api
+      actions:
+        - list
+        - authorize
+        - read
+        - capture
+        - refund
+        - void
+        - update
+    - name: disputes
+      description: "Payment disputes initiated by customers against merchant transactions."
+      apis:
+        - affirm-disputes
+      actions:
+        - list
+        - get
+        - close
+        - submit-evidence
+    - name: promos
+      description: "Promotional financing terms and messaging for display on merchant pages."
+      apis:
+        - affirm-promos
+      actions:
+        - get
+    - name: cards
+      description: "Virtual cards issued for Affirm Lite integrations."
+      apis:
+        - affirm-direct-api
+      actions:
+        - read
+        - create
+        - finalize
+        - cancel
+    - name: files
+      description: "Uploaded files attached as evidence to dispute submissions."
+      apis:
+        - affirm-disputes
+      actions:
+        - upload
+
+  actions:
+    - name: store
+      description: "Create and persist a new resource."
+      httpMethod: POST
+      pattern: write
+    - name: authorize
+      description: "Authorize a payment transaction using a checkout token."
+      httpMethod: POST
+      pattern: write
+    - name: capture
+      description: "Capture authorized funds from a transaction."
+      httpMethod: POST
+      pattern: write
+    - name: refund
+      description: "Return captured funds to the customer."
+      httpMethod: POST
+      pattern: destructive
+    - name: void
+      description: "Cancel an authorization before capture."
+      httpMethod: POST
+      pattern: destructive
+    - name: list
+      description: "Retrieve a paginated list of resources."
+      httpMethod: GET
+      pattern: read
+    - name: get
+      description: "Retrieve a single resource by identifier."
+      httpMethod: GET
+      pattern: read
+    - name: read
+      description: "Read a resource by its token or ID."
+      httpMethod: GET
+      pattern: read
+    - name: update
+      description: "Modify an existing resource."
+      httpMethod: POST
+      pattern: write
+    - name: resend
+      description: "Re-send a checkout link to a customer."
+      httpMethod: POST
+      pattern: write
+    - name: submit-evidence
+      description: "Submit supporting documentation for a dispute."
+      httpMethod: POST
+      pattern: write
+    - name: close
+      description: "Close or resolve a dispute record."
+      httpMethod: POST
+      pattern: write
+
+  schemas:
+    core:
+      - name: Transaction
+        description: "Core payment transaction object with full lifecycle state."
+        api: affirm-transactions
+      - name: Checkout
+        description: "Checkout session object representing a customer's financing application."
+        api: affirm-checkout
+      - name: CheckoutRequest
+        description: "Request body for creating a checkout session."
+        api: affirm-checkout
+    disputes:
+      - name: Dispute
+        description: "A payment dispute record with status and evidence tracking."
+        api: affirm-disputes
+      - name: EvidenceRequest
+        description: "Evidence submission payload for disputing a chargeback."
+        api: affirm-disputes
+    promotions:
+      - name: PromoResponse
+        description: "Response object containing financing terms and promotional messaging."
+        api: affirm-promos
+      - name: FinancingTerm
+        description: "A single financing term option with APR and installment details."
+        api: affirm-promos
+    virtual-cards:
+      - name: Card
+        description: "Virtual card object for Affirm Lite integrations."
+        api: affirm-direct-api
+
+  parameters:
+    pagination:
+      - name: limit
+        description: "Maximum number of results to return."
+        type: integer
+      - name: offset
+        description: "Number of results to skip for pagination."
+        type: integer
+    identifiers:
+      - name: id
+        description: "Transaction identifier."
+        type: string
+      - name: token
+        description: "Checkout token returned after session creation."
+        type: string
+      - name: dispute_id
+        description: "Unique identifier for a dispute record."
+        type: string
+    filters:
+      - name: page_type
+        description: "Page type context for promo messaging (product, cart, homepage)."
+        type: string
+    measurement:
+      - name: amount
+        description: "Purchase amount in cents (integer)."
+        type: integer
+
+  enums:
+    states:
+      - authorized
+      - captured
+      - voided
+      - refunded
+      - settled
+    dispute-statuses:
+      - open
+      - closed
+      - won
+      - lost
+    page-types:
+      - product
+      - cart
+      - homepage
+      - category
+
+  authentication:
+    schemes:
+      - type: basic
+        description: "HTTP Basic Authentication using merchant public and private API keys."
+        apis:
+          - affirm-checkout
+          - affirm-transactions
+          - affirm-disputes
+          - affirm-direct-api
+      - type: apikey
+        description: "API key passed as query parameter for the Promos API."
+        apis:
+          - affirm-promos
+
+capability:
+  workflows:
+    - name: Payment Management
+      file: capabilities/payment-management.yaml
+      description: "Full BNPL payment lifecycle from checkout through capture, refund, and dispute management."
+      apisComposed:
+        - affirm-checkout
+        - affirm-transactions
+        - affirm-disputes
+        - affirm-promos
+      toolCount: 11
+      personas:
+        - merchant-engineer
+        - payment-ops
+
+  personas:
+    - id: merchant-engineer
+      name: Merchant Engineer
+      description: "Backend developer integrating Affirm BNPL into a merchant's e-commerce checkout."
+      workflows:
+        - Payment Management
+    - id: payment-ops
+      name: Payment Operations
+      description: "Merchant operations team member managing transaction reconciliation and dispute resolution."
+      workflows:
+        - Payment Management
+
+  domains:
+    - name: Checkout
+      description: "Initiation and management of customer financing sessions."
+      resources:
+        - checkouts
+    - name: Payment Processing
+      description: "Authorization, capture, void, and refund of payment transactions."
+      resources:
+        - transactions
+    - name: Dispute Management
+      description: "Handling of customer chargebacks and disputes."
+      resources:
+        - disputes
+    - name: Promotions
+      description: "Displaying financing terms and promotional messaging to customers."
+      resources:
+        - promos
+
+  namespaces:
+    consumed:
+      - affirm-checkout
+      - affirm-transactions
+      - affirm-disputes
+      - affirm-promos
+    rest:
+      - name: affirm-payment-api
+        port: 8080
+    mcp:
+      - name: affirm-payment-mcp
+        port: 9090
+
+  binds:
+    - name: AFFIRM_PUBLIC_KEY
+      description: "Merchant public API key for authentication."
+      usedIn:
+        - Payment Management
+    - name: AFFIRM_PRIVATE_KEY
+      description: "Merchant private API key for authentication."
+      usedIn:
+        - Payment Management
+
+crossReference:
+  - resource: checkouts
+    operations:
+      - store-checkout
+      - read-checkout
+      - update-checkout
+      - resend-checkout
+    workflows:
+      - Payment Management
+    personas:
+      - merchant-engineer
+  - resource: transactions
+    operations:
+      - list-transactions
+      - authorize-transaction
+      - capture-transaction
+      - refund-transaction
+      - void-transaction
+    workflows:
+      - Payment Management
+    personas:
+      - merchant-engineer
+      - payment-ops
+  - resource: disputes
+    operations:
+      - list-disputes
+      - get-dispute
+      - submit-dispute-evidence
+      - close-dispute
+    workflows:
+      - Payment Management
+    personas:
+      - payment-ops
+  - resource: promos
+    operations:
+      - get-promo-messaging
+    workflows:
+      - Payment Management
+    personas:
+      - merchant-engineer

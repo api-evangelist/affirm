@@ -1,0 +1,139 @@
+naftiko: "1.0.0-alpha1"
+
+info:
+  label: "Affirm Checkout API"
+  description: "Shared capability definition for the Affirm Checkout API covering checkout session creation, retrieval, update, and resend operations."
+  tags:
+    - Affirm
+    - Checkout
+    - Buy Now Pay Later
+    - Payments
+  created: "2026-04-19"
+  modified: "2026-04-19"
+
+binds:
+  - namespace: env
+    keys:
+      AFFIRM_PUBLIC_KEY: AFFIRM_PUBLIC_KEY
+      AFFIRM_PRIVATE_KEY: AFFIRM_PRIVATE_KEY
+
+capability:
+  consumes:
+    - type: http
+      namespace: affirm-checkout
+      baseUri: https://api.affirm.com/api/v1
+      description: "Affirm Checkout API for creating and managing BNPL checkout sessions."
+      authentication:
+        type: basic
+        username: "{{AFFIRM_PUBLIC_KEY}}"
+        password: "{{AFFIRM_PRIVATE_KEY}}"
+      resources:
+        - name: checkouts
+          path: /checkouts
+          description: "Checkout session management operations."
+          operations:
+            - name: store-checkout
+              method: POST
+              description: "Create and store a new Affirm checkout session."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+            - name: direct-checkout
+              method: POST
+              description: "Initiate a direct checkout flow."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+        - name: checkout-by-token
+          path: /checkouts/{token}
+          description: "Operations on a specific checkout by token."
+          operations:
+            - name: read-checkout
+              method: GET
+              description: "Retrieve a checkout session by token."
+              inputParameters:
+                - name: token
+                  in: path
+                  type: string
+                  required: true
+                  description: "The checkout token."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+            - name: update-checkout
+              method: POST
+              description: "Update an existing checkout session."
+              inputParameters:
+                - name: token
+                  in: path
+                  type: string
+                  required: true
+                  description: "The checkout token."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+            - name: resend-checkout
+              method: POST
+              description: "Resend a checkout link via email or SMS."
+              inputParameters:
+                - name: token
+                  in: path
+                  type: string
+                  required: true
+                  description: "The checkout token."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+
+  exposes:
+    - type: rest
+      port: 8100
+      namespace: affirm-checkout-api
+      resources:
+        - path: /v1/checkouts
+          name: checkouts
+          description: "Checkout session operations."
+          operations:
+            - method: POST
+              name: store-checkout
+              description: "Create a checkout session."
+              call: "affirm-checkout.store-checkout"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+
+    - type: mcp
+      port: 9100
+      namespace: affirm-checkout-mcp
+      transport: http
+      tools:
+        - name: store-checkout
+          description: "Create and store an Affirm checkout session."
+          hints:
+            readOnly: false
+            destructive: false
+          call: "affirm-checkout.store-checkout"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: read-checkout
+          description: "Read an Affirm checkout session by token."
+          hints:
+            readOnly: true
+            destructive: false
+          call: "affirm-checkout.read-checkout"
+          with:
+            token: "tools.token"
+          outputParameters:
+            - type: object
+              mapping: "$."

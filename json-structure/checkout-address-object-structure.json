@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-structure/checkout-address-object-structure.json",
+  "name": "AddressObject",
+  "description": "A postal address.",
+  "type": "object",
+  "properties": {
+    "line1": {
+      "type": "string",
+      "description": "Primary street address line.",
+      "example": "example_value"
+    },
+    "line2": {
+      "type": "string",
+      "description": "Secondary address line (apartment, suite, unit, etc.).",
+      "example": "example_value"
+    },
+    "city": {
+      "type": "string",
+      "description": "City or locality.",
+      "example": "example_value"
+    },
+    "state": {
+      "type": "string",
+      "description": "State, province, or region code.",
+      "example": "example_value"
+    },
+    "zipcode": {
+      "type": "string",
+      "description": "Postal or ZIP code.",
+      "example": "example_value"
+    },
+    "country": {
+      "type": "string",
+      "description": "ISO 3166-1 alpha-2 country code.",
+      "example": "example_value"
+    }
+  }
+}

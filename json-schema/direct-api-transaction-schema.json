@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-schema/direct-api-transaction-schema.json",
+  "title": "Transaction",
+  "description": "Represents an Affirm payment transaction at any point in its lifecycle.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this transaction.",
+      "example": "500123"
+    },
+    "checkout_id": {
+      "type": "string",
+      "description": "Identifier of the checkout session that originated this transaction.",
+      "example": "500123"
+    },
+    "order_id": {
+      "type": "string",
+      "description": "Merchant's internal order identifier.",
+      "example": "500123"
+    },
+    "status": {
+      "type": "string",
+      "description": "Current lifecycle status of the transaction.",
+      "enum": [
+        "authorized",
+        "captured",
+        "voided",
+        "refunded",
+        "partially_refunded"
+      ],
+      "example": "authorized"
+    },
+    "amount": {
+      "type": "integer",
+      "description": "Original authorized amount in cents.",
+      "example": 1
+    },
+    "amount_refunded": {
+      "type": "integer",
+      "description": "Cumulative amount refunded in cents.",
+      "example": 1
+    },
+    "currency": {
+      "type": "string",
+      "description": "ISO 4217 currency code.",
+      "example": "USD"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Creation timestamp in RFC 3339 format.",
+      "example": "2025-03-15T14:30:00Z"
+    },
+    "authorization_expiration": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp after which the authorization can no longer be captured.",
+      "example": "2025-03-15T14:30:00Z"
+    }
+  }
+}

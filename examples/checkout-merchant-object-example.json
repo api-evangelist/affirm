@@ -1,0 +1,7 @@
+{
+  "public_api_key": "example_value",
+  "user_confirmation_url": "https://example.com/callback",
+  "user_cancel_url": "https://example.com/callback",
+  "user_confirmation_url_action": "POST",
+  "name": "example_value"
+}

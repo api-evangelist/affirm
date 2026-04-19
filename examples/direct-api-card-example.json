@@ -1,0 +1,20 @@
+{
+  "id": "500123",
+  "checkout_id": "500123",
+  "status": "active",
+  "number": "example_value",
+  "cvv": "example_value",
+  "expiration": "example_value",
+  "billing": {
+    "address": {
+      "line1": "example_value",
+      "city": "example_value",
+      "state": "example_value",
+      "zipcode": "example_value",
+      "country": "example_value"
+    }
+  },
+  "amount": 1000,
+  "currency": "USD",
+  "created": "2025-03-15T14:30:00Z"
+}

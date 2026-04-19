@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-schema/disputes-evidence-request-schema.json",
+  "title": "EvidenceRequest",
+  "description": "Request body for submitting evidence to contest a dispute. May include file references, textual explanations, and shipping/tracking details.",
+  "type": "object",
+  "properties": {
+    "files": {
+      "type": "array",
+      "description": "Array of file identifiers uploaded via the Files API to attach as documentary evidence.",
+      "items": {
+        "type": "string"
+      },
+      "example": [
+        "example_value"
+      ]
+    },
+    "explanation": {
+      "type": "string",
+      "description": "Textual explanation of the merchant's position and why the dispute should be decided in the merchant's favor.",
+      "example": "example_value"
+    },
+    "tracking_number": {
+      "type": "string",
+      "description": "Shipment tracking number demonstrating that the order was delivered as expected.",
+      "example": "example_value"
+    },
+    "shipping_carrier": {
+      "type": "string",
+      "description": "Name of the shipping carrier used for the disputed order.",
+      "example": "example_value"
+    },
+    "customer_communication": {
+      "type": "string",
+      "description": "Description or summary of communications with the customer regarding the disputed order.",
+      "example": "example_value"
+    },
+    "refund_policy_disclosure": {
+      "type": "string",
+      "description": "Description of the merchant's refund policy as shown to the customer at the time of purchase.",
+      "example": "example_value"
+    }
+  }
+}

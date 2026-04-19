@@ -1,0 +1,10 @@
+{
+  "id": "500123",
+  "type": "auth",
+  "amount": 1000,
+  "currency": "USD",
+  "fee": 1000,
+  "created": "2025-03-15T14:30:00Z",
+  "reference_id": "500123",
+  "metadata": {}
+}

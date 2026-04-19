@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-structure/direct-api-file-object-structure.json",
+  "name": "FileObject",
+  "description": "Represents a file uploaded to Affirm's servers.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the uploaded file.",
+      "example": "500123"
+    },
+    "filename": {
+      "type": "string",
+      "description": "Original filename of the uploaded file.",
+      "example": "Example Merchant"
+    },
+    "size": {
+      "type": "int32",
+      "description": "File size in bytes.",
+      "example": 1
+    },
+    "content_type": {
+      "type": "string",
+      "description": "MIME type of the uploaded file.",
+      "example": "standard"
+    },
+    "purpose": {
+      "type": "string",
+      "description": "Intended purpose of the file.",
+      "example": "example_value"
+    },
+    "created": {
+      "type": "datetime",
+      "description": "Upload timestamp in RFC 3339 format.",
+      "example": "2025-03-15T14:30:00Z"
+    }
+  }
+}

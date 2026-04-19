@@ -1,0 +1,191 @@
+naftiko: "1.0.0-alpha1"
+
+info:
+  label: "Affirm Transactions API"
+  description: "Shared capability definition for the Affirm Transactions API covering authorization, capture, void, refund, and transaction retrieval operations."
+  tags:
+    - Affirm
+    - Transactions
+    - Payments
+    - Authorization
+  created: "2026-04-19"
+  modified: "2026-04-19"
+
+binds:
+  - namespace: env
+    keys:
+      AFFIRM_PUBLIC_KEY: AFFIRM_PUBLIC_KEY
+      AFFIRM_PRIVATE_KEY: AFFIRM_PRIVATE_KEY
+
+capability:
+  consumes:
+    - type: http
+      namespace: affirm-transactions
+      baseUri: https://api.affirm.com/api/v1
+      description: "Affirm Transactions API for managing payment transaction lifecycle."
+      authentication:
+        type: basic
+        username: "{{AFFIRM_PUBLIC_KEY}}"
+        password: "{{AFFIRM_PRIVATE_KEY}}"
+      resources:
+        - name: transactions
+          path: /transactions
+          description: "Transaction management operations."
+          operations:
+            - name: list-transactions
+              method: GET
+              description: "List all transactions."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+            - name: authorize-transaction
+              method: POST
+              description: "Authorize a transaction using a checkout token."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+        - name: transaction-by-id
+          path: /transactions/{id}
+          description: "Operations on a specific transaction."
+          operations:
+            - name: read-transaction
+              method: GET
+              description: "Read a transaction by ID."
+              inputParameters:
+                - name: id
+                  in: path
+                  type: string
+                  required: true
+                  description: "Transaction ID."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+            - name: capture-transaction
+              method: POST
+              description: "Capture an authorized transaction."
+              inputParameters:
+                - name: id
+                  in: path
+                  type: string
+                  required: true
+                  description: "Transaction ID."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+            - name: refund-transaction
+              method: POST
+              description: "Refund a captured transaction."
+              inputParameters:
+                - name: id
+                  in: path
+                  type: string
+                  required: true
+                  description: "Transaction ID."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+            - name: void-transaction
+              method: POST
+              description: "Void an authorized transaction."
+              inputParameters:
+                - name: id
+                  in: path
+                  type: string
+                  required: true
+                  description: "Transaction ID."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+
+  exposes:
+    - type: rest
+      port: 8101
+      namespace: affirm-transactions-api
+      resources:
+        - path: /v1/transactions
+          name: transactions
+          description: "Transaction management."
+          operations:
+            - method: GET
+              name: list-transactions
+              description: "List all transactions."
+              call: "affirm-transactions.list-transactions"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+            - method: POST
+              name: authorize-transaction
+              description: "Authorize a transaction."
+              call: "affirm-transactions.authorize-transaction"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+
+    - type: mcp
+      port: 9101
+      namespace: affirm-transactions-mcp
+      transport: http
+      tools:
+        - name: list-transactions
+          description: "List Affirm payment transactions."
+          hints:
+            readOnly: true
+            destructive: false
+          call: "affirm-transactions.list-transactions"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: authorize-transaction
+          description: "Authorize an Affirm transaction from a checkout token."
+          hints:
+            readOnly: false
+            destructive: false
+          call: "affirm-transactions.authorize-transaction"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: capture-transaction
+          description: "Capture an authorized Affirm transaction."
+          hints:
+            readOnly: false
+            destructive: false
+          call: "affirm-transactions.capture-transaction"
+          with:
+            id: "tools.id"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: refund-transaction
+          description: "Refund a captured Affirm transaction."
+          hints:
+            readOnly: false
+            destructive: true
+          call: "affirm-transactions.refund-transaction"
+          with:
+            id: "tools.id"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: void-transaction
+          description: "Void an authorized Affirm transaction."
+          hints:
+            readOnly: false
+            destructive: true
+          call: "affirm-transactions.void-transaction"
+          with:
+            id: "tools.id"
+          outputParameters:
+            - type: object
+              mapping: "$."

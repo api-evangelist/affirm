@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-structure/checkout-merchant-object-structure.json",
+  "name": "MerchantObject",
+  "description": "Merchant-specific configuration for the checkout, including callback URLs and the public API key.",
+  "type": "object",
+  "properties": {
+    "public_api_key": {
+      "type": "string",
+      "description": "The merchant's public API key. Required for checkout and store endpoints when submitting from a server context.",
+      "example": "abc123def456abc123def456abc123de"
+    },
+    "user_confirmation_url": {
+      "type": "uri",
+      "description": "The URL the customer is redirected to after successfully completing the Affirm checkout flow. A checkout_token is delivered to this URL via POST or GET depending on user_confirmation_url_action.",
+      "example": "https://example.com/path"
+    },
+    "user_cancel_url": {
+      "type": "uri",
+      "description": "The URL the customer is redirected to if they cancel or abandon the Affirm checkout flow.",
+      "example": "https://example.com/path"
+    },
+    "user_confirmation_url_action": {
+      "type": "string",
+      "description": "Determines how the checkout_token is delivered to the user_confirmation_url. \"POST\" sends it as a form body field; \"GET\" appends it as a query parameter.",
+      "enum": [
+        "POST",
+        "GET"
+      ],
+      "default": "POST",
+      "example": "POST"
+    },
+    "name": {
+      "type": "string",
+      "description": "The merchant's display name, shown to customers during checkout.",
+      "example": "Example Merchant"
+    }
+  },
+  "required": [
+    "user_confirmation_url",
+    "user_cancel_url"
+  ]
+}

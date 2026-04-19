@@ -1,0 +1,9 @@
+{
+  "amount": 1000,
+  "loan_type": "example_value",
+  "apr": 99.99,
+  "installment_amount": 1000,
+  "installment_count": 1000,
+  "interest_amount": 1000,
+  "total_amount": 1000
+}

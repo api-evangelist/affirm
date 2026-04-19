@@ -1,0 +1,102 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "affirm": "https://affirm.com/schema/",
+    "schema": "https://schema.org/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "SettlementEvent": "affirm:SettlementEvent",
+    "id": {
+      "@id": "affirm:id",
+      "@type": "xsd:string"
+    },
+    "transactionId": {
+      "@id": "affirm:transaction_id",
+      "@type": "xsd:string"
+    },
+    "transactionEventId": {
+      "@id": "affirm:transaction_event_id",
+      "@type": "xsd:string"
+    },
+    "amount": {
+      "@id": "affirm:amount",
+      "@type": "xsd:integer"
+    },
+    "currency": {
+      "@id": "affirm:currency",
+      "@type": "xsd:string"
+    },
+    "created": {
+      "@id": "affirm:created",
+      "@type": "xsd:dateTime"
+    },
+    "type": {
+      "@id": "affirm:type",
+      "@type": "xsd:string"
+    },
+    "TransactionEvent": "affirm:TransactionEvent",
+    "fee": {
+      "@id": "affirm:fee",
+      "@type": "xsd:integer"
+    },
+    "referenceId": {
+      "@id": "affirm:reference_id",
+      "@type": "xsd:string"
+    },
+    "metadata": {
+      "@id": "affirm:metadata",
+      "@type": "@id"
+    },
+    "SettlementEventSummary": "affirm:SettlementEventSummary",
+    "totalAmount": {
+      "@id": "affirm:total_amount",
+      "@type": "xsd:integer"
+    },
+    "eventCount": {
+      "@id": "affirm:event_count",
+      "@type": "xsd:integer"
+    },
+    "disbursedAt": {
+      "@id": "affirm:disbursed_at",
+      "@type": "xsd:dateTime"
+    },
+    "Transaction": "affirm:Transaction",
+    "checkoutId": {
+      "@id": "affirm:checkout_id",
+      "@type": "xsd:string"
+    },
+    "orderId": {
+      "@id": "affirm:order_id",
+      "@type": "xsd:string"
+    },
+    "status": {
+      "@id": "affirm:status",
+      "@type": "xsd:string"
+    },
+    "amountRefunded": {
+      "@id": "affirm:amount_refunded",
+      "@type": "xsd:integer"
+    },
+    "authorizationExpiration": {
+      "@id": "affirm:authorization_expiration",
+      "@type": "xsd:dateTime"
+    },
+    "providerId": {
+      "@id": "affirm:provider_id",
+      "@type": "xsd:integer"
+    },
+    "removeTax": {
+      "@id": "affirm:remove_tax",
+      "@type": "xsd:boolean"
+    },
+    "events": {
+      "@id": "affirm:events",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "token": {
+      "@id": "affirm:token",
+      "@type": "xsd:string"
+    }
+  }
+}

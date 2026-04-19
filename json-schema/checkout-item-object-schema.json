@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-schema/checkout-item-object-schema.json",
+  "title": "ItemObject",
+  "description": "Represents a single line item in the checkout, including product details and pricing.",
+  "type": "object",
+  "properties": {
+    "display_name": {
+      "type": "string",
+      "description": "Customer-facing product name.",
+      "example": "Example Merchant"
+    },
+    "sku": {
+      "type": "string",
+      "description": "Merchant's stock keeping unit identifier for the product.",
+      "example": "example_value"
+    },
+    "unit_price": {
+      "type": "integer",
+      "description": "Unit price of the item in cents.",
+      "minimum": 0,
+      "example": 1
+    },
+    "qty": {
+      "type": "integer",
+      "description": "Quantity of this item in the order.",
+      "minimum": 1,
+      "example": 1
+    },
+    "item_image_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL of the product image.",
+      "example": "https://example.com/path"
+    },
+    "item_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL of the product page on the merchant's website.",
+      "example": "https://example.com/path"
+    },
+    "categories": {
+      "type": "array",
+      "description": "Nested array of category strings representing the product taxonomy.",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "example": [
+        [
+          "example_value"
+        ]
+      ]
+    }
+  },
+  "required": [
+    "display_name",
+    "sku",
+    "unit_price",
+    "qty"
+  ]
+}

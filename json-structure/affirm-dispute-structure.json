@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-structure/affirm-dispute-structure.json",
+  "name": "Affirm Dispute",
+  "description": "Represents a payment dispute filed by a customer against an Affirm transaction. Disputes are managed via the Affirm Disputes API V3, which supports listing disputes, submitting merchant evidence, and closing disputes. Merchants can contest disputes by uploading supporting documentation via the Files API.",
+  "type": "object",
+  "required": [
+    "id",
+    "status",
+    "amount",
+    "currency",
+    "created"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this dispute, assigned by Affirm."
+    },
+    "transaction_id": {
+      "type": "string",
+      "description": "The identifier of the Affirm transaction being disputed."
+    },
+    "charge_id": {
+      "type": "string",
+      "description": "The identifier of the charge associated with this dispute."
+    },
+    "status": {
+      "type": "string",
+      "description": "Current lifecycle status of the dispute.",
+      "enum": [
+        "open",
+        "closed",
+        "won",
+        "lost"
+      ]
+    },
+    "reason_code": {
+      "type": "string",
+      "description": "Standardized reason code categorizing the nature of the customer's dispute claim.",
+      "examples": [
+        "item_not_received",
+        "item_not_as_described",
+        "unauthorized",
+        "duplicate",
+        "credit_not_processed"
+      ]
+    },
+    "amount": {
+      "type": "int32",
+      "description": "The disputed amount in the smallest currency unit (e.g., cents for USD).",
+      "minimum": 0
+    },
+    "currency": {
+      "type": "string",
+      "description": "The ISO 4217 currency code for the disputed amount.",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "created": {
+      "type": "datetime",
+      "description": "Timestamp when this dispute was opened, in RFC 3339 format."
+    },
+    "evidence_due_by": {
+      "type": "datetime",
+      "description": "Deadline by which the merchant must submit evidence to contest this dispute, in RFC 3339 format."
+    },
+    "closed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "Timestamp when this dispute was closed, if applicable. Null if still open."
+    },
+    "outcome": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Final resolution outcome after dispute review. Only set when status is won or lost.",
+      "enum": [
+        "merchant_won",
+        "merchant_lost",
+        null
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "description": "List of evidence items submitted by the merchant in response to this dispute.",
+      "items": {
+        "$ref": "#/$defs/EvidenceItem"
+      }
+    }
+  },
+  "definitions": {
+    "EvidenceItem": {
+      "type": "object",
+      "description": "A single piece of evidence submitted by the merchant to contest a dispute.",
+      "required": [
+        "id",
+        "type",
+        "submitted_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for this evidence item."
+        },
+        "type": {
+          "type": "string",
+          "description": "The category of evidence represented by this item.",
+          "enum": [
+            "file",
+            "text",
+            "tracking"
+          ]
+        },
+        "content": {
+          "type": "string",
+          "description": "The evidence content. For file evidence, this is the file identifier from the Files API. For text evidence, this is the explanatory text."
+        },
+        "submitted_at": {
+          "type": "datetime",
+          "description": "Timestamp when this evidence was submitted, in RFC 3339 format."
+        }
+      },
+      "name": "EvidenceItem"
+    },
+    "EvidenceRequest": {
+      "type": "object",
+      "description": "Request body for submitting evidence to contest a dispute via the Disputes API.",
+      "properties": {
+        "files": {
+          "type": "array",
+          "description": "Array of file identifiers from the Files API to attach as documentary evidence.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "explanation": {
+          "type": "string",
+          "description": "Textual explanation of the merchant's position supporting why the dispute should be decided in the merchant's favor.",
+          "maxLength": 5000
+        },
+        "tracking_number": {
+          "type": "string",
+          "description": "Shipment tracking number demonstrating the order was delivered as expected.",
+          "maxLength": 200
+        },
+        "shipping_carrier": {
+          "type": "string",
+          "description": "Name of the shipping carrier used for the disputed order.",
+          "maxLength": 200
+        },
+        "customer_communication": {
+          "type": "string",
+          "description": "Description or summary of merchant communications with the customer regarding the disputed order.",
+          "maxLength": 5000
+        },
+        "refund_policy_disclosure": {
+          "type": "string",
+          "description": "The merchant's refund policy as presented to the customer at time of purchase.",
+          "maxLength": 5000
+        }
+      },
+      "name": "EvidenceRequest"
+    }
+  }
+}

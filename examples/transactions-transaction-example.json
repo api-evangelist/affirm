@@ -1,0 +1,17 @@
+{
+  "id": "500123",
+  "checkout_id": "500123",
+  "order_id": "500123",
+  "status": "authorized",
+  "amount": 1000,
+  "amount_refunded": 1000,
+  "currency": "USD",
+  "created": "2025-03-15T14:30:00Z",
+  "authorization_expiration": "2025-03-15T14:30:00Z",
+  "provider_id": 1000,
+  "remove_tax": true,
+  "events": [
+    "example_value"
+  ],
+  "token": "abc123def456abc123def456abc123de"
+}

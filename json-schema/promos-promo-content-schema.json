@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-schema/promos-promo-content-schema.json",
+  "title": "PromoContent",
+  "description": "Promotional messaging content including ALA text and modal content.",
+  "type": "object",
+  "properties": {
+    "ala": {
+      "type": "string",
+      "description": "Plain text \"as low as\" monthly payment message, suitable for inline display on product and cart pages.",
+      "example": "example_value"
+    },
+    "html_ala": {
+      "type": "string",
+      "description": "HTML-formatted \"as low as\" monthly payment message with appropriate markup for web display.",
+      "example": "example_value"
+    },
+    "headline": {
+      "type": "string",
+      "description": "Modal headline text displayed at the top of the Affirm educational modal.",
+      "example": "example_value"
+    },
+    "tagline": {
+      "type": "string",
+      "description": "Modal tagline or subheading text.",
+      "example": "example_value"
+    },
+    "button": {
+      "type": "string",
+      "description": "Call-to-action button label text for the modal.",
+      "example": "example_value"
+    },
+    "html_footer": {
+      "type": "string",
+      "description": "HTML-formatted legal disclosure footer for the modal.",
+      "example": "example_value"
+    },
+    "description": {
+      "type": "string",
+      "description": "Full description text for the educational modal explaining Affirm financing.",
+      "example": "Example description text"
+    },
+    "config": {
+      "$ref": "#/components/schemas/PromoConfig"
+    }
+  }
+}

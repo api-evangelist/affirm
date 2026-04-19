@@ -1,0 +1,9 @@
+{
+  "id": "500123",
+  "transaction_id": "500123",
+  "transaction_event_id": "500123",
+  "amount": 1000,
+  "currency": "USD",
+  "created": "2025-03-15T14:30:00Z",
+  "type": "capture"
+}

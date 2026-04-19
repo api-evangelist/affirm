@@ -1,0 +1,104 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "affirm": "https://affirm.com/schema/",
+    "schema": "https://schema.org/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "Transaction": "affirm:Transaction",
+    "id": {
+      "@id": "affirm:id",
+      "@type": "xsd:string"
+    },
+    "checkoutId": {
+      "@id": "affirm:checkout_id",
+      "@type": "xsd:string"
+    },
+    "orderId": {
+      "@id": "affirm:order_id",
+      "@type": "xsd:string"
+    },
+    "status": {
+      "@id": "affirm:status",
+      "@type": "xsd:string"
+    },
+    "amount": {
+      "@id": "affirm:amount",
+      "@type": "xsd:integer"
+    },
+    "amountRefunded": {
+      "@id": "affirm:amount_refunded",
+      "@type": "xsd:integer"
+    },
+    "currency": {
+      "@id": "affirm:currency",
+      "@type": "xsd:string"
+    },
+    "created": {
+      "@id": "affirm:created",
+      "@type": "xsd:dateTime"
+    },
+    "authorizationExpiration": {
+      "@id": "affirm:authorization_expiration",
+      "@type": "xsd:dateTime"
+    },
+    "Card": "affirm:Card",
+    "number": {
+      "@id": "affirm:number",
+      "@type": "xsd:string"
+    },
+    "cvv": {
+      "@id": "affirm:cvv",
+      "@type": "xsd:string"
+    },
+    "expiration": {
+      "@id": "affirm:expiration",
+      "@type": "xsd:string"
+    },
+    "billing": {
+      "@id": "affirm:billing",
+      "@type": "@id"
+    },
+    "address": {
+      "@id": "affirm:address",
+      "@type": "@id"
+    },
+    "line1": {
+      "@id": "affirm:line1",
+      "@type": "xsd:string"
+    },
+    "city": {
+      "@id": "affirm:city",
+      "@type": "xsd:string"
+    },
+    "state": {
+      "@id": "affirm:state",
+      "@type": "xsd:string"
+    },
+    "zipcode": {
+      "@id": "affirm:zipcode",
+      "@type": "xsd:string"
+    },
+    "country": {
+      "@id": "affirm:country",
+      "@type": "xsd:string"
+    },
+    "FileObject": "affirm:FileObject",
+    "filename": {
+      "@id": "affirm:filename",
+      "@type": "xsd:string"
+    },
+    "size": {
+      "@id": "affirm:size",
+      "@type": "xsd:integer"
+    },
+    "contentType": {
+      "@id": "affirm:content_type",
+      "@type": "xsd:string"
+    },
+    "purpose": {
+      "@id": "affirm:purpose",
+      "@type": "xsd:string"
+    }
+  }
+}

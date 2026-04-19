@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-structure/checkout-name-object-structure.json",
+  "name": "NameObject",
+  "description": "A person's name split into first and last components.",
+  "type": "object",
+  "properties": {
+    "first": {
+      "type": "string",
+      "description": "First name.",
+      "example": "example_value"
+    },
+    "last": {
+      "type": "string",
+      "description": "Last name.",
+      "example": "example_value"
+    },
+    "full": {
+      "type": "string",
+      "description": "Full name as a single string.",
+      "example": "example_value"
+    }
+  }
+}

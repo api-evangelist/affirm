@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-schema/transactions-transaction-schema.json",
+  "title": "Transaction",
+  "description": "Represents an Affirm payment transaction, capturing the full lifecycle from authorization through capture, refund, and void operations.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "A unique identifier representing the transaction.",
+      "example": "500123"
+    },
+    "checkout_id": {
+      "type": "string",
+      "description": "A unique identifier referencing the Checkout object that originated this transaction.",
+      "example": "500123"
+    },
+    "order_id": {
+      "type": "string",
+      "description": "Identifies the order within the merchant's order management system.",
+      "example": "500123"
+    },
+    "status": {
+      "type": "string",
+      "description": "Current state of the transaction.",
+      "enum": [
+        "authorized",
+        "captured",
+        "voided",
+        "refunded",
+        "partially_refunded"
+      ],
+      "example": "authorized"
+    },
+    "amount": {
+      "type": "integer",
+      "description": "The original amount financed to the customer in this transaction, expressed in the smallest currency unit (e.g., cents for USD).",
+      "example": 1
+    },
+    "amount_refunded": {
+      "type": "integer",
+      "description": "The cumulative amount refunded back to the customer from this transaction, expressed in the smallest currency unit.",
+      "example": 1
+    },
+    "currency": {
+      "type": "string",
+      "description": "Local transaction currency following ISO 4217 standards.",
+      "example": "USD"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The time when the transaction was created, in RFC 3339 format.",
+      "example": "2025-03-15T14:30:00Z"
+    },
+    "authorization_expiration": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The time when the transaction authorization expires and can no longer be captured, in RFC 3339 format.",
+      "example": "2025-03-15T14:30:00Z"
+    },
+    "provider_id": {
+      "type": "integer",
+      "description": "A unique identifier of the provider financing the transaction.",
+      "example": 1
+    },
+    "remove_tax": {
+      "type": "boolean",
+      "description": "Indicates whether tax was paid by the provider (applicable to Affirm Connect only).",
+      "example": true
+    },
+    "events": {
+      "type": "array",
+      "description": "Array of TransactionEvent objects documenting the transaction history.",
+      "items": {
+        "$ref": "#/components/schemas/TransactionEvent"
+      },
+      "example": [
+        "example_value"
+      ]
+    },
+    "token": {
+      "type": "string",
+      "description": "A JWT signing the JSON response. If PII is included, this token is also encrypted.",
+      "example": "abc123def456abc123def456abc123de"
+    }
+  }
+}

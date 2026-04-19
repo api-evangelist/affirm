@@ -1,0 +1,96 @@
+naftiko: "1.0.0-alpha1"
+
+info:
+  label: "Affirm Promos API"
+  description: "Shared capability definition for the Affirm Promos API that returns dynamic promotional messaging and financing terms for display on merchant sites."
+  tags:
+    - Affirm
+    - Promotions
+    - Marketing
+    - Messaging
+  created: "2026-04-19"
+  modified: "2026-04-19"
+
+binds:
+  - namespace: env
+    keys:
+      AFFIRM_PUBLIC_KEY: AFFIRM_PUBLIC_KEY
+
+capability:
+  consumes:
+    - type: http
+      namespace: affirm-promos
+      baseUri: https://www.affirm.com/api/promos/v2
+      description: "Affirm Promos API for fetching financing promotional messaging."
+      authentication:
+        type: apikey
+        key: public_api_key
+        value: "{{AFFIRM_PUBLIC_KEY}}"
+        placement: query
+      resources:
+        - name: promos
+          path: /
+          description: "Get promotional messaging for a purchase amount."
+          operations:
+            - name: get-promo
+              method: GET
+              description: "Get financing terms and promotional messaging for a given purchase amount."
+              inputParameters:
+                - name: public_api_key
+                  in: query
+                  type: string
+                  required: true
+                  description: "Merchant public API key."
+                - name: amount
+                  in: query
+                  type: integer
+                  required: true
+                  description: "Purchase amount in cents."
+                - name: page_type
+                  in: query
+                  type: string
+                  required: false
+                  description: "Page type context (product, cart, homepage)."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+
+  exposes:
+    - type: rest
+      port: 8103
+      namespace: affirm-promos-api
+      resources:
+        - path: /v1/promos
+          name: promos
+          description: "Promotional messaging."
+          operations:
+            - method: GET
+              name: get-promo
+              description: "Get Affirm promotional messaging."
+              call: "affirm-promos.get-promo"
+              with:
+                amount: "rest.amount"
+                page_type: "rest.page_type"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+
+    - type: mcp
+      port: 9103
+      namespace: affirm-promos-mcp
+      transport: http
+      tools:
+        - name: get-promo-messaging
+          description: "Fetch Affirm promotional financing terms and messaging for a given purchase amount."
+          hints:
+            readOnly: true
+            destructive: false
+          call: "affirm-promos.get-promo"
+          with:
+            amount: "tools.amount"
+            page_type: "tools.page_type"
+          outputParameters:
+            - type: object
+              mapping: "$."

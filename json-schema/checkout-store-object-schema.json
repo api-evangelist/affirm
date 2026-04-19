@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-schema/checkout-store-object-schema.json",
+  "title": "StoreObject",
+  "description": "Address details for in-store transactions where the purchase is made at a physical merchant location.",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Store location name.",
+      "example": "Example Merchant"
+    },
+    "address": {
+      "$ref": "#/components/schemas/AddressObject"
+    }
+  }
+}

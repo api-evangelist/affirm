@@ -1,0 +1,7 @@
+{
+  "minimum_loan_amount": 99.99,
+  "maximum_loan_amount": 99.99,
+  "terms": [
+    "example_value"
+  ]
+}

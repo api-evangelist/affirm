@@ -1,0 +1,98 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "affirm": "https://affirm.com/schema/",
+    "schema": "https://schema.org/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "EvidenceItem": "affirm:EvidenceItem",
+    "id": {
+      "@id": "affirm:id",
+      "@type": "xsd:string"
+    },
+    "type": {
+      "@id": "affirm:type",
+      "@type": "xsd:string"
+    },
+    "content": {
+      "@id": "affirm:content",
+      "@type": "xsd:string"
+    },
+    "submittedAt": {
+      "@id": "affirm:submitted_at",
+      "@type": "xsd:dateTime"
+    },
+    "Dispute": "affirm:Dispute",
+    "transactionId": {
+      "@id": "affirm:transaction_id",
+      "@type": "xsd:string"
+    },
+    "chargeId": {
+      "@id": "affirm:charge_id",
+      "@type": "xsd:string"
+    },
+    "status": {
+      "@id": "affirm:status",
+      "@type": "xsd:string"
+    },
+    "reasonCode": {
+      "@id": "affirm:reason_code",
+      "@type": "xsd:string"
+    },
+    "amount": {
+      "@id": "affirm:amount",
+      "@type": "xsd:integer"
+    },
+    "currency": {
+      "@id": "affirm:currency",
+      "@type": "xsd:string"
+    },
+    "created": {
+      "@id": "affirm:created",
+      "@type": "xsd:dateTime"
+    },
+    "evidenceDueBy": {
+      "@id": "affirm:evidence_due_by",
+      "@type": "xsd:dateTime"
+    },
+    "closedAt": {
+      "@id": "affirm:closed_at",
+      "@type": "xsd:dateTime"
+    },
+    "outcome": {
+      "@id": "affirm:outcome",
+      "@type": "xsd:string"
+    },
+    "evidence": {
+      "@id": "affirm:evidence",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "EvidenceRequest": "affirm:EvidenceRequest",
+    "files": {
+      "@id": "affirm:files",
+      "@container": "@set",
+      "@type": "xsd:string"
+    },
+    "explanation": {
+      "@id": "affirm:explanation",
+      "@type": "xsd:string"
+    },
+    "trackingNumber": {
+      "@id": "affirm:tracking_number",
+      "@type": "xsd:string"
+    },
+    "shippingCarrier": {
+      "@id": "affirm:shipping_carrier",
+      "@type": "xsd:string"
+    },
+    "customerCommunication": {
+      "@id": "affirm:customer_communication",
+      "@type": "xsd:string"
+    },
+    "refundPolicyDisclosure": {
+      "@id": "affirm:refund_policy_disclosure",
+      "@type": "xsd:string"
+    }
+  }
+}

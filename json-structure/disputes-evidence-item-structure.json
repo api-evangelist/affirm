@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-structure/disputes-evidence-item-structure.json",
+  "name": "EvidenceItem",
+  "description": "A single piece of evidence associated with a dispute.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this evidence item.",
+      "example": "500123"
+    },
+    "type": {
+      "type": "string",
+      "description": "Type of evidence (file, text, tracking).",
+      "enum": [
+        "file",
+        "text",
+        "tracking"
+      ],
+      "example": "file"
+    },
+    "content": {
+      "type": "string",
+      "description": "For text evidence, the content of the explanation. For file evidence, the file identifier.",
+      "example": "example_value"
+    },
+    "submitted_at": {
+      "type": "datetime",
+      "description": "Timestamp when this evidence was submitted, in RFC 3339 format.",
+      "example": "2025-03-15T14:30:00Z"
+    }
+  }
+}

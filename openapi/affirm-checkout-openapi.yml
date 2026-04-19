@@ -20,22 +20,22 @@ externalDocs:
   description: Affirm Checkout API Reference
   url: https://docs.affirm.com/developers/reference/the-checkout-object
 servers:
-  - url: https://api.affirm.com/api/v1
-    description: Production Server
-  - url: https://sandbox.affirm.com/api/v1
-    description: Sandbox Server
+- url: https://api.affirm.com/api/v1
+  description: Production Server
+- url: https://sandbox.affirm.com/api/v1
+  description: Sandbox Server
 tags:
-  - name: Checkouts
-    description: >-
-      Operations for creating, retrieving, updating, and resending Affirm
-      checkout sessions.
+- name: Checkouts
+  description: >-
+    Operations for creating, retrieving, updating, and resending Affirm
+    checkout sessions.
 security:
-  - basicAuth: []
+- basicAuth: []
 paths:
   /checkouts:
     post:
       operationId: storeCheckout
-      summary: Store a checkout
+      summary: Affirm Store a Checkout
       description: >-
         Creates and stores a new checkout object on Affirm's servers, returning
         a checkout token that can be used to initiate the Affirm checkout UI.
@@ -44,13 +44,49 @@ paths:
         via affirm.js. The checkout token returned must be used to redirect or
         open the Affirm checkout experience for the customer.
       tags:
-        - Checkouts
+      - Checkouts
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CheckoutRequest'
+            examples:
+              storeCheckoutRequestExample:
+                summary: Default storeCheckout request
+                x-microcks-default: true
+                value:
+                  merchant:
+                    public_api_key: {}
+                    user_confirmation_url: {}
+                    user_cancel_url: {}
+                    user_confirmation_url_action: {}
+                    name: {}
+                  shipping:
+                    name: {}
+                    address: {}
+                    email: {}
+                    phone_number: {}
+                  billing:
+                    name: {}
+                    address: {}
+                    email: {}
+                    phone_number: {}
+                  store:
+                    name: {}
+                    address: {}
+                  items:
+                  - {}
+                  discounts: {}
+                  metadata: {}
+                  order_id: '500123'
+                  currency: USD
+                  financing_program: example_value
+                  shipping_amount: 1
+                  tax_amount: 1
+                  total: 1
+                  checkout_expiration: '2025-03-15T14:30:00Z'
+                  expiration_time: '2025-03-15T14:30:00Z'
       responses:
         '200':
           description: Checkout created and stored successfully.
@@ -71,14 +107,24 @@ paths:
                     description: >-
                       URL to redirect the customer to for completing the
                       Affirm checkout flow.
+              examples:
+                storeCheckout200Example:
+                  summary: Default storeCheckout 200 response
+                  x-microcks-default: true
+                  value:
+                    checkout_token: abc123def456abc123def456abc123de
+                    redirect_url: https://example.com/path
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
   /checkouts/direct:
     post:
       operationId: directCheckout
-      summary: Direct checkout
+      summary: Affirm Direct Checkout
       description: >-
         Creates a checkout and directly authorizes the transaction in a single
         server-side call, without requiring the customer to interact with the
@@ -87,13 +133,49 @@ paths:
         inline and handles the authorization flow programmatically. Returns a
         checkout token upon success.
       tags:
-        - Checkouts
+      - Checkouts
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CheckoutRequest'
+            examples:
+              directCheckoutRequestExample:
+                summary: Default directCheckout request
+                x-microcks-default: true
+                value:
+                  merchant:
+                    public_api_key: {}
+                    user_confirmation_url: {}
+                    user_cancel_url: {}
+                    user_confirmation_url_action: {}
+                    name: {}
+                  shipping:
+                    name: {}
+                    address: {}
+                    email: {}
+                    phone_number: {}
+                  billing:
+                    name: {}
+                    address: {}
+                    email: {}
+                    phone_number: {}
+                  store:
+                    name: {}
+                    address: {}
+                  items:
+                  - {}
+                  discounts: {}
+                  metadata: {}
+                  order_id: '500123'
+                  currency: USD
+                  financing_program: example_value
+                  shipping_amount: 1
+                  tax_amount: 1
+                  total: 1
+                  checkout_expiration: '2025-03-15T14:30:00Z'
+                  expiration_time: '2025-03-15T14:30:00Z'
       responses:
         '200':
           description: Direct checkout authorized successfully.
@@ -107,14 +189,23 @@ paths:
                     description: >-
                       Token representing the authorized checkout, to be
                       exchanged for a full transaction authorization.
+              examples:
+                directCheckout200Example:
+                  summary: Default directCheckout 200 response
+                  x-microcks-default: true
+                  value:
+                    checkout_token: abc123def456abc123def456abc123de
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
   /checkouts/{token}:
     get:
       operationId: readCheckout
-      summary: Read a checkout
+      summary: Affirm Read a Checkout
       description: >-
         Retrieves the details of an existing checkout object by its token.
         Returns full checkout information including order totals, shipping and
@@ -122,9 +213,9 @@ paths:
         Used to verify checkout state before or after the customer completes
         the Affirm flow.
       tags:
-        - Checkouts
+      - Checkouts
       parameters:
-        - $ref: '#/components/parameters/CheckoutToken'
+      - $ref: '#/components/parameters/CheckoutToken'
       responses:
         '200':
           description: Checkout object retrieved successfully.
@@ -132,13 +223,54 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Checkout'
+              examples:
+                readCheckout200Example:
+                  summary: Default readCheckout 200 response
+                  x-microcks-default: true
+                  value:
+                    checkout_id: '500123'
+                    checkout_status: pending
+                    checkout_flow_type: standard
+                    currency: USD
+                    total: 1
+                    shipping_amount: 1
+                    tax_amount: 1
+                    order_id: '500123'
+                    financial_program_name: Example Merchant
+                    financial_program_external_name: Example Merchant
+                    billing_frequency: example_value
+                    api_version: example_value
+                    product_type: standard
+                    billing:
+                      name: {}
+                      address: {}
+                      email: {}
+                      phone_number: {}
+                    shipping:
+                      name: {}
+                      address: {}
+                      email: {}
+                      phone_number: {}
+                    merchant:
+                      public_api_key: {}
+                      user_confirmation_url: {}
+                      user_cancel_url: {}
+                      user_confirmation_url_action: {}
+                      name: {}
+                    metadata: {}
+                    meta:
+                      user_timezone: '2025-03-15T14:30:00Z'
+                      tracking_uuid: 550e8400-e29b-41d4-a716-446655440000
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
     post:
       operationId: updateCheckout
-      summary: Update a checkout
+      summary: Affirm Update a Checkout
       description: >-
         Updates an existing checkout object with new or modified order
         information. Only fields included in the request body are updated;
@@ -146,15 +278,51 @@ paths:
         yet have been confirmed by the customer. Used to adjust order totals,
         shipping, or item details after the checkout session has been created.
       tags:
-        - Checkouts
+      - Checkouts
       parameters:
-        - $ref: '#/components/parameters/CheckoutToken'
+      - $ref: '#/components/parameters/CheckoutToken'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CheckoutRequest'
+            examples:
+              updateCheckoutRequestExample:
+                summary: Default updateCheckout request
+                x-microcks-default: true
+                value:
+                  merchant:
+                    public_api_key: {}
+                    user_confirmation_url: {}
+                    user_cancel_url: {}
+                    user_confirmation_url_action: {}
+                    name: {}
+                  shipping:
+                    name: {}
+                    address: {}
+                    email: {}
+                    phone_number: {}
+                  billing:
+                    name: {}
+                    address: {}
+                    email: {}
+                    phone_number: {}
+                  store:
+                    name: {}
+                    address: {}
+                  items:
+                  - {}
+                  discounts: {}
+                  metadata: {}
+                  order_id: '500123'
+                  currency: USD
+                  financing_program: example_value
+                  shipping_amount: 1
+                  tax_amount: 1
+                  total: 1
+                  checkout_expiration: '2025-03-15T14:30:00Z'
+                  expiration_time: '2025-03-15T14:30:00Z'
       responses:
         '200':
           description: Checkout updated successfully.
@@ -162,25 +330,66 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Checkout'
+              examples:
+                updateCheckout200Example:
+                  summary: Default updateCheckout 200 response
+                  x-microcks-default: true
+                  value:
+                    checkout_id: '500123'
+                    checkout_status: pending
+                    checkout_flow_type: standard
+                    currency: USD
+                    total: 1
+                    shipping_amount: 1
+                    tax_amount: 1
+                    order_id: '500123'
+                    financial_program_name: Example Merchant
+                    financial_program_external_name: Example Merchant
+                    billing_frequency: example_value
+                    api_version: example_value
+                    product_type: standard
+                    billing:
+                      name: {}
+                      address: {}
+                      email: {}
+                      phone_number: {}
+                    shipping:
+                      name: {}
+                      address: {}
+                      email: {}
+                      phone_number: {}
+                    merchant:
+                      public_api_key: {}
+                      user_confirmation_url: {}
+                      user_cancel_url: {}
+                      user_confirmation_url_action: {}
+                      name: {}
+                    metadata: {}
+                    meta:
+                      user_timezone: '2025-03-15T14:30:00Z'
+                      tracking_uuid: 550e8400-e29b-41d4-a716-446655440000
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
   /checkouts/{token}/resend:
     post:
       operationId: resendCheckout
-      summary: Resend a checkout
+      summary: Affirm Resend a Checkout
       description: >-
         Resends the Affirm checkout link to the customer via email or SMS.
         Used in telesales and remote checkout flows where the customer needs
         to complete the Affirm financing application on their own device after
         initiating the order with a merchant representative.
       tags:
-        - Checkouts
+      - Checkouts
       parameters:
-        - $ref: '#/components/parameters/CheckoutToken'
+      - $ref: '#/components/parameters/CheckoutToken'
       requestBody:
         required: false
         content:
@@ -197,6 +406,13 @@ paths:
                   description: >-
                     Phone number to send the checkout link via SMS, in E.164
                     format.
+            examples:
+              resendCheckoutRequestExample:
+                summary: Default resendCheckout request
+                x-microcks-default: true
+                value:
+                  email: merchant@example.com
+                  phone_number: example_value
       responses:
         '200':
           description: Checkout link resent successfully.
@@ -208,12 +424,21 @@ paths:
                   success:
                     type: boolean
                     description: Indicates whether the resend was successful.
+              examples:
+                resendCheckout200Example:
+                  summary: Default resendCheckout 200 response
+                  x-microcks-default: true
+                  value:
+                    success: true
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
 components:
   securitySchemes:
     basicAuth:
@@ -260,10 +485,10 @@ components:
         containing all order and customer information required to initiate
         the Affirm financing flow.
       required:
-        - merchant
-        - items
-        - currency
-        - total
+      - merchant
+      - items
+      - currency
+      - total
       properties:
         merchant:
           $ref: '#/components/schemas/MerchantObject'
@@ -280,6 +505,8 @@ components:
             in this checkout.
           items:
             $ref: '#/components/schemas/ItemObject'
+          example:
+          - example_value
         discounts:
           type: object
           description: >-
@@ -288,6 +515,7 @@ components:
             name.
           additionalProperties:
             $ref: '#/components/schemas/DiscountObject'
+          example: {}
         metadata:
           type: object
           description: >-
@@ -295,48 +523,57 @@ components:
             be strings.
           additionalProperties:
             type: string
+          example: {}
         order_id:
           type: string
           description: >-
             The merchant's internal order identifier. Stored for future
             reference and reconciliation.
+          example: '500123'
         currency:
           type: string
           description: >-
             Three-letter ISO 4217 currency code in uppercase. Supported
             values are USD, CAD, and GBP.
           enum:
-            - USD
-            - CAD
-            - GBP
+          - USD
+          - CAD
+          - GBP
+          example: USD
         financing_program:
           type: string
           description: >-
             Financing program code to apply to this checkout, if applicable.
             Determines the available loan terms presented to the customer.
+          example: example_value
         shipping_amount:
           type: integer
           description: The total shipping amount in cents.
           minimum: 0
+          example: 1
         tax_amount:
           type: integer
           description: The total tax amount in cents.
           minimum: 0
+          example: 1
         total:
           type: integer
           description: The total amount of the checkout in cents (USD, CAD) or pence (GBP).
           minimum: 0
+          example: 1
         checkout_expiration:
           type: string
           format: date-time
           description: >-
             ISO 8601 timestamp specifying when the checkout session expires.
+          example: '2025-03-15T14:30:00Z'
         expiration_time:
           type: string
           format: date-time
           description: >-
             Time-to-live deadline by which the customer must confirm the
             checkout.
+          example: '2025-03-15T14:30:00Z'
     Checkout:
       type: object
       description: >-
@@ -346,14 +583,16 @@ components:
         checkout_id:
           type: string
           description: Unique identifier for this checkout session.
+          example: '500123'
         checkout_status:
           type: string
           description: Current status of the checkout session.
           enum:
-            - pending
-            - confirmed
-            - failed
-            - expired
+          - pending
+          - confirmed
+          - failed
+          - expired
+          example: pending
         checkout_flow_type:
           type: string
           description: The checkout flow type used for this session.
@@ -361,34 +600,44 @@ components:
         currency:
           type: string
           description: ISO 4217 currency code for the checkout.
+          example: USD
         total:
           type: integer
           description: Total checkout amount in cents.
+          example: 1
         shipping_amount:
           type: integer
           description: Shipping cost in cents.
+          example: 1
         tax_amount:
           type: integer
           description: Tax amount in cents.
+          example: 1
         order_id:
           type: string
           description: Merchant's internal order identifier.
+          example: '500123'
         financial_program_name:
           type: string
           description: Internal financing program identifier applied to this checkout.
+          example: Example Merchant
         financial_program_external_name:
           type: string
           description: Customer-facing financing program name.
+          example: Example Merchant
         billing_frequency:
           type: string
           description: Loan billing frequency for the financing applied.
+          example: example_value
         api_version:
           type: string
           description: Version of the Affirm API used to create this checkout.
+          example: example_value
         product_type:
           type: string
           nullable: true
           description: Product category associated with this checkout, if set.
+          example: standard
         billing:
           $ref: '#/components/schemas/ContactObject'
         shipping:
@@ -400,6 +649,7 @@ components:
           description: Additional checkout metadata.
           additionalProperties:
             type: string
+          example: {}
         meta:
           type: object
           description: Affirm internal tracking information.
@@ -410,20 +660,24 @@ components:
             tracking_uuid:
               type: string
               description: Internal tracking UUID for this checkout session.
+          example:
+            user_timezone: '2025-03-15T14:30:00Z'
+            tracking_uuid: 550e8400-e29b-41d4-a716-446655440000
     MerchantObject:
       type: object
       description: >-
         Merchant-specific configuration for the checkout, including callback
         URLs and the public API key.
       required:
-        - user_confirmation_url
-        - user_cancel_url
+      - user_confirmation_url
+      - user_cancel_url
       properties:
         public_api_key:
           type: string
           description: >-
             The merchant's public API key. Required for checkout and store
             endpoints when submitting from a server context.
+          example: abc123def456abc123def456abc123de
         user_confirmation_url:
           type: string
           format: uri
@@ -431,12 +685,14 @@ components:
             The URL the customer is redirected to after successfully completing
             the Affirm checkout flow. A checkout_token is delivered to this URL
             via POST or GET depending on user_confirmation_url_action.
+          example: https://example.com/path
         user_cancel_url:
           type: string
           format: uri
           description: >-
             The URL the customer is redirected to if they cancel or abandon
             the Affirm checkout flow.
+          example: https://example.com/path
         user_confirmation_url_action:
           type: string
           description: >-
@@ -444,12 +700,14 @@ components:
             user_confirmation_url. "POST" sends it as a form body field;
             "GET" appends it as a query parameter.
           enum:
-            - POST
-            - GET
+          - POST
+          - GET
           default: POST
+          example: POST
         name:
           type: string
           description: The merchant's display name, shown to customers during checkout.
+          example: Example Merchant
     ContactObject:
       type: object
       description: >-
@@ -464,9 +722,11 @@ components:
           type: string
           format: email
           description: Email address for the contact.
+          example: merchant@example.com
         phone_number:
           type: string
           description: Phone number for the contact in E.164 format.
+          example: example_value
     NameObject:
       type: object
       description: A person's name split into first and last components.
@@ -474,12 +734,15 @@ components:
         first:
           type: string
           description: First name.
+          example: example_value
         last:
           type: string
           description: Last name.
+          example: example_value
         full:
           type: string
           description: Full name as a single string.
+          example: example_value
     AddressObject:
       type: object
       description: A postal address.
@@ -487,54 +750,66 @@ components:
         line1:
           type: string
           description: Primary street address line.
+          example: example_value
         line2:
           type: string
           description: Secondary address line (apartment, suite, unit, etc.).
+          example: example_value
         city:
           type: string
           description: City or locality.
+          example: example_value
         state:
           type: string
           description: State, province, or region code.
+          example: example_value
         zipcode:
           type: string
           description: Postal or ZIP code.
+          example: example_value
         country:
           type: string
           description: ISO 3166-1 alpha-2 country code.
+          example: example_value
     ItemObject:
       type: object
       description: >-
         Represents a single line item in the checkout, including product
         details and pricing.
       required:
-        - display_name
-        - sku
-        - unit_price
-        - qty
+      - display_name
+      - sku
+      - unit_price
+      - qty
       properties:
         display_name:
           type: string
           description: Customer-facing product name.
+          example: Example Merchant
         sku:
           type: string
           description: Merchant's stock keeping unit identifier for the product.
+          example: example_value
         unit_price:
           type: integer
           description: Unit price of the item in cents.
           minimum: 0
+          example: 1
         qty:
           type: integer
           description: Quantity of this item in the order.
           minimum: 1
+          example: 1
         item_image_url:
           type: string
           format: uri
           description: URL of the product image.
+          example: https://example.com/path
         item_url:
           type: string
           format: uri
           description: URL of the product page on the merchant's website.
+          example: https://example.com/path
         categories:
           type: array
           description: Nested array of category strings representing the product taxonomy.
@@ -542,6 +817,8 @@ components:
             type: array
             items:
               type: string
+          example:
+          - - example_value
     StoreObject:
       type: object
       description: >-
@@ -551,6 +828,7 @@ components:
         name:
           type: string
           description: Store location name.
+          example: Example Merchant
         address:
           $ref: '#/components/schemas/AddressObject'
     DiscountObject:
@@ -561,9 +839,11 @@ components:
           type: integer
           description: The discount amount in cents.
           minimum: 0
+          example: 1
         discount_display_name:
           type: string
           description: Customer-facing name or description of the discount.
+          example: Example Merchant
     Error:
       type: object
       description: Standard error response returned by the Affirm API.
@@ -571,12 +851,16 @@ components:
         status_code:
           type: integer
           description: HTTP status code of the error.
+          example: 1
         code:
           type: string
           description: Machine-readable error code string.
+          example: example_value
         message:
           type: string
           description: Human-readable description of the error.
+          example: example_value
         field:
           type: string
           description: The specific field that caused the error, if applicable.
+          example: example_value

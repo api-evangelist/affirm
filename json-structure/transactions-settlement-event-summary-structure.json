@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-structure/transactions-settlement-event-summary-structure.json",
+  "name": "SettlementEventSummary",
+  "description": "An aggregated summary of settlement activity for a single disbursement batch from Affirm to the merchant.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "A unique identifier for this settlement event summary.",
+      "example": "500123"
+    },
+    "total_amount": {
+      "type": "int32",
+      "description": "Total amount disbursed in this batch in the smallest currency unit.",
+      "example": 1
+    },
+    "currency": {
+      "type": "string",
+      "description": "ISO 4217 currency code for this disbursement.",
+      "example": "USD"
+    },
+    "event_count": {
+      "type": "int32",
+      "description": "Number of individual settlement events included in this batch.",
+      "example": 1
+    },
+    "disbursed_at": {
+      "type": "datetime",
+      "description": "Timestamp when the disbursement was initiated, in RFC 3339 format.",
+      "example": "2025-03-15T14:30:00Z"
+    }
+  }
+}

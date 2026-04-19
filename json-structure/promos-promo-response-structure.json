@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/json-structure/promos-promo-response-structure.json",
+  "name": "PromoResponse",
+  "description": "Response containing promotional messaging content and financing offer details for the requested purchase amount.",
+  "type": "object",
+  "properties": {
+    "promo": {
+      "$ref": "#/components/schemas/PromoContent"
+    },
+    "offer": {
+      "$ref": "#/components/schemas/OfferContent"
+    }
+  }
+}
