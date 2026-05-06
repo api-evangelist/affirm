@@ -1,263 +1,521 @@
-naftiko: "1.0.0-alpha1"
-
+naftiko: 1.0.0-alpha2
 info:
-  label: "Affirm Payment Management"
-  description: "Unified workflow capability for managing the full Affirm BNPL payment lifecycle — from initiating checkout sessions through transaction authorization, capture, refund, and dispute resolution. Used by merchant engineers and payment operations teams."
+  label: Affirm Payment Management
+  description: Unified workflow capability for managing the full Affirm BNPL payment lifecycle — from initiating checkout
+    sessions through transaction authorization, capture, refund, and dispute resolution. Used by merchant engineers and payment
+    operations teams.
   tags:
-    - Affirm
-    - Payments
-    - Buy Now Pay Later
-    - Checkout
-    - Transactions
-    - Disputes
-  created: "2026-04-19"
-  modified: "2026-04-19"
-
+  - Affirm
+  - Payments
+  - Buy Now Pay Later
+  - Checkout
+  - Transactions
+  - Disputes
+  created: '2026-04-19'
+  modified: '2026-05-06'
 binds:
-  - namespace: env
-    keys:
-      AFFIRM_PUBLIC_KEY: AFFIRM_PUBLIC_KEY
-      AFFIRM_PRIVATE_KEY: AFFIRM_PRIVATE_KEY
-
+- namespace: env
+  keys:
+    AFFIRM_PUBLIC_KEY: AFFIRM_PUBLIC_KEY
+    AFFIRM_PRIVATE_KEY: AFFIRM_PRIVATE_KEY
 capability:
   consumes:
-    - import: affirm-checkout
-      location: ./shared/checkout.yaml
-    - import: affirm-transactions
-      location: ./shared/transactions.yaml
-    - import: affirm-disputes
-      location: ./shared/disputes.yaml
-    - import: affirm-promos
-      location: ./shared/promos.yaml
-
+  - type: http
+    namespace: affirm-checkout
+    baseUri: https://api.affirm.com/api/v1
+    description: Affirm Checkout API for creating and managing BNPL checkout sessions.
+    authentication:
+      type: basic
+      username: '{{AFFIRM_PUBLIC_KEY}}'
+      password: '{{AFFIRM_PRIVATE_KEY}}'
+    resources:
+    - name: checkouts
+      path: /checkouts
+      description: Checkout session management operations.
+      operations:
+      - name: store-checkout
+        method: POST
+        description: Create and store a new Affirm checkout session.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: direct-checkout
+        method: POST
+        description: Initiate a direct checkout flow.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: checkout-by-token
+      path: /checkouts/{token}
+      description: Operations on a specific checkout by token.
+      operations:
+      - name: read-checkout
+        method: GET
+        description: Retrieve a checkout session by token.
+        inputParameters:
+        - name: token
+          in: path
+          type: string
+          required: true
+          description: The checkout token.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: update-checkout
+        method: POST
+        description: Update an existing checkout session.
+        inputParameters:
+        - name: token
+          in: path
+          type: string
+          required: true
+          description: The checkout token.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: resend-checkout
+        method: POST
+        description: Resend a checkout link via email or SMS.
+        inputParameters:
+        - name: token
+          in: path
+          type: string
+          required: true
+          description: The checkout token.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+  - type: http
+    namespace: affirm-transactions
+    baseUri: https://api.affirm.com/api/v1
+    description: Affirm Transactions API for managing payment transaction lifecycle.
+    authentication:
+      type: basic
+      username: '{{AFFIRM_PUBLIC_KEY}}'
+      password: '{{AFFIRM_PRIVATE_KEY}}'
+    resources:
+    - name: transactions
+      path: /transactions
+      description: Transaction management operations.
+      operations:
+      - name: list-transactions
+        method: GET
+        description: List all transactions.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: authorize-transaction
+        method: POST
+        description: Authorize a transaction using a checkout token.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: transaction-by-id
+      path: /transactions/{id}
+      description: Operations on a specific transaction.
+      operations:
+      - name: read-transaction
+        method: GET
+        description: Read a transaction by ID.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: Transaction ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: capture-transaction
+        method: POST
+        description: Capture an authorized transaction.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: Transaction ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: refund-transaction
+        method: POST
+        description: Refund a captured transaction.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: Transaction ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: void-transaction
+        method: POST
+        description: Void an authorized transaction.
+        inputParameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: Transaction ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+  - type: http
+    namespace: affirm-disputes
+    baseUri: https://api.affirm.com/api/v1
+    description: Affirm Disputes API for managing payment disputes.
+    authentication:
+      type: basic
+      username: '{{AFFIRM_PUBLIC_KEY}}'
+      password: '{{AFFIRM_PRIVATE_KEY}}'
+    resources:
+    - name: disputes
+      path: /disputes
+      description: Dispute management operations.
+      operations:
+      - name: list-disputes
+        method: GET
+        description: List all disputes.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: dispute-by-id
+      path: /disputes/{dispute_id}
+      description: Operations on a specific dispute.
+      operations:
+      - name: get-dispute
+        method: GET
+        description: Retrieve a dispute by ID.
+        inputParameters:
+        - name: dispute_id
+          in: path
+          type: string
+          required: true
+          description: Dispute ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: close-dispute
+        method: POST
+        description: Close a dispute.
+        inputParameters:
+        - name: dispute_id
+          in: path
+          type: string
+          required: true
+          description: Dispute ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: submit-dispute-evidence
+        method: POST
+        description: Submit evidence for a dispute.
+        inputParameters:
+        - name: dispute_id
+          in: path
+          type: string
+          required: true
+          description: Dispute ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+  - type: http
+    namespace: affirm-promos
+    baseUri: https://www.affirm.com/api/promos/v2
+    description: Affirm Promos API for fetching financing promotional messaging.
+    authentication:
+      type: apikey
+      key: public_api_key
+      value: '{{AFFIRM_PUBLIC_KEY}}'
+      placement: query
+    resources:
+    - name: promos
+      path: /
+      description: Get promotional messaging for a purchase amount.
+      operations:
+      - name: get-promo
+        method: GET
+        description: Get financing terms and promotional messaging for a given purchase amount.
+        inputParameters:
+        - name: public_api_key
+          in: query
+          type: string
+          required: true
+          description: Merchant public API key.
+        - name: amount
+          in: query
+          type: integer
+          required: true
+          description: Purchase amount in cents.
+        - name: page_type
+          in: query
+          type: string
+          required: false
+          description: Page type context (product, cart, homepage).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
   exposes:
-    - type: rest
-      port: 8080
-      namespace: affirm-payment-api
-      description: "Unified REST API for Affirm BNPL payment management."
-      resources:
-        - path: /v1/checkouts
-          name: checkouts
-          description: "Checkout session management."
-          operations:
-            - method: POST
-              name: store-checkout
-              description: "Create an Affirm checkout session."
-              call: "affirm-checkout.store-checkout"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-        - path: /v1/checkouts/{token}
-          name: checkout-by-token
-          description: "Retrieve or update a checkout session."
-          operations:
-            - method: GET
-              name: read-checkout
-              description: "Read a checkout session."
-              call: "affirm-checkout.read-checkout"
-              with:
-                token: "rest.token"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-        - path: /v1/transactions
-          name: transactions
-          description: "Payment transaction management."
-          operations:
-            - method: GET
-              name: list-transactions
-              description: "List all transactions."
-              call: "affirm-transactions.list-transactions"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-            - method: POST
-              name: authorize-transaction
-              description: "Authorize a transaction."
-              call: "affirm-transactions.authorize-transaction"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-        - path: /v1/transactions/{id}/capture
-          name: transaction-capture
-          description: "Capture an authorized transaction."
-          operations:
-            - method: POST
-              name: capture-transaction
-              description: "Capture a transaction."
-              call: "affirm-transactions.capture-transaction"
-              with:
-                id: "rest.id"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-        - path: /v1/transactions/{id}/refund
-          name: transaction-refund
-          description: "Refund a captured transaction."
-          operations:
-            - method: POST
-              name: refund-transaction
-              description: "Refund a transaction."
-              call: "affirm-transactions.refund-transaction"
-              with:
-                id: "rest.id"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-        - path: /v1/disputes
-          name: disputes
-          description: "Dispute management."
-          operations:
-            - method: GET
-              name: list-disputes
-              description: "List all disputes."
-              call: "affirm-disputes.list-disputes"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-        - path: /v1/disputes/{dispute_id}
-          name: dispute-by-id
-          description: "Specific dispute operations."
-          operations:
-            - method: GET
-              name: get-dispute
-              description: "Get dispute details."
-              call: "affirm-disputes.get-dispute"
-              with:
-                dispute_id: "rest.dispute_id"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-        - path: /v1/promos
-          name: promos
-          description: "Promotional messaging."
-          operations:
-            - method: GET
-              name: get-promo
-              description: "Get promotional financing terms."
-              call: "affirm-promos.get-promo"
-              with:
-                amount: "rest.amount"
-              outputParameters:
-                - type: object
-                  mapping: "$."
-
-    - type: mcp
-      port: 9090
-      namespace: affirm-payment-mcp
-      transport: http
-      description: "MCP server for AI-assisted Affirm BNPL payment management."
-      tools:
-        - name: store-checkout
-          description: "Create an Affirm BNPL checkout session for a customer purchase."
-          hints:
-            readOnly: false
-            destructive: false
-          call: "affirm-checkout.store-checkout"
-          outputParameters:
-            - type: object
-              mapping: "$."
-        - name: read-checkout
-          description: "Read an Affirm checkout session by token."
-          hints:
-            readOnly: true
-            destructive: false
-          call: "affirm-checkout.read-checkout"
-          with:
-            token: "tools.token"
-          outputParameters:
-            - type: object
-              mapping: "$."
-        - name: list-transactions
-          description: "List all Affirm payment transactions for reconciliation."
-          hints:
-            readOnly: true
-            destructive: false
-          call: "affirm-transactions.list-transactions"
-          outputParameters:
-            - type: object
-              mapping: "$."
-        - name: authorize-transaction
-          description: "Authorize an Affirm transaction using a checkout token."
-          hints:
-            readOnly: false
-            destructive: false
-          call: "affirm-transactions.authorize-transaction"
-          outputParameters:
-            - type: object
-              mapping: "$."
-        - name: capture-transaction
-          description: "Capture an authorized Affirm transaction to collect funds."
-          hints:
-            readOnly: false
-            destructive: false
-          call: "affirm-transactions.capture-transaction"
-          with:
-            id: "tools.id"
-          outputParameters:
-            - type: object
-              mapping: "$."
-        - name: refund-transaction
-          description: "Refund a captured Affirm transaction partially or fully."
-          hints:
-            readOnly: false
-            destructive: true
-          call: "affirm-transactions.refund-transaction"
-          with:
-            id: "tools.id"
-          outputParameters:
-            - type: object
-              mapping: "$."
-        - name: void-transaction
-          description: "Void an authorized Affirm transaction before capture."
-          hints:
-            readOnly: false
-            destructive: true
-          call: "affirm-transactions.void-transaction"
-          with:
-            id: "tools.id"
-          outputParameters:
-            - type: object
-              mapping: "$."
-        - name: list-disputes
-          description: "List all Affirm payment disputes for a merchant."
-          hints:
-            readOnly: true
-            destructive: false
-          call: "affirm-disputes.list-disputes"
-          outputParameters:
-            - type: object
-              mapping: "$."
-        - name: get-dispute
-          description: "Get details of a specific Affirm payment dispute."
-          hints:
-            readOnly: true
-            destructive: false
-          call: "affirm-disputes.get-dispute"
-          with:
-            dispute_id: "tools.dispute_id"
-          outputParameters:
-            - type: object
-              mapping: "$."
-        - name: submit-dispute-evidence
-          description: "Submit evidence to contest an Affirm payment dispute."
-          hints:
-            readOnly: false
-            destructive: false
-          call: "affirm-disputes.submit-dispute-evidence"
-          with:
-            dispute_id: "tools.dispute_id"
-          outputParameters:
-            - type: object
-              mapping: "$."
-        - name: get-promo-messaging
-          description: "Get Affirm promotional financing terms and messaging for a purchase amount."
-          hints:
-            readOnly: true
-            destructive: false
-          call: "affirm-promos.get-promo"
-          with:
-            amount: "tools.amount"
-          outputParameters:
-            - type: object
-              mapping: "$."
+  - type: rest
+    port: 8080
+    namespace: affirm-payment-api
+    description: Unified REST API for Affirm BNPL payment management.
+    resources:
+    - path: /v1/checkouts
+      name: checkouts
+      description: Checkout session management.
+      operations:
+      - method: POST
+        name: store-checkout
+        description: Create an Affirm checkout session.
+        call: affirm-checkout.store-checkout
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/checkouts/{token}
+      name: checkout-by-token
+      description: Retrieve or update a checkout session.
+      operations:
+      - method: GET
+        name: read-checkout
+        description: Read a checkout session.
+        call: affirm-checkout.read-checkout
+        with:
+          token: rest.token
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/transactions
+      name: transactions
+      description: Payment transaction management.
+      operations:
+      - method: GET
+        name: list-transactions
+        description: List all transactions.
+        call: affirm-transactions.list-transactions
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: authorize-transaction
+        description: Authorize a transaction.
+        call: affirm-transactions.authorize-transaction
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/transactions/{id}/capture
+      name: transaction-capture
+      description: Capture an authorized transaction.
+      operations:
+      - method: POST
+        name: capture-transaction
+        description: Capture a transaction.
+        call: affirm-transactions.capture-transaction
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/transactions/{id}/refund
+      name: transaction-refund
+      description: Refund a captured transaction.
+      operations:
+      - method: POST
+        name: refund-transaction
+        description: Refund a transaction.
+        call: affirm-transactions.refund-transaction
+        with:
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/disputes
+      name: disputes
+      description: Dispute management.
+      operations:
+      - method: GET
+        name: list-disputes
+        description: List all disputes.
+        call: affirm-disputes.list-disputes
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/disputes/{dispute_id}
+      name: dispute-by-id
+      description: Specific dispute operations.
+      operations:
+      - method: GET
+        name: get-dispute
+        description: Get dispute details.
+        call: affirm-disputes.get-dispute
+        with:
+          dispute_id: rest.dispute_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/promos
+      name: promos
+      description: Promotional messaging.
+      operations:
+      - method: GET
+        name: get-promo
+        description: Get promotional financing terms.
+        call: affirm-promos.get-promo
+        with:
+          amount: rest.amount
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    port: 9090
+    namespace: affirm-payment-mcp
+    transport: http
+    description: MCP server for AI-assisted Affirm BNPL payment management.
+    tools:
+    - name: store-checkout
+      description: Create an Affirm BNPL checkout session for a customer purchase.
+      hints:
+        readOnly: false
+        destructive: false
+      call: affirm-checkout.store-checkout
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: read-checkout
+      description: Read an Affirm checkout session by token.
+      hints:
+        readOnly: true
+        destructive: false
+      call: affirm-checkout.read-checkout
+      with:
+        token: tools.token
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-transactions
+      description: List all Affirm payment transactions for reconciliation.
+      hints:
+        readOnly: true
+        destructive: false
+      call: affirm-transactions.list-transactions
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: authorize-transaction
+      description: Authorize an Affirm transaction using a checkout token.
+      hints:
+        readOnly: false
+        destructive: false
+      call: affirm-transactions.authorize-transaction
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: capture-transaction
+      description: Capture an authorized Affirm transaction to collect funds.
+      hints:
+        readOnly: false
+        destructive: false
+      call: affirm-transactions.capture-transaction
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: refund-transaction
+      description: Refund a captured Affirm transaction partially or fully.
+      hints:
+        readOnly: false
+        destructive: true
+      call: affirm-transactions.refund-transaction
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: void-transaction
+      description: Void an authorized Affirm transaction before capture.
+      hints:
+        readOnly: false
+        destructive: true
+      call: affirm-transactions.void-transaction
+      with:
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-disputes
+      description: List all Affirm payment disputes for a merchant.
+      hints:
+        readOnly: true
+        destructive: false
+      call: affirm-disputes.list-disputes
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-dispute
+      description: Get details of a specific Affirm payment dispute.
+      hints:
+        readOnly: true
+        destructive: false
+      call: affirm-disputes.get-dispute
+      with:
+        dispute_id: tools.dispute_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: submit-dispute-evidence
+      description: Submit evidence to contest an Affirm payment dispute.
+      hints:
+        readOnly: false
+        destructive: false
+      call: affirm-disputes.submit-dispute-evidence
+      with:
+        dispute_id: tools.dispute_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-promo-messaging
+      description: Get Affirm promotional financing terms and messaging for a purchase amount.
+      hints:
+        readOnly: true
+        destructive: false
+      call: affirm-promos.get-promo
+      with:
+        amount: tools.amount
+      outputParameters:
+      - type: object
+        mapping: $.
