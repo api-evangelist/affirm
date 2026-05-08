@@ -2,28 +2,58 @@ aid: affirm
 url: https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/apis.yml
 name: Affirm
 x-type: company
-description: >-
-  Affirm is a buy-now-pay-later platform offering installment loans at point-of-sale via merchant SDKs and direct APIs. Public Series A through F-funded company.
+description: Affirm is a buy-now-pay-later platform offering installment loans at point-of-sale via merchant SDKs and direct
+  APIs. Public Series A through F-funded company.
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 tags:
-  - Fintech
-  - BNPL
-  - Lending
-  - Payments
-  - Consumer
+- Fintech
+- BNPL
+- Lending
+- Payments
+- Consumer
 created: '2026-05-08'
 modified: '2026-05-08'
 specificationVersion: '0.19'
-apis: []
+apis:
+- name: Affirm Checkout API
+  description: Initialize and authorize Affirm checkout flows for online merchants.
+  humanURL: https://docs.affirm.com/developers
+  baseURL: https://api.affirm.com
+  tags:
+  - Checkout
+  - BNPL
+  properties:
+  - type: Documentation
+    url: https://docs.affirm.com/developers
+- name: Affirm Charges API
+  description: Capture, void, and refund Affirm charges; read transaction details.
+  humanURL: https://docs.affirm.com/developers
+  baseURL: https://api.affirm.com
+  tags:
+  - Charges
+  - Payments
+  properties:
+  - type: Documentation
+    url: https://docs.affirm.com/developers
+- name: Affirm Transactions API
+  description: Read transactions, settlements, and disputes.
+  humanURL: https://docs.affirm.com/developers
+  baseURL: https://api.affirm.com
+  tags:
+  - Transactions
+  - Settlements
+  properties:
+  - type: Documentation
+    url: https://docs.affirm.com/developers
 common:
-  - type: Website
-    url: https://www.affirm.com/
-  - type: Plans
-    url: plans/affirm-plans-pricing.yml
-  - type: RateLimits
-    url: rate-limits/affirm-rate-limits.yml
-  - type: FinOps
-    url: finops/affirm-finops.yml
+- type: Website
+  url: https://www.affirm.com/
+- type: Plans
+  url: plans/affirm-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/affirm-rate-limits.yml
+- type: FinOps
+  url: finops/affirm-finops.yml
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com
