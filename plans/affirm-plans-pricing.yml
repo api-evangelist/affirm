@@ -1,76 +1,41 @@
 specification: API Commons Plans
 specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
-provider: affirm
+provider: Affirm
 providerId: affirm
-created: '2026-05-04'
-modified: '2026-05-05'
+created: '2026-05-08'
+modified: '2026-05-08'
 reconciled: false
-notes: Affirm publishes a developer API but does not publish per-merchant rates publicly. Merchant
-  discount rates (MDR) and any per-transaction fees are negotiated with Affirm sales and disclosed
-  in the merchant agreement. Consumer-facing rates (0-36% APR) are loan terms, not merchant fees.
 tags:
-  - Payments
-  - BNPL
-  - Buy Now Pay Later
-  - Lending
-  - Checkout
-description: Affirm is a Buy-Now-Pay-Later (BNPL) provider. Merchant integration uses a public
-  REST API, but commercial pricing (merchant discount rate, fixed fees) is not published on
-  the website and is negotiated per merchant. Consumer APRs (0-36%) are loan terms set per
-  borrower.
+- Fintech
+- BNPL
+- Lending
+- Payments
+- Consumer
+- Plans
+description: Placeholder plans/pricing artifact for Affirm. Replace with real published pricing once
+  the pipeline researches the provider's plans page.
+notes: Initial scaffold — plans/pricing have not yet been reconciled against the provider's documentation.
 sources:
-  - https://www.affirm.com/business
-  - https://docs.affirm.com/
+- https://www.affirm.com/
 plans:
-  - id: affirm-merchant
-    name: Merchant
-    type: enterprise
-    description: Standard merchant integration. Per-transaction merchant discount rate (MDR) plus
-      fixed fee negotiated with Affirm; not published publicly.
-    entries:
-      - label: Merchant discount rate
-        name: mdr
-        type: metered
-        metric: transaction
-        limit: -1
-        timeFrame: usage
-        geo: US
-        unit: 1
-        price: contact sales
-        userMultiplied: false
-      - label: Per-transaction fixed fee
-        name: tx_fixed
-        type: metered
-        metric: transaction
-        limit: -1
-        timeFrame: usage
-        geo: US
-        unit: 1
-        price: contact sales
-        userMultiplied: false
-    elements:
-      - name: Checkout integration
-      - name: Adaptive Checkout (split-pay + monthly)
-      - name: Pay-in-4 and longer-term loans
-      - name: Merchant dashboard and webhooks
-  - id: affirm-consumer-loans
-    name: Consumer Loan APR
-    type: usage-based
-    description: APR on consumer loans (0-36%) is set per borrower based on credit; informational
-      only — this is the borrower's cost, not the merchant's cost.
-    entries:
-      - label: Consumer APR
-        name: consumer_apr
-        type: metered
-        metric: loan
-        limit: -1
-        timeFrame: year
-        geo: US
-        unit: 1
-        price: 0-36% APR
-        userMultiplied: false
-    elements:
-      - name: Soft credit check
-      - name: Pay-in-4 (no fees, no interest)
-      - name: Monthly installments (interest may apply)
+- id: affirm-default
+  name: To Be Reconciled
+  type: enterprise
+  description: Initial scaffold; replace with provider plan tiers once pricing is reconciled.
+  entries:
+  - label: API Access
+    name: api_access
+    type: flat
+    metric: varies
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1
+    price: see https://www.affirm.com/
+    userMultiplied: false
+  elements:
+  - name: Pending Reconciliation
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

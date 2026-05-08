@@ -1,85 +1,66 @@
 specification: FinOps Framework
 specificationVersion: '1.0'
 schema: https://www.finops.org/framework/
-provider: affirm
+provider: Affirm
 providerId: affirm
-created: '2026-05-04'
-modified: '2026-05-05'
+created: '2026-05-08'
+modified: '2026-05-08'
 reconciled: false
-notes: Affirm bills merchants via a take-rate (MDR + fixed fee) model. Specific rates are not
-  published and are negotiated per merchant.
 tags:
-  - FinOps
-  - FOCUS
-  - Payments
-  - BNPL
-description: 'FOCUS-aligned FinOps for Affirm: take-rate-based merchant billing for Buy-Now-Pay-Later
-  consumer financing.'
+- Fintech
+- BNPL
+- Lending
+- Payments
+- Consumer
+- FinOps
+- Cost Management
+- FOCUS
+description: FOCUS-aligned FinOps placeholder for Affirm. Pipeline will replace with real billing details.
+notes: Initial scaffold — billing model has not yet been reconciled.
 sources:
-  - https://www.affirm.com/business
-  - https://docs.affirm.com/
+- https://www.affirm.com/
+- https://focus.finops.org/focus-specification/v1-3/
 alignedWith:
   framework: FinOps Foundation Framework
   frameworkUrl: https://www.finops.org/framework/
   dataSpec: FOCUS
   dataSpecVersion: '1.3'
   dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
-publisherName: Affirm, Inc.
-serviceCategory: Payments / BNPL
+publisherName: Affirm
+serviceCategory: Fintech
 billingModel:
-  pricingCategory: Take Rate
-  billingFrequency: Continuous Settlement
+  pricingCategory: To Be Reconciled
+  billingFrequency: Monthly
   billingCurrency: USD
   chargeCategories:
-    - Usage
-    - Refund
-    - Adjustment
+  - Usage
+  - Purchase
+  - Adjustment
 focusColumns:
   ServiceName: Affirm
-  ServiceCategory: Payments / BNPL
+  ServiceCategory: Fintech
   ProviderName: Affirm
-  PublisherName: Affirm, Inc.
-  InvoiceIssuerName: Affirm, Inc.
+  PublisherName: Affirm
+  InvoiceIssuerName: Affirm
   BillingCurrency: USD
+  ChargeCategory: Usage
 meters:
-  - name: completed_loans
-    unit: loan
-    aggregation: sum
-    dimensions:
-      - product
-      - term
-      - merchant
-  - name: gmv
-    unit: USD
-    aggregation: sum
-    dimensions:
-      - merchant
-      - product
-  - name: merchant_discount
-    unit: USD
-    aggregation: sum
-    dimensions:
-      - merchant
-  - name: per_transaction_fee
-    unit: USD
-    aggregation: sum
-    dimensions:
-      - merchant
-  - name: refunds
-    unit: USD
-    aggregation: sum
-    dimensions:
-      - merchant
+- name: api_usage
+  description: Catch-all meter pending reconciliation.
+  unit: varies
+  aggregation: sum
+  dimensions:
+  - account
+  - resource
 principles:
-  - name: Visibility
-    description: Use Affirm Merchant Dashboard / settlement reports to track GMV, MDR, fees, and
-      refunds at order grain.
-  - name: Allocation
-    description: Tag Affirm checkout sessions with the consuming product/team for chargeback in
-      multi-brand merchants.
-  - name: Optimization
-    description: Negotiate MDR breakpoints by GMV; route shorter-term Pay-in-4 vs longer-term
-      installment based on AOV; monitor lift vs cost.
-  - name: Accountability
-    description: Assign payments-finance owner; reconcile monthly Affirm settlements against
-      ledger; investigate take-rate variance.
+- name: Visibility
+  description: Pull provider invoices or usage exports until a self-serve usage feed is documented.
+- name: Allocation
+  description: Tag invoice line items to consuming business units in your FinOps store.
+- name: Optimization
+  description: Levers depend on the provider's billing model; review at renewal once reconciled.
+- name: Accountability
+  description: Assign a contract owner to review billing against negotiated terms.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

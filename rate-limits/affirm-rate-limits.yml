@@ -1,40 +1,35 @@
 specification: API Commons Rate Limits
 specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
-provider: affirm
+provider: Affirm
 providerId: affirm
-created: '2026-05-04'
-modified: '2026-05-05'
+created: '2026-05-08'
+modified: '2026-05-08'
 reconciled: false
-notes: Affirm operates separate sandbox and production environments and applies merchant-scoped
-  throttling, but does not publish specific per-second / per-minute thresholds. Consult merchant
-  onboarding documentation or support for current numbers.
 tags:
-  - Rate Limiting
-  - Payments
-  - BNPL
-description: Affirm enforces per-merchant rate limits on its public REST API, returning 429 with
-  retry guidance when exceeded. Specific threshold values are not published; sandbox limits
-  are lower than production.
+- Fintech
+- BNPL
+- Lending
+- Payments
+- Consumer
+- Rate Limiting
+- Quotas
+- Throttling
+description: Placeholder rate-limit artifact for Affirm. Replace with real limits once researched.
+notes: Initial scaffold — limits have not yet been reconciled.
 sources:
-  - https://docs.affirm.com/
+- https://www.affirm.com/
 responseCodes:
   throttled: 429
-  serviceUnavailable: 503
 limits:
-  - name: Merchant-scoped limit (production)
-    scope: account
-    metric: varies
-    limit: see Affirm merchant onboarding
-  - name: Sandbox limit
-    scope: account
-    metric: varies
-    limit: see Affirm sandbox documentation
-    notes: Lower than production; do not load-test.
+- name: Default
+  scope: account
+  metric: varies
+  limit: see provider documentation
+  notes: Pending reconciliation.
 policies:
-  - name: Backoff
-    description: Use exponential backoff with jitter on 429; honor Retry-After when present.
-  - name: Idempotency
-    description: Use idempotency keys on retried POST/charge calls to avoid double-charging.
-  - name: Sandbox vs production
-    description: Sandbox enforces lower limits; production thresholds are merchant-scoped.
+- name: Backoff Strategy
+  description: Clients should implement exponential backoff with jitter and honor any Retry-After header.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
