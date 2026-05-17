@@ -1,7 +1,7 @@
 aid: affirm
 url: https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/apis.yml
 name: Affirm
-x-type: company
+kind: company
 description: Affirm is a buy-now-pay-later platform offering installment loans at point-of-sale via merchant SDKs and direct
   APIs. Public Series A through F-funded company.
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
