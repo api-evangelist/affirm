@@ -1,0 +1,145 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Affirm Direct API — Cards
+  description: 'Affirm Direct API — Cards. 3 operations. Lead operation: Affirm Read a Card. Self-contained Naftiko capability
+    covering one Affirm business surface.'
+  tags:
+  - Affirm
+  - Cards
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    AFFIRM_API_KEY: AFFIRM_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: direct-cards
+    baseUri: https://api.affirm.com/api/v1
+    description: Affirm Direct API — Cards business capability. Self-contained, no shared references.
+    resources:
+    - name: cards-id
+      path: /cards/{id}
+      operations:
+      - name: readcard
+        method: GET
+        description: Affirm Read a Card
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: cards-id-cancel
+      path: /cards/{id}/cancel
+      operations:
+      - name: cancelcard
+        method: POST
+        description: Affirm Cancel a Card
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: cards-id-finalize
+      path: /cards/{id}/finalize
+      operations:
+      - name: finalizecard
+        method: POST
+        description: Affirm Finalize a Card
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: basic
+      username: '{{env.AFFIRM_USER}}'
+      password: '{{env.AFFIRM_PASS}}'
+  exposes:
+  - type: rest
+    namespace: direct-cards-rest
+    port: 8080
+    description: REST adapter for Affirm Direct API — Cards. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/cards/{id}
+      name: cards-id
+      description: REST surface for cards-id.
+      operations:
+      - method: GET
+        name: readcard
+        description: Affirm Read a Card
+        call: direct-cards.readcard
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/cards/{id}/cancel
+      name: cards-id-cancel
+      description: REST surface for cards-id-cancel.
+      operations:
+      - method: POST
+        name: cancelcard
+        description: Affirm Cancel a Card
+        call: direct-cards.cancelcard
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/cards/{id}/finalize
+      name: cards-id-finalize
+      description: REST surface for cards-id-finalize.
+      operations:
+      - method: POST
+        name: finalizecard
+        description: Affirm Finalize a Card
+        call: direct-cards.finalizecard
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: direct-cards-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Affirm Direct API — Cards. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: affirm-read-card
+      description: Affirm Read a Card
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: direct-cards.readcard
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: affirm-cancel-card
+      description: Affirm Cancel a Card
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: direct-cards.cancelcard
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: affirm-finalize-card
+      description: Affirm Finalize a Card
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: direct-cards.finalizecard
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,208 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Affirm Disputes API — Disputes
+  description: 'Affirm Disputes API — Disputes. 4 operations. Lead operation: Affirm List Disputes. Self-contained Naftiko
+    capability covering one Affirm business surface.'
+  tags:
+  - Affirm
+  - Disputes
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    AFFIRM_API_KEY: AFFIRM_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: disputes-disputes
+    baseUri: https://api.affirm.com/api/v3
+    description: Affirm Disputes API — Disputes business capability. Self-contained, no shared references.
+    resources:
+    - name: disputes
+      path: /disputes
+      operations:
+      - name: listdisputes
+        method: GET
+        description: Affirm List Disputes
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: status
+          in: query
+          type: string
+          description: Filter disputes by their current status.
+        - name: limit
+          in: query
+          type: integer
+          description: Maximum number of dispute records to return per page.
+        - name: cursor
+          in: query
+          type: string
+          description: Pagination cursor returned from a previous list response.
+    - name: disputes-dispute_id
+      path: /disputes/{dispute_id}
+      operations:
+      - name: getdispute
+        method: GET
+        description: Affirm Get a Dispute
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: disputes-dispute_id-close
+      path: /disputes/{dispute_id}/close
+      operations:
+      - name: closedispute
+        method: POST
+        description: Affirm Close a Dispute
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: disputes-dispute_id-evidence
+      path: /disputes/{dispute_id}/evidence
+      operations:
+      - name: submitdisputeevidence
+        method: POST
+        description: Affirm Submit Dispute Evidence
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: basic
+      username: '{{env.AFFIRM_USER}}'
+      password: '{{env.AFFIRM_PASS}}'
+  exposes:
+  - type: rest
+    namespace: disputes-disputes-rest
+    port: 8080
+    description: REST adapter for Affirm Disputes API — Disputes. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/disputes
+      name: disputes
+      description: REST surface for disputes.
+      operations:
+      - method: GET
+        name: listdisputes
+        description: Affirm List Disputes
+        call: disputes-disputes.listdisputes
+        with:
+          status: rest.status
+          limit: rest.limit
+          cursor: rest.cursor
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/disputes/{dispute-id}
+      name: disputes-dispute-id
+      description: REST surface for disputes-dispute_id.
+      operations:
+      - method: GET
+        name: getdispute
+        description: Affirm Get a Dispute
+        call: disputes-disputes.getdispute
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/disputes/{dispute-id}/close
+      name: disputes-dispute-id-close
+      description: REST surface for disputes-dispute_id-close.
+      operations:
+      - method: POST
+        name: closedispute
+        description: Affirm Close a Dispute
+        call: disputes-disputes.closedispute
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/disputes/{dispute-id}/evidence
+      name: disputes-dispute-id-evidence
+      description: REST surface for disputes-dispute_id-evidence.
+      operations:
+      - method: POST
+        name: submitdisputeevidence
+        description: Affirm Submit Dispute Evidence
+        call: disputes-disputes.submitdisputeevidence
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: disputes-disputes-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Affirm Disputes API — Disputes. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: affirm-list-disputes
+      description: Affirm List Disputes
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: disputes-disputes.listdisputes
+      with:
+        status: tools.status
+        limit: tools.limit
+        cursor: tools.cursor
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: affirm-get-dispute
+      description: Affirm Get a Dispute
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: disputes-disputes.getdispute
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: affirm-close-dispute
+      description: Affirm Close a Dispute
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: disputes-disputes.closedispute
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: affirm-submit-dispute-evidence
+      description: Affirm Submit Dispute Evidence
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: disputes-disputes.submitdisputeevidence
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,232 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Affirm Checkout API — Checkouts
+  description: 'Affirm Checkout API — Checkouts. 5 operations. Lead operation: Affirm Store a Checkout. Self-contained Naftiko
+    capability covering one Affirm business surface.'
+  tags:
+  - Affirm
+  - Checkouts
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    AFFIRM_API_KEY: AFFIRM_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: checkout-checkouts
+    baseUri: https://api.affirm.com/api/v1
+    description: Affirm Checkout API — Checkouts business capability. Self-contained, no shared references.
+    resources:
+    - name: checkouts
+      path: /checkouts
+      operations:
+      - name: storecheckout
+        method: POST
+        description: Affirm Store a Checkout
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: checkouts-direct
+      path: /checkouts/direct
+      operations:
+      - name: directcheckout
+        method: POST
+        description: Affirm Direct Checkout
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: checkouts-token
+      path: /checkouts/{token}
+      operations:
+      - name: readcheckout
+        method: GET
+        description: Affirm Read a Checkout
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: updatecheckout
+        method: POST
+        description: Affirm Update a Checkout
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: checkouts-token-resend
+      path: /checkouts/{token}/resend
+      operations:
+      - name: resendcheckout
+        method: POST
+        description: Affirm Resend a Checkout
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: basic
+      username: '{{env.AFFIRM_USER}}'
+      password: '{{env.AFFIRM_PASS}}'
+  exposes:
+  - type: rest
+    namespace: checkout-checkouts-rest
+    port: 8080
+    description: REST adapter for Affirm Checkout API — Checkouts. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/checkouts
+      name: checkouts
+      description: REST surface for checkouts.
+      operations:
+      - method: POST
+        name: storecheckout
+        description: Affirm Store a Checkout
+        call: checkout-checkouts.storecheckout
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/checkouts/direct
+      name: checkouts-direct
+      description: REST surface for checkouts-direct.
+      operations:
+      - method: POST
+        name: directcheckout
+        description: Affirm Direct Checkout
+        call: checkout-checkouts.directcheckout
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/checkouts/{token}
+      name: checkouts-token
+      description: REST surface for checkouts-token.
+      operations:
+      - method: GET
+        name: readcheckout
+        description: Affirm Read a Checkout
+        call: checkout-checkouts.readcheckout
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: updatecheckout
+        description: Affirm Update a Checkout
+        call: checkout-checkouts.updatecheckout
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/checkouts/{token}/resend
+      name: checkouts-token-resend
+      description: REST surface for checkouts-token-resend.
+      operations:
+      - method: POST
+        name: resendcheckout
+        description: Affirm Resend a Checkout
+        call: checkout-checkouts.resendcheckout
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: checkout-checkouts-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Affirm Checkout API — Checkouts. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: affirm-store-checkout
+      description: Affirm Store a Checkout
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: checkout-checkouts.storecheckout
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: affirm-direct-checkout
+      description: Affirm Direct Checkout
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: checkout-checkouts.directcheckout
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: affirm-read-checkout
+      description: Affirm Read a Checkout
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: checkout-checkouts.readcheckout
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: affirm-update-checkout
+      description: Affirm Update a Checkout
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: checkout-checkouts.updatecheckout
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: affirm-resend-checkout
+      description: Affirm Resend a Checkout
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: checkout-checkouts.resendcheckout
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

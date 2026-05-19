@@ -1,0 +1,103 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Affirm Transactions API — Settlement Events
+  description: 'Affirm Transactions API — Settlement Events. 2 operations. Lead operation: Affirm List Settlement Event Summaries.
+    Self-contained Naftiko capability covering one Affirm business surface.'
+  tags:
+  - Affirm
+  - Settlement Events
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    AFFIRM_API_KEY: AFFIRM_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: transactions-settlement-events
+    baseUri: https://api.affirm.com/api/v1
+    description: Affirm Transactions API — Settlement Events business capability. Self-contained, no shared references.
+    resources:
+    - name: settlement_event_summaries
+      path: /settlement_event_summaries
+      operations:
+      - name: listsettlementeventsummaries
+        method: GET
+        description: Affirm List Settlement Event Summaries
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: settlement_events
+      path: /settlement_events
+      operations:
+      - name: listsettlementevents
+        method: GET
+        description: Affirm List Settlement Events
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: basic
+      username: '{{env.AFFIRM_USER}}'
+      password: '{{env.AFFIRM_PASS}}'
+  exposes:
+  - type: rest
+    namespace: transactions-settlement-events-rest
+    port: 8080
+    description: REST adapter for Affirm Transactions API — Settlement Events. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/settlement-event-summaries
+      name: settlement-event-summaries
+      description: REST surface for settlement_event_summaries.
+      operations:
+      - method: GET
+        name: listsettlementeventsummaries
+        description: Affirm List Settlement Event Summaries
+        call: transactions-settlement-events.listsettlementeventsummaries
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/settlement-events
+      name: settlement-events
+      description: REST surface for settlement_events.
+      operations:
+      - method: GET
+        name: listsettlementevents
+        description: Affirm List Settlement Events
+        call: transactions-settlement-events.listsettlementevents
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: transactions-settlement-events-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Affirm Transactions API — Settlement Events. One tool per consumed operation, routed inline
+      through this capability's consumes block.
+    tools:
+    - name: affirm-list-settlement-event-summaries
+      description: Affirm List Settlement Event Summaries
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: transactions-settlement-events.listsettlementeventsummaries
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: affirm-list-settlement-events
+      description: Affirm List Settlement Events
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: transactions-settlement-events.listsettlementevents
+      outputParameters:
+      - type: object
+        mapping: $.

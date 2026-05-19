@@ -1,0 +1,155 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Affirm Direct API — Transactions
+  description: 'Affirm Direct API — Transactions. 3 operations. Lead operation: Affirm Capture a Transaction. Self-contained
+    Naftiko capability covering one Affirm business surface.'
+  tags:
+  - Affirm
+  - Transactions
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    AFFIRM_API_KEY: AFFIRM_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: direct-transactions
+    baseUri: https://api.affirm.com/api/v1
+    description: Affirm Direct API — Transactions business capability. Self-contained, no shared references.
+    resources:
+    - name: transactions-id-capture
+      path: /transactions/{id}/capture
+      operations:
+      - name: capturedirecttransaction
+        method: POST
+        description: Affirm Capture a Transaction
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: transactions-id-refund
+      path: /transactions/{id}/refund
+      operations:
+      - name: refunddirecttransaction
+        method: POST
+        description: Affirm Refund a Transaction
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: transactions-id-void
+      path: /transactions/{id}/void
+      operations:
+      - name: voiddirecttransaction
+        method: POST
+        description: Affirm Void a Transaction
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: basic
+      username: '{{env.AFFIRM_USER}}'
+      password: '{{env.AFFIRM_PASS}}'
+  exposes:
+  - type: rest
+    namespace: direct-transactions-rest
+    port: 8080
+    description: REST adapter for Affirm Direct API — Transactions. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/transactions/{id}/capture
+      name: transactions-id-capture
+      description: REST surface for transactions-id-capture.
+      operations:
+      - method: POST
+        name: capturedirecttransaction
+        description: Affirm Capture a Transaction
+        call: direct-transactions.capturedirecttransaction
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/transactions/{id}/refund
+      name: transactions-id-refund
+      description: REST surface for transactions-id-refund.
+      operations:
+      - method: POST
+        name: refunddirecttransaction
+        description: Affirm Refund a Transaction
+        call: direct-transactions.refunddirecttransaction
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/transactions/{id}/void
+      name: transactions-id-void
+      description: REST surface for transactions-id-void.
+      operations:
+      - method: POST
+        name: voiddirecttransaction
+        description: Affirm Void a Transaction
+        call: direct-transactions.voiddirecttransaction
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: direct-transactions-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Affirm Direct API — Transactions. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: affirm-capture-transaction
+      description: Affirm Capture a Transaction
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: direct-transactions.capturedirecttransaction
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: affirm-refund-transaction
+      description: Affirm Refund a Transaction
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: direct-transactions.refunddirecttransaction
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: affirm-void-transaction
+      description: Affirm Void a Transaction
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: direct-transactions.voiddirecttransaction
+      outputParameters:
+      - type: object
+        mapping: $.
