@@ -58,6 +58,8 @@ common:
     url: rate-limits/affirm-rate-limits.yml
   - type: FinOps
     url: finops/affirm-finops.yml
+  - type: LLMsTxt
+    url: https://docs.affirm.com/llms.txt
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
