@@ -1,0 +1,763 @@
+"""
+Affirm GraphQL Schema
+Conceptual schema modeling the Affirm BNPL merchant API domain.
+Reference: https://docs.affirm.com/affirm-developers/reference
+"""
+
+# ---------------------------------------------------------------------------
+# Scalars
+# ---------------------------------------------------------------------------
+
+scalar DateTime
+scalar JSON
+
+# ---------------------------------------------------------------------------
+# Enums
+# ---------------------------------------------------------------------------
+
+enum LoanStatus {
+  PENDING
+  APPROVED
+  AUTHORIZED
+  CAPTURED
+  VOIDED
+  REFUNDED
+  CHARGED_OFF
+  CLOSED
+}
+
+enum CheckoutStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  EXPIRED
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REVERSED
+}
+
+enum TransactionType {
+  CAPTURE
+  VOID
+  REFUND
+  ADJUSTMENT
+  SETTLEMENT
+}
+
+enum DecisionReason {
+  APPROVED
+  DECLINED_CREDIT
+  DECLINED_FRAUD
+  DECLINED_POLICY
+  DECLINED_SYSTEM
+  PENDING_REVIEW
+}
+
+enum WebhookEventType {
+  CHECKOUT_CONFIRMED
+  CHARGE_CAPTURED
+  CHARGE_VOIDED
+  CHARGE_REFUNDED
+  LOAN_CLOSED
+  SETTLEMENT_COMPLETED
+}
+
+enum Currency {
+  USD
+  CAD
+}
+
+# ---------------------------------------------------------------------------
+# Loan types
+# ---------------------------------------------------------------------------
+
+"""An Affirm consumer loan associated with a completed checkout."""
+type Loan {
+  id: ID!
+  details: LoanDetails!
+  status: LoanStatus!
+  amount: LoanAmount!
+  term: LoanTerm!
+  fees: [LoanFee!]!
+  installments: [Installment!]!
+  schedule: PaymentSchedule
+  consumer: Consumer
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""Extended metadata for a Loan."""
+type LoanDetails {
+  loanId: String!
+  merchantLoanId: String
+  apr: Float
+  financingProgram: String
+  originationDate: DateTime
+  maturityDate: DateTime
+  currency: Currency!
+}
+
+"""Principal and financed amount breakdown for a Loan."""
+type LoanAmount {
+  principal: Int!
+  financeCharge: Int!
+  totalOwed: Int!
+  currency: Currency!
+}
+
+"""Repayment term for a Loan."""
+type LoanTerm {
+  months: Int!
+  biweeklyPayments: Boolean
+  payInFull: Boolean
+}
+
+"""A fee line item associated with a Loan."""
+type LoanFee {
+  feeType: String!
+  amount: Int!
+  currency: Currency!
+  description: String
+}
+
+# ---------------------------------------------------------------------------
+# Checkout types
+# ---------------------------------------------------------------------------
+
+"""A checkout session initiated by the merchant."""
+type Checkout {
+  id: ID!
+  details: CheckoutDetails!
+  status: CheckoutStatus!
+  token: CheckoutToken!
+  cart: Cart
+  consumer: Consumer
+  decision: Decision
+  createdAt: DateTime!
+  expiresAt: DateTime!
+}
+
+"""Extended metadata for a Checkout session."""
+type CheckoutDetails {
+  checkoutId: String!
+  merchantReference: String
+  redirectUrl: String
+  confirmationUrl: String
+  cancelUrl: String
+  currency: Currency!
+}
+
+"""Opaque token used to resume or reference a Checkout session."""
+type CheckoutToken {
+  value: String!
+  expiresAt: DateTime!
+}
+
+# ---------------------------------------------------------------------------
+# Transaction types
+# ---------------------------------------------------------------------------
+
+"""A financial transaction event on a Charge."""
+type Transaction {
+  id: ID!
+  details: TransactionDetails!
+  status: TransactionStatus!
+  type: TransactionType!
+  charge: Charge
+  createdAt: DateTime!
+}
+
+"""Extended metadata for a Transaction."""
+type TransactionDetails {
+  transactionId: String!
+  amount: Int!
+  currency: Currency!
+  referenceId: String
+  description: String
+}
+
+# ---------------------------------------------------------------------------
+# Capture types
+# ---------------------------------------------------------------------------
+
+"""A capture of an authorized Affirm Charge."""
+type Capture {
+  id: ID!
+  details: CaptureDetails!
+  charge: Charge!
+  createdAt: DateTime!
+}
+
+"""Extended metadata for a Capture."""
+type CaptureDetails {
+  captureId: String!
+  amount: Int!
+  currency: Currency!
+  orderItems: [OrderItem!]
+  shippingAmount: Int
+  taxAmount: Int
+}
+
+# ---------------------------------------------------------------------------
+# Void types
+# ---------------------------------------------------------------------------
+
+"""A void (cancellation) of an authorized Affirm Charge."""
+type Void {
+  id: ID!
+  details: VoidDetails!
+  charge: Charge!
+  createdAt: DateTime!
+}
+
+"""Extended metadata for a Void."""
+type VoidDetails {
+  voidId: String!
+  reason: String
+  amount: Int!
+  currency: Currency!
+}
+
+# ---------------------------------------------------------------------------
+# Refund types
+# ---------------------------------------------------------------------------
+
+"""A refund issued against a captured Affirm Charge."""
+type Refund {
+  id: ID!
+  details: RefundDetails!
+  charge: Charge!
+  createdAt: DateTime!
+}
+
+"""Extended metadata for a Refund."""
+type RefundDetails {
+  refundId: String!
+  amount: Int!
+  currency: Currency!
+  reason: String
+  items: [OrderItem!]
+}
+
+# ---------------------------------------------------------------------------
+# Authorization types
+# ---------------------------------------------------------------------------
+
+"""A pre-authorization hold on a Charge before capture."""
+type Authorization {
+  id: ID!
+  details: AuthorizationDetails!
+  charge: Charge!
+  createdAt: DateTime!
+  expiresAt: DateTime
+}
+
+"""Extended metadata for an Authorization."""
+type AuthorizationDetails {
+  authorizationId: String!
+  amount: Int!
+  currency: Currency!
+  status: String!
+  expirationPolicy: String
+}
+
+# ---------------------------------------------------------------------------
+# Order types
+# ---------------------------------------------------------------------------
+
+"""A merchant order associated with a Checkout or Charge."""
+type Order {
+  id: ID!
+  details: OrderDetails!
+  items: [OrderItem!]!
+  shipping: Shipping
+  discounts: [Discount!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""Extended metadata for an Order."""
+type OrderDetails {
+  orderId: String!
+  merchantOrderId: String
+  totalAmount: Int!
+  currency: Currency!
+  taxAmount: Int
+  shippingAmount: Int
+}
+
+"""A line item within an Order."""
+type OrderItem {
+  id: ID!
+  details: ItemDetails!
+  quantity: Int!
+  unitPrice: Int!
+  totalPrice: Int!
+}
+
+"""Extended metadata for an OrderItem."""
+type ItemDetails {
+  sku: String
+  productName: String!
+  productCategory: String
+  imageUrl: String
+  url: String
+}
+
+# ---------------------------------------------------------------------------
+# Cart types
+# ---------------------------------------------------------------------------
+
+"""The shopping cart submitted at checkout initiation."""
+type Cart {
+  id: ID!
+  details: CartDetails!
+  items: [CartItem!]!
+  discounts: [Discount!]
+  shipping: Shipping
+}
+
+"""Extended metadata for a Cart."""
+type CartDetails {
+  total: Int!
+  currency: Currency!
+  taxAmount: Int
+  shippingAmount: Int
+}
+
+"""A line item within a Cart."""
+type CartItem {
+  sku: String
+  name: String!
+  quantity: Int!
+  unitPrice: Int!
+  categories: [String!]
+  imageUrl: String
+  url: String
+}
+
+# ---------------------------------------------------------------------------
+# Discount types
+# ---------------------------------------------------------------------------
+
+"""A discount applied to a Cart or Order."""
+type Discount {
+  name: String!
+  discountAmount: Int!
+  currency: Currency!
+}
+
+# ---------------------------------------------------------------------------
+# Shipping types
+# ---------------------------------------------------------------------------
+
+"""Shipping information attached to a Cart or Order."""
+type Shipping {
+  details: ShippingDetails!
+  address: Address!
+}
+
+"""Extended metadata for Shipping."""
+type ShippingDetails {
+  carrier: String
+  trackingNumber: String
+  shippingAmount: Int
+  currency: Currency!
+}
+
+"""A physical or digital mailing address."""
+type Address {
+  line1: String!
+  line2: String
+  city: String!
+  state: String!
+  zipCode: String!
+  country: String!
+}
+
+# ---------------------------------------------------------------------------
+# Consumer types
+# ---------------------------------------------------------------------------
+
+"""The end consumer (borrower) identity record."""
+type Consumer {
+  id: ID!
+  details: ConsumerDetails!
+  verification: ConsumerVerification
+}
+
+"""Extended metadata for a Consumer."""
+type ConsumerDetails {
+  firstName: String!
+  lastName: String!
+  email: String
+  phoneNumber: String
+  dateOfBirth: String
+  address: Address
+}
+
+"""Verification state for a Consumer identity check."""
+type ConsumerVerification {
+  status: String!
+  verifiedAt: DateTime
+  method: String
+}
+
+# ---------------------------------------------------------------------------
+# Decision types
+# ---------------------------------------------------------------------------
+
+"""Underwriting decision returned after checkout authorization."""
+type Decision {
+  id: ID!
+  details: DecisionDetails!
+  reason: DecisionReason!
+  createdAt: DateTime!
+}
+
+"""Extended metadata for a Decision."""
+type DecisionDetails {
+  approved: Boolean!
+  approvedAmount: Int
+  currency: Currency
+  financingProgram: String
+  declineCode: String
+  declineMessage: String
+}
+
+# ---------------------------------------------------------------------------
+# Installment types
+# ---------------------------------------------------------------------------
+
+"""A single installment payment within a loan repayment plan."""
+type Installment {
+  id: ID!
+  details: InstallmentDetails!
+  dueDate: DateTime!
+  paidAt: DateTime
+}
+
+"""Extended metadata for an Installment."""
+type InstallmentDetails {
+  installmentNumber: Int!
+  principalAmount: Int!
+  interestAmount: Int!
+  totalAmount: Int!
+  currency: Currency!
+  status: String!
+}
+
+"""A repayment schedule summary for a Loan."""
+type Schedule {
+  id: ID!
+  loan: Loan!
+  installments: [Installment!]!
+  startDate: DateTime!
+  endDate: DateTime!
+}
+
+"""The full payment schedule attached to a Loan."""
+type PaymentSchedule {
+  scheduleId: String!
+  frequency: String!
+  numberOfPayments: Int!
+  paymentAmount: Int!
+  currency: Currency!
+  firstPaymentDate: DateTime
+}
+
+# ---------------------------------------------------------------------------
+# Merchant types
+# ---------------------------------------------------------------------------
+
+"""An Affirm merchant account."""
+type Merchant {
+  id: ID!
+  details: MerchantDetails!
+  config: MerchantConfig!
+  createdAt: DateTime!
+}
+
+"""Extended metadata for a Merchant account."""
+type MerchantDetails {
+  merchantId: String!
+  name: String!
+  website: String
+  category: String
+  status: String!
+  country: String!
+}
+
+"""Configuration settings for a Merchant integration."""
+type MerchantConfig {
+  publicKey: String!
+  checkoutMode: String
+  financingPrograms: [String!]
+  minAmount: Int
+  maxAmount: Int
+  currency: Currency!
+  webhookUrl: String
+}
+
+# ---------------------------------------------------------------------------
+# Charge types
+# ---------------------------------------------------------------------------
+
+"""An Affirm Charge — the core financial object created after checkout."""
+type Charge {
+  id: ID!
+  details: ChargeDetails!
+  authorization: Authorization
+  captures: [Capture!]!
+  voids: [Void!]!
+  refunds: [Refund!]!
+  transactions: [Transaction!]!
+  loan: Loan
+  order: Order
+  merchant: Merchant
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""Extended metadata for a Charge."""
+type ChargeDetails {
+  chargeId: String!
+  merchantChargeId: String
+  amount: Int!
+  currency: Currency!
+  status: String!
+  description: String
+}
+
+# ---------------------------------------------------------------------------
+# Settlement types
+# ---------------------------------------------------------------------------
+
+"""A merchant settlement disbursement."""
+type Settlement {
+  id: ID!
+  details: SettlementDetails!
+  transactions: [Transaction!]!
+  merchant: Merchant
+  createdAt: DateTime!
+}
+
+"""Extended metadata for a Settlement."""
+type SettlementDetails {
+  settlementId: String!
+  grossAmount: Int!
+  feeAmount: Int!
+  netAmount: Int!
+  currency: Currency!
+  periodStart: DateTime!
+  periodEnd: DateTime!
+  disbursedAt: DateTime
+  bankReference: String
+}
+
+# ---------------------------------------------------------------------------
+# Webhook types
+# ---------------------------------------------------------------------------
+
+"""A registered webhook endpoint for Affirm event delivery."""
+type Webhook {
+  id: ID!
+  url: String!
+  events: [WebhookEventType!]!
+  secret: String
+  active: Boolean!
+  createdAt: DateTime!
+}
+
+"""A webhook event payload delivered to the merchant endpoint."""
+type WebhookEvent {
+  id: ID!
+  eventType: WebhookEventType!
+  payload: JSON!
+  deliveredAt: DateTime
+  retryCount: Int!
+  webhook: Webhook!
+}
+
+# ---------------------------------------------------------------------------
+# Auth / credential types
+# ---------------------------------------------------------------------------
+
+"""An API key for authenticating Affirm merchant API calls."""
+type APIKey {
+  id: ID!
+  publicKey: String!
+  environment: String!
+  createdAt: DateTime!
+  lastUsedAt: DateTime
+}
+
+"""A short-lived access token for delegated API operations."""
+type Token {
+  value: String!
+  expiresAt: DateTime!
+  scopes: [String!]!
+}
+
+# ---------------------------------------------------------------------------
+# Input types
+# ---------------------------------------------------------------------------
+
+input CreateCheckoutInput {
+  merchantReference: String
+  currency: Currency!
+  cartTotal: Int!
+  items: [CartItemInput!]!
+  shipping: ShippingInput
+  discounts: [DiscountInput!]
+  consumer: ConsumerInput
+  metadata: JSON
+}
+
+input CartItemInput {
+  sku: String
+  name: String!
+  quantity: Int!
+  unitPrice: Int!
+  categories: [String!]
+  imageUrl: String
+  url: String
+}
+
+input ShippingInput {
+  amount: Int
+  carrier: String
+  address: AddressInput!
+}
+
+input AddressInput {
+  line1: String!
+  line2: String
+  city: String!
+  state: String!
+  zipCode: String!
+  country: String!
+}
+
+input DiscountInput {
+  name: String!
+  discountAmount: Int!
+}
+
+input ConsumerInput {
+  firstName: String!
+  lastName: String!
+  email: String
+  phoneNumber: String
+}
+
+input CaptureInput {
+  amount: Int
+  orderItems: [CartItemInput!]
+  shippingAmount: Int
+  taxAmount: Int
+  merchantOrderId: String
+}
+
+input RefundInput {
+  amount: Int!
+  reason: String
+  items: [CartItemInput!]
+}
+
+input UpdateOrderInput {
+  items: [CartItemInput!]
+  shippingAmount: Int
+  taxAmount: Int
+}
+
+input CreateWebhookInput {
+  url: String!
+  events: [WebhookEventType!]!
+}
+
+input TransactionFilterInput {
+  startDate: DateTime
+  endDate: DateTime
+  type: TransactionType
+  status: TransactionStatus
+  limit: Int
+  offset: Int
+}
+
+input SettlementFilterInput {
+  startDate: DateTime
+  endDate: DateTime
+  limit: Int
+  offset: Int
+}
+
+# ---------------------------------------------------------------------------
+# Query root
+# ---------------------------------------------------------------------------
+
+type Query {
+  """Retrieve a Checkout session by its token."""
+  checkout(token: String!): Checkout
+
+  """Retrieve a Charge by its ID."""
+  charge(chargeId: String!): Charge
+
+  """Retrieve a Transaction by its ID."""
+  transaction(transactionId: String!): Transaction
+
+  """List Transactions with optional filtering."""
+  transactions(filter: TransactionFilterInput): [Transaction!]!
+
+  """Retrieve a Loan by its ID."""
+  loan(loanId: String!): Loan
+
+  """Retrieve an Order by its ID."""
+  order(orderId: String!): Order
+
+  """Retrieve a Settlement by its ID."""
+  settlement(settlementId: String!): Settlement
+
+  """List Settlements with optional filtering."""
+  settlements(filter: SettlementFilterInput): [Settlement!]!
+
+  """Retrieve Merchant details."""
+  merchant(merchantId: String!): Merchant
+
+  """List registered Webhooks."""
+  webhooks: [Webhook!]!
+
+  """Retrieve a Webhook by its ID."""
+  webhook(webhookId: String!): Webhook
+}
+
+# ---------------------------------------------------------------------------
+# Mutation root
+# ---------------------------------------------------------------------------
+
+type Mutation {
+  """Initiate a new Affirm checkout session."""
+  createCheckout(input: CreateCheckoutInput!): Checkout!
+
+  """Capture an authorized Charge, optionally for a partial amount."""
+  captureCharge(chargeId: String!, input: CaptureInput!): Capture!
+
+  """Void an authorized Charge before capture."""
+  voidCharge(chargeId: String!): Void!
+
+  """Issue a refund against a captured Charge."""
+  refundCharge(chargeId: String!, input: RefundInput!): Refund!
+
+  """Update order items on an existing Order."""
+  updateOrder(orderId: String!, input: UpdateOrderInput!): Order!
+
+  """Register a new Webhook endpoint."""
+  createWebhook(input: CreateWebhookInput!): Webhook!
+
+  """Delete a registered Webhook endpoint."""
+  deleteWebhook(webhookId: String!): Boolean!
+}
