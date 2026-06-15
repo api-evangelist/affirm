@@ -1,0 +1,227 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Affirm Direct API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Authorization",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Affirm Authorize a Transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.affirm.com/api/v1/transactions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Exchanges a checkout token for a transaction authorization, completing the server-side portion of the Direct API flow. This call must be made from the merchant server after the browser-side affirm.js returns a checkout token via the user_confirmation_url callback. The authorization places a hold on the customer's Affirm credit. The resulting transaction must be captured within the authorization window to transfer funds to the merchant."
+        },
+        {
+          "info": {
+            "name": "Affirm Upload a File",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.affirm.com/api/v1/files",
+            "body": {
+              "type": "multipart-form",
+              "data": [
+                {
+                  "name": "file",
+                  "type": "text",
+                  "value": ""
+                },
+                {
+                  "name": "purpose",
+                  "type": "text",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "docs": "Uploads a file to Affirm's servers for use as dispute evidence. Returns a file identifier that can be referenced when submitting evidence via the Disputes API. Supported file types include images (JPEG, PNG) and documents (PDF)."
+        },
+        {
+          "info": {
+            "name": "Affirm Download a File",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.affirm.com/api/v1/files/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "500123",
+                "type": "path",
+                "description": "The unique identifier of the file to download."
+              }
+            ]
+          },
+          "docs": "Downloads a previously uploaded file by its identifier. Returns the raw file content with the appropriate content type header."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Transactions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Affirm Capture a Transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.affirm.com/api/v1/transactions/:id/capture",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the transaction."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Captures a previously authorized transaction to initiate transfer of funds to the merchant. Capture may be for the full authorized amount or a partial amount when split capture is in use. The merchant should capture only upon order fulfillment or shipment to align with Affirm's terms of service."
+        },
+        {
+          "info": {
+            "name": "Affirm Void a Transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.affirm.com/api/v1/transactions/:id/void",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the transaction."
+              }
+            ]
+          },
+          "docs": "Voids an authorized but uncaptured transaction, releasing the hold on the customer's Affirm credit. Used when an order is cancelled prior to fulfillment. A voided transaction cannot be captured or refunded."
+        },
+        {
+          "info": {
+            "name": "Affirm Refund a Transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.affirm.com/api/v1/transactions/:id/refund",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the transaction."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Issues a full or partial refund on a captured Direct API transaction. Partial refunds can be applied multiple times until the total refunded amount equals the captured amount. The customer's Affirm account is credited and the merchant's settlement is adjusted."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Cards",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Affirm Read a Card",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.affirm.com/api/v1/cards/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the virtual card."
+              }
+            ]
+          },
+          "docs": "Retrieves the details of a virtual card number (VCN) issued via Affirm Lite. Returns card number, expiration, CVV, and billing address information needed for payment processing through traditional card networks."
+        },
+        {
+          "info": {
+            "name": "Affirm Cancel a Card",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.affirm.com/api/v1/cards/:id/cancel",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the virtual card."
+              }
+            ]
+          },
+          "docs": "Cancels a virtual card number (VCN) issued via Affirm Lite, rendering it unusable for further charges. Used when an order is cancelled or the card is no longer needed."
+        },
+        {
+          "info": {
+            "name": "Affirm Finalize a Card",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.affirm.com/api/v1/cards/:id/finalize",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the virtual card."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Finalizes a virtual card number (VCN), updating the card details with the final purchase amount and completing the Affirm Lite transaction lifecycle."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

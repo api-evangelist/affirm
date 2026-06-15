@@ -1,0 +1,120 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Affirm Checkout API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Checkouts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Affirm Store a Checkout",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.affirm.com/api/v1/checkouts",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates and stores a new checkout object on Affirm's servers, returning a checkout token that can be used to initiate the Affirm checkout UI. This endpoint is used in the server-side store pattern where checkout data is submitted from the merchant server rather than from the browser via affirm.js. The checkout token returned must be used to redirect or open the Affirm checkout experience for the customer."
+        },
+        {
+          "info": {
+            "name": "Affirm Direct Checkout",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.affirm.com/api/v1/checkouts/direct",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a checkout and directly authorizes the transaction in a single server-side call, without requiring the customer to interact with the Affirm checkout UI. This endpoint is used for the Direct API integration pattern where the merchant captures the customer's financing decision inline and handles the authorization flow programmatically. Returns a checkout token upon success."
+        },
+        {
+          "info": {
+            "name": "Affirm Read a Checkout",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.affirm.com/api/v1/checkouts/:token",
+            "params": [
+              {
+                "name": "token",
+                "value": "",
+                "type": "path",
+                "description": "The checkout token that represents the purchase and customer information for a specific checkout session."
+              }
+            ]
+          },
+          "docs": "Retrieves the details of an existing checkout object by its token. Returns full checkout information including order totals, shipping and billing details, merchant configuration, checkout status, and metadata. Used to verify checkout state before or after the customer completes the Affirm flow."
+        },
+        {
+          "info": {
+            "name": "Affirm Update a Checkout",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.affirm.com/api/v1/checkouts/:token",
+            "params": [
+              {
+                "name": "token",
+                "value": "",
+                "type": "path",
+                "description": "The checkout token that represents the purchase and customer information for a specific checkout session."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an existing checkout object with new or modified order information. Only fields included in the request body are updated; omitted fields retain their existing values. The checkout must not yet have been confirmed by the customer. Used to adjust order totals, shipping, or item details after the checkout session has been created."
+        },
+        {
+          "info": {
+            "name": "Affirm Resend a Checkout",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.affirm.com/api/v1/checkouts/:token/resend",
+            "params": [
+              {
+                "name": "token",
+                "value": "",
+                "type": "path",
+                "description": "The checkout token that represents the purchase and customer information for a specific checkout session."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Resends the Affirm checkout link to the customer via email or SMS. Used in telesales and remote checkout flows where the customer needs to complete the Affirm financing application on their own device after initiating the order with a merchant representative."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

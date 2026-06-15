@@ -1,0 +1,339 @@
+{
+  "item": [
+    {
+      "id": "301b82f6-60b1-4bde-810b-11e9f7bf93ba",
+      "name": "Promos",
+      "description": {
+        "content": "Operations for retrieving dynamic promotional messaging and financing term information to display on merchant web pages.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "93380ac5-06cc-4b54-b049-ec44a4f2864d",
+          "name": "Affirm Get Promotional Messaging",
+          "request": {
+            "name": "Affirm Get Promotional Messaging",
+            "description": {
+              "content": "Returns dynamic promotional financing messaging and modal content for a given purchase amount. The response includes \"as low as\" (ALA) payment text, APR rates, available installment term offers, and Affirm-hosted modal content for the specified page type and locale. Merchants display this content inline on product, cart, and landing pages to inform customers about available buy now pay later financing options before reaching checkout.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "amount",
+                  "value": "<integer>",
+                  "description": "(Required) Purchase amount in the smallest currency unit (e.g., cents for USD or CAD). The API uses this to calculate available financing terms and monthly payment messaging."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_type",
+                  "value": "product",
+                  "description": "The type of page on which the promotional messaging will be displayed. Controls which financing messaging template is returned."
+                },
+                {
+                  "disabled": false,
+                  "key": "template_field",
+                  "value": "<string>",
+                  "description": "Locale identifier controlling the language and currency of the returned promotional content."
+                },
+                {
+                  "disabled": false,
+                  "key": "field",
+                  "value": "<string>",
+                  "description": "Specifies which content fields to include in the response. Use \"ala\" for as-low-as messaging only, \"modal\" for modal content only, or \"all\" for both."
+                },
+                {
+                  "disabled": false,
+                  "key": "use_best_terms",
+                  "value": "<boolean>",
+                  "description": "When true, returns the most favorable available financing terms for the given amount rather than the default program terms."
+                },
+                {
+                  "disabled": false,
+                  "key": "show_cta",
+                  "value": "<boolean>",
+                  "description": "When true, includes a call-to-action element in the modal content response."
+                },
+                {
+                  "disabled": false,
+                  "key": "items",
+                  "value": "<string>",
+                  "description": "Stringified JSON array of item objects to enable item-level financing evaluation. Each item should include sku, display_name, qty, and unit_price fields."
+                }
+              ],
+              "variable": [
+                {
+                  "description": "The merchant's public API key obtained from the Affirm Merchant Portal.",
+                  "type": "any",
+                  "value": "{{public_api_key}}",
+                  "key": "public_api_key"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "4a890c59-36b9-4c9b-9d2a-403a3846bc7f",
+              "name": "Promotional messaging content retrieved successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "amount",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_type",
+                      "value": "homepage"
+                    },
+                    {
+                      "key": "template_field",
+                      "value": "en_US"
+                    },
+                    {
+                      "key": "field",
+                      "value": "ala"
+                    },
+                    {
+                      "key": "use_best_terms",
+                      "value": "true"
+                    },
+                    {
+                      "key": "show_cta",
+                      "value": "true"
+                    },
+                    {
+                      "key": "items",
+                      "value": "example_value"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "description": "The merchant's public API key obtained from the Affirm Merchant Portal.",
+                      "type": "any",
+                      "value": "{{public_api_key}}",
+                      "key": "public_api_key"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"promo\": {\n    \"ala\": {},\n    \"html_ala\": {},\n    \"headline\": {},\n    \"tagline\": {},\n    \"button\": {},\n    \"html_footer\": {},\n    \"description\": {},\n    \"config\": {}\n  },\n  \"offer\": {\n    \"minimum_loan_amount\": {},\n    \"maximum_loan_amount\": {},\n    \"terms\": {}\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fa789004-cbf8-41fa-bb7b-4b2c54cbd7b8",
+              "name": "Bad request. The query parameters are invalid or missing.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "amount",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_type",
+                      "value": "homepage"
+                    },
+                    {
+                      "key": "template_field",
+                      "value": "en_US"
+                    },
+                    {
+                      "key": "field",
+                      "value": "ala"
+                    },
+                    {
+                      "key": "use_best_terms",
+                      "value": "true"
+                    },
+                    {
+                      "key": "show_cta",
+                      "value": "true"
+                    },
+                    {
+                      "key": "items",
+                      "value": "example_value"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "description": "The merchant's public API key obtained from the Affirm Merchant Portal.",
+                      "type": "any",
+                      "value": "{{public_api_key}}",
+                      "key": "public_api_key"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status_code\": 1,\n  \"code\": \"example_value\",\n  \"message\": \"example_value\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4bd939a6-8781-42ff-a878-14e3823146ba",
+              "name": "Unauthorized. The public API key is missing or invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "amount",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_type",
+                      "value": "homepage"
+                    },
+                    {
+                      "key": "template_field",
+                      "value": "en_US"
+                    },
+                    {
+                      "key": "field",
+                      "value": "ala"
+                    },
+                    {
+                      "key": "use_best_terms",
+                      "value": "true"
+                    },
+                    {
+                      "key": "show_cta",
+                      "value": "true"
+                    },
+                    {
+                      "key": "items",
+                      "value": "example_value"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "description": "The merchant's public API key obtained from the Affirm Merchant Portal.",
+                      "type": "any",
+                      "value": "{{public_api_key}}",
+                      "key": "public_api_key"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status_code\": 1,\n  \"code\": \"example_value\",\n  \"message\": \"example_value\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "description": {
+        "content": "The merchant's public API key obtained from the Affirm Merchant Portal.",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "YOUR_PUBLIC_KEY",
+      "key": "public_api_key"
+    },
+    {
+      "type": "string",
+      "value": "https://www.affirm.com/api/promos/v2/{{public_api_key}}",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "f98399ab-2c2e-4d19-8cf0-3ce92dcf8e11",
+    "name": "Affirm Promos API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Affirm Promos API is a server-side endpoint that enables merchants to render dynamic promotional pricing text and present Affirm-hosted educational modals on their website. It accepts a purchase amount and returns financing terms, \"as low as\" monthly payment messaging, APR rates, and modal content including headlines, descriptions, and legal disclosures. The API supports multiple installment term options and page-type context such as product, cart, and homepage to customize the displayed messaging. Merchants authenticate requests using their public API key appended to the base URL path.\n\nContact Support:\n Name: Affirm Developer Support",
+      "type": "text/plain"
+    }
+  }
+}

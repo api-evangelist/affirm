@@ -1,0 +1,121 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Affirm Disputes API",
+    "version": "3.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Disputes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Affirm List Disputes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.affirm.com/api/v3/disputes",
+            "params": [
+              {
+                "name": "status",
+                "value": "open",
+                "type": "query",
+                "description": "Filter disputes by their current status."
+              },
+              {
+                "name": "limit",
+                "value": "1",
+                "type": "query",
+                "description": "Maximum number of dispute records to return per page."
+              },
+              {
+                "name": "cursor",
+                "value": "example_value",
+                "type": "query",
+                "description": "Pagination cursor returned from a previous list response."
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of all payment disputes for the authenticated merchant. Disputes represent customer-initiated challenges to Affirm transactions. Results include dispute status, associated transaction identifiers, dispute reason codes, and submission deadlines for evidence. Use filtering parameters to narrow results by status or date range."
+        },
+        {
+          "info": {
+            "name": "Affirm Get a Dispute",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.affirm.com/api/v3/disputes/:dispute_id",
+            "params": [
+              {
+                "name": "dispute_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the dispute."
+              }
+            ]
+          },
+          "docs": "Retrieves the full details of a specific dispute by its unique identifier. Returns dispute status, reason code, associated transaction and charge information, evidence submission deadline, evidence already submitted, and the dispute resolution outcome if the dispute has been closed."
+        },
+        {
+          "info": {
+            "name": "Affirm Close a Dispute",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.affirm.com/api/v3/disputes/:dispute_id/close",
+            "params": [
+              {
+                "name": "dispute_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the dispute."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Closes a dispute and transitions it to the merchant-lost state, indicating the merchant accepts the dispute and concedes to the customer's claim. This action is irreversible and results in the disputed amount being returned to the customer. Use this endpoint when the merchant chooses not to contest the dispute or determines the customer's claim is valid."
+        },
+        {
+          "info": {
+            "name": "Affirm Submit Dispute Evidence",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.affirm.com/api/v3/disputes/:dispute_id/evidence",
+            "params": [
+              {
+                "name": "dispute_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the dispute."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submits supporting evidence to contest an open dispute on behalf of the merchant. Evidence may include uploaded file references (obtained from the Files API), text descriptions, tracking information, and other supporting documentation. Evidence must be submitted before the dispute's evidence submission deadline. The submitted evidence is reviewed by Affirm to determine the dispute outcome."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
