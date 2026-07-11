@@ -1,0 +1,18 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/affirm-checkout-openapi.yml, openapi/affirm-direct-api-openapi.yml, openapi/affirm-disputes-openapi.yml,
+  openapi/affirm-transactions-openapi.yml
+summary:
+  types:
+  - http
+schemes:
+- name: basicAuth
+  type: http
+  scheme: basic
+  description: HTTP Basic Authentication using the merchant's public API key as the username
+    and private API key as the password, Base64-encoded as per RFC 7617.
+  sources:
+  - openapi/affirm-checkout-openapi.yml
+  - openapi/affirm-direct-api-openapi.yml
+  - openapi/affirm-disputes-openapi.yml
+  - openapi/affirm-transactions-openapi.yml

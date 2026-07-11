@@ -49,6 +49,12 @@ apis:
   - type: Documentation
     url: https://docs.affirm.com/developers
 common:
+- type: TrustCenter
+  url: security/affirm-trust-center.yml
+- type: DomainSecurity
+  url: security/affirm-domain-security.yml
+- type: Authentication
+  url: authentication/affirm-authentication.yml
 - type: GitHubOrganization
   url: https://github.com/Affirm
 - type: LinkedIn
