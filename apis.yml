@@ -49,6 +49,8 @@ apis:
   - type: Documentation
     url: https://docs.affirm.com/developers
 common:
+- type: AgenticAccess
+  url: agentic-access/affirm-agentic-access.yml
 - type: TrustCenter
   url: security/affirm-trust-center.yml
 - type: DomainSecurity
