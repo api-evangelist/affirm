@@ -1,48 +1,28 @@
 openapi: 3.1.0
 info:
-  title: Affirm Checkout API
-  description: >-
-    The Affirm Checkout API enables merchants to initiate and manage the Affirm
-    buy now pay later checkout flow for customers at the point of purchase. It
-    provides endpoints to create and store checkout sessions, read and update
-    checkout objects, and resend checkout links via email or SMS. The API
-    supports both redirect and direct checkout integration patterns. Once a
-    customer authorizes a loan, the resulting checkout token is exchanged
-    server-side to complete the transaction authorization via the Transactions
-    API. Authentication uses HTTP Basic Authentication with the merchant's
-    public and private API keys.
+  title: Affirm Checkout Authorization Checkouts API
+  description: The Affirm Checkout API enables merchants to initiate and manage the Affirm buy now pay later checkout flow for customers at the point of purchase. It provides endpoints to create and store checkout sessions, read and update checkout objects, and resend checkout links via email or SMS. The API supports both redirect and direct checkout integration patterns. Once a customer authorizes a loan, the resulting checkout token is exchanged server-side to complete the transaction authorization via the Transactions API. Authentication uses HTTP Basic Authentication with the merchant's public and private API keys.
   version: '1.0'
   contact:
     name: Affirm Developer Support
     url: https://docs.affirm.com/developers/docs/development-quickstart
   termsOfService: https://www.affirm.com/legal/merchant-terms
-externalDocs:
-  description: Affirm Checkout API Reference
-  url: https://docs.affirm.com/developers/reference/the-checkout-object
 servers:
 - url: https://api.affirm.com/api/v1
   description: Production Server
 - url: https://sandbox.affirm.com/api/v1
   description: Sandbox Server
-tags:
-- name: Checkouts
-  description: >-
-    Operations for creating, retrieving, updating, and resending Affirm
-    checkout sessions.
 security:
 - basicAuth: []
+tags:
+- name: Checkouts
+  description: Operations for creating, retrieving, updating, and resending Affirm checkout sessions.
 paths:
   /checkouts:
     post:
       operationId: storeCheckout
       summary: Affirm Store a Checkout
-      description: >-
-        Creates and stores a new checkout object on Affirm's servers, returning
-        a checkout token that can be used to initiate the Affirm checkout UI.
-        This endpoint is used in the server-side store pattern where checkout
-        data is submitted from the merchant server rather than from the browser
-        via affirm.js. The checkout token returned must be used to redirect or
-        open the Affirm checkout experience for the customer.
+      description: Creates and stores a new checkout object on Affirm's servers, returning a checkout token that can be used to initiate the Affirm checkout UI. This endpoint is used in the server-side store pattern where checkout data is submitted from the merchant server rather than from the browser via affirm.js. The checkout token returned must be used to redirect or open the Affirm checkout experience for the customer.
       tags:
       - Checkouts
       requestBody:
@@ -97,16 +77,11 @@ paths:
                 properties:
                   checkout_token:
                     type: string
-                    description: >-
-                      One-time-use token representing the stored checkout
-                      session. Used to redirect the customer to the Affirm
-                      checkout flow.
+                    description: One-time-use token representing the stored checkout session. Used to redirect the customer to the Affirm checkout flow.
                   redirect_url:
                     type: string
                     format: uri
-                    description: >-
-                      URL to redirect the customer to for completing the
-                      Affirm checkout flow.
+                    description: URL to redirect the customer to for completing the Affirm checkout flow.
               examples:
                 storeCheckout200Example:
                   summary: Default storeCheckout 200 response
@@ -125,13 +100,7 @@ paths:
     post:
       operationId: directCheckout
       summary: Affirm Direct Checkout
-      description: >-
-        Creates a checkout and directly authorizes the transaction in a single
-        server-side call, without requiring the customer to interact with the
-        Affirm checkout UI. This endpoint is used for the Direct API integration
-        pattern where the merchant captures the customer's financing decision
-        inline and handles the authorization flow programmatically. Returns a
-        checkout token upon success.
+      description: Creates a checkout and directly authorizes the transaction in a single server-side call, without requiring the customer to interact with the Affirm checkout UI. This endpoint is used for the Direct API integration pattern where the merchant captures the customer's financing decision inline and handles the authorization flow programmatically. Returns a checkout token upon success.
       tags:
       - Checkouts
       requestBody:
@@ -186,9 +155,7 @@ paths:
                 properties:
                   checkout_token:
                     type: string
-                    description: >-
-                      Token representing the authorized checkout, to be
-                      exchanged for a full transaction authorization.
+                    description: Token representing the authorized checkout, to be exchanged for a full transaction authorization.
               examples:
                 directCheckout200Example:
                   summary: Default directCheckout 200 response
@@ -206,12 +173,7 @@ paths:
     get:
       operationId: readCheckout
       summary: Affirm Read a Checkout
-      description: >-
-        Retrieves the details of an existing checkout object by its token.
-        Returns full checkout information including order totals, shipping and
-        billing details, merchant configuration, checkout status, and metadata.
-        Used to verify checkout state before or after the customer completes
-        the Affirm flow.
+      description: Retrieves the details of an existing checkout object by its token. Returns full checkout information including order totals, shipping and billing details, merchant configuration, checkout status, and metadata. Used to verify checkout state before or after the customer completes the Affirm flow.
       tags:
       - Checkouts
       parameters:
@@ -271,12 +233,7 @@ paths:
     post:
       operationId: updateCheckout
       summary: Affirm Update a Checkout
-      description: >-
-        Updates an existing checkout object with new or modified order
-        information. Only fields included in the request body are updated;
-        omitted fields retain their existing values. The checkout must not
-        yet have been confirmed by the customer. Used to adjust order totals,
-        shipping, or item details after the checkout session has been created.
+      description: Updates an existing checkout object with new or modified order information. Only fields included in the request body are updated; omitted fields retain their existing values. The checkout must not yet have been confirmed by the customer. Used to adjust order totals, shipping, or item details after the checkout session has been created.
       tags:
       - Checkouts
       parameters:
@@ -381,11 +338,7 @@ paths:
     post:
       operationId: resendCheckout
       summary: Affirm Resend a Checkout
-      description: >-
-        Resends the Affirm checkout link to the customer via email or SMS.
-        Used in telesales and remote checkout flows where the customer needs
-        to complete the Affirm financing application on their own device after
-        initiating the order with a merchant representative.
+      description: Resends the Affirm checkout link to the customer via email or SMS. Used in telesales and remote checkout flows where the customer needs to complete the Affirm financing application on their own device after initiating the order with a merchant representative.
       tags:
       - Checkouts
       parameters:
@@ -403,9 +356,7 @@ paths:
                   description: Email address to send the checkout link to.
                 phone_number:
                   type: string
-                  description: >-
-                    Phone number to send the checkout link via SMS, in E.164
-                    format.
+                  description: Phone number to send the checkout link via SMS, in E.164 format.
             examples:
               resendCheckoutRequestExample:
                 summary: Default resendCheckout request
@@ -440,50 +391,38 @@ paths:
         delay: 0
         dispatcher: FALLBACK
 components:
-  securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
-      description: >-
-        HTTP Basic Authentication using the merchant's public API key as the
-        username and private API key as the password, Base64-encoded as
-        per RFC 7617.
-  parameters:
-    CheckoutToken:
-      name: token
-      in: path
-      required: true
-      description: >-
-        The checkout token that represents the purchase and customer
-        information for a specific checkout session.
-      schema:
-        type: string
-  responses:
-    BadRequest:
-      description: Bad request. The request body or parameters are invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized. Authentication credentials are missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Not found. The requested resource does not exist.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
+    AddressObject:
+      type: object
+      description: A postal address.
+      properties:
+        line1:
+          type: string
+          description: Primary street address line.
+          example: example_value
+        line2:
+          type: string
+          description: Secondary address line (apartment, suite, unit, etc.).
+          example: example_value
+        city:
+          type: string
+          description: City or locality.
+          example: example_value
+        state:
+          type: string
+          description: State, province, or region code.
+          example: example_value
+        zipcode:
+          type: string
+          description: Postal or ZIP code.
+          example: example_value
+        country:
+          type: string
+          description: ISO 3166-1 alpha-2 country code.
+          example: example_value
     CheckoutRequest:
       type: object
-      description: >-
-        Request body for creating or updating an Affirm checkout session,
-        containing all order and customer information required to initiate
-        the Affirm financing flow.
+      description: Request body for creating or updating an Affirm checkout session, containing all order and customer information required to initiate the Affirm financing flow.
       required:
       - merchant
       - items
@@ -500,41 +439,30 @@ components:
           $ref: '#/components/schemas/StoreObject'
         items:
           type: array
-          description: >-
-            Array of item objects representing the products being purchased
-            in this checkout.
+          description: Array of item objects representing the products being purchased in this checkout.
           items:
             $ref: '#/components/schemas/ItemObject'
           example:
           - example_value
         discounts:
           type: object
-          description: >-
-            A map of discount codes to discount objects. Each key is the
-            discount code and each value contains the discount amount and
-            name.
+          description: A map of discount codes to discount objects. Each key is the discount code and each value contains the discount amount and name.
           additionalProperties:
             $ref: '#/components/schemas/DiscountObject'
           example: {}
         metadata:
           type: object
-          description: >-
-            Arbitrary key-value metadata for merchant tracking. Values must
-            be strings.
+          description: Arbitrary key-value metadata for merchant tracking. Values must be strings.
           additionalProperties:
             type: string
           example: {}
         order_id:
           type: string
-          description: >-
-            The merchant's internal order identifier. Stored for future
-            reference and reconciliation.
+          description: The merchant's internal order identifier. Stored for future reference and reconciliation.
           example: '500123'
         currency:
           type: string
-          description: >-
-            Three-letter ISO 4217 currency code in uppercase. Supported
-            values are USD, CAD, and GBP.
+          description: Three-letter ISO 4217 currency code in uppercase. Supported values are USD, CAD, and GBP.
           enum:
           - USD
           - CAD
@@ -542,9 +470,7 @@ components:
           example: USD
         financing_program:
           type: string
-          description: >-
-            Financing program code to apply to this checkout, if applicable.
-            Determines the available loan terms presented to the customer.
+          description: Financing program code to apply to this checkout, if applicable. Determines the available loan terms presented to the customer.
           example: example_value
         shipping_amount:
           type: integer
@@ -564,21 +490,108 @@ components:
         checkout_expiration:
           type: string
           format: date-time
-          description: >-
-            ISO 8601 timestamp specifying when the checkout session expires.
+          description: ISO 8601 timestamp specifying when the checkout session expires.
           example: '2025-03-15T14:30:00Z'
         expiration_time:
           type: string
           format: date-time
-          description: >-
-            Time-to-live deadline by which the customer must confirm the
-            checkout.
+          description: Time-to-live deadline by which the customer must confirm the checkout.
           example: '2025-03-15T14:30:00Z'
+    ItemObject:
+      type: object
+      description: Represents a single line item in the checkout, including product details and pricing.
+      required:
+      - display_name
+      - sku
+      - unit_price
+      - qty
+      properties:
+        display_name:
+          type: string
+          description: Customer-facing product name.
+          example: Example Merchant
+        sku:
+          type: string
+          description: Merchant's stock keeping unit identifier for the product.
+          example: example_value
+        unit_price:
+          type: integer
+          description: Unit price of the item in cents.
+          minimum: 0
+          example: 1
+        qty:
+          type: integer
+          description: Quantity of this item in the order.
+          minimum: 1
+          example: 1
+        item_image_url:
+          type: string
+          format: uri
+          description: URL of the product image.
+          example: https://example.com/path
+        item_url:
+          type: string
+          format: uri
+          description: URL of the product page on the merchant's website.
+          example: https://example.com/path
+        categories:
+          type: array
+          description: Nested array of category strings representing the product taxonomy.
+          items:
+            type: array
+            items:
+              type: string
+          example:
+          - - example_value
+    DiscountObject:
+      type: object
+      description: Represents a discount applied to the checkout.
+      properties:
+        discount_amount:
+          type: integer
+          description: The discount amount in cents.
+          minimum: 0
+          example: 1
+        discount_display_name:
+          type: string
+          description: Customer-facing name or description of the discount.
+          example: Example Merchant
+    ContactObject:
+      type: object
+      description: Contact information for shipping or billing, including name, address, email, and phone number.
+      properties:
+        name:
+          $ref: '#/components/schemas/NameObject'
+        address:
+          $ref: '#/components/schemas/AddressObject'
+        email:
+          type: string
+          format: email
+          description: Email address for the contact.
+          example: merchant@example.com
+        phone_number:
+          type: string
+          description: Phone number for the contact in E.164 format.
+          example: example_value
+    NameObject:
+      type: object
+      description: A person's name split into first and last components.
+      properties:
+        first:
+          type: string
+          description: First name.
+          example: example_value
+        last:
+          type: string
+          description: Last name.
+          example: example_value
+        full:
+          type: string
+          description: Full name as a single string.
+          example: example_value
     Checkout:
       type: object
-      description: >-
-        Represents an Affirm checkout session with full order details, customer
-        information, and current checkout status.
+      description: Represents an Affirm checkout session with full order details, customer information, and current checkout status.
       properties:
         checkout_id:
           type: string
@@ -665,40 +678,28 @@ components:
             tracking_uuid: 550e8400-e29b-41d4-a716-446655440000
     MerchantObject:
       type: object
-      description: >-
-        Merchant-specific configuration for the checkout, including callback
-        URLs and the public API key.
+      description: Merchant-specific configuration for the checkout, including callback URLs and the public API key.
       required:
       - user_confirmation_url
       - user_cancel_url
       properties:
         public_api_key:
           type: string
-          description: >-
-            The merchant's public API key. Required for checkout and store
-            endpoints when submitting from a server context.
+          description: The merchant's public API key. Required for checkout and store endpoints when submitting from a server context.
           example: abc123def456abc123def456abc123de
         user_confirmation_url:
           type: string
           format: uri
-          description: >-
-            The URL the customer is redirected to after successfully completing
-            the Affirm checkout flow. A checkout_token is delivered to this URL
-            via POST or GET depending on user_confirmation_url_action.
+          description: The URL the customer is redirected to after successfully completing the Affirm checkout flow. A checkout_token is delivered to this URL via POST or GET depending on user_confirmation_url_action.
           example: https://example.com/path
         user_cancel_url:
           type: string
           format: uri
-          description: >-
-            The URL the customer is redirected to if they cancel or abandon
-            the Affirm checkout flow.
+          description: The URL the customer is redirected to if they cancel or abandon the Affirm checkout flow.
           example: https://example.com/path
         user_confirmation_url_action:
           type: string
-          description: >-
-            Determines how the checkout_token is delivered to the
-            user_confirmation_url. "POST" sends it as a form body field;
-            "GET" appends it as a query parameter.
+          description: Determines how the checkout_token is delivered to the user_confirmation_url. "POST" sends it as a form body field; "GET" appends it as a query parameter.
           enum:
           - POST
           - GET
@@ -707,142 +708,6 @@ components:
         name:
           type: string
           description: The merchant's display name, shown to customers during checkout.
-          example: Example Merchant
-    ContactObject:
-      type: object
-      description: >-
-        Contact information for shipping or billing, including name, address,
-        email, and phone number.
-      properties:
-        name:
-          $ref: '#/components/schemas/NameObject'
-        address:
-          $ref: '#/components/schemas/AddressObject'
-        email:
-          type: string
-          format: email
-          description: Email address for the contact.
-          example: merchant@example.com
-        phone_number:
-          type: string
-          description: Phone number for the contact in E.164 format.
-          example: example_value
-    NameObject:
-      type: object
-      description: A person's name split into first and last components.
-      properties:
-        first:
-          type: string
-          description: First name.
-          example: example_value
-        last:
-          type: string
-          description: Last name.
-          example: example_value
-        full:
-          type: string
-          description: Full name as a single string.
-          example: example_value
-    AddressObject:
-      type: object
-      description: A postal address.
-      properties:
-        line1:
-          type: string
-          description: Primary street address line.
-          example: example_value
-        line2:
-          type: string
-          description: Secondary address line (apartment, suite, unit, etc.).
-          example: example_value
-        city:
-          type: string
-          description: City or locality.
-          example: example_value
-        state:
-          type: string
-          description: State, province, or region code.
-          example: example_value
-        zipcode:
-          type: string
-          description: Postal or ZIP code.
-          example: example_value
-        country:
-          type: string
-          description: ISO 3166-1 alpha-2 country code.
-          example: example_value
-    ItemObject:
-      type: object
-      description: >-
-        Represents a single line item in the checkout, including product
-        details and pricing.
-      required:
-      - display_name
-      - sku
-      - unit_price
-      - qty
-      properties:
-        display_name:
-          type: string
-          description: Customer-facing product name.
-          example: Example Merchant
-        sku:
-          type: string
-          description: Merchant's stock keeping unit identifier for the product.
-          example: example_value
-        unit_price:
-          type: integer
-          description: Unit price of the item in cents.
-          minimum: 0
-          example: 1
-        qty:
-          type: integer
-          description: Quantity of this item in the order.
-          minimum: 1
-          example: 1
-        item_image_url:
-          type: string
-          format: uri
-          description: URL of the product image.
-          example: https://example.com/path
-        item_url:
-          type: string
-          format: uri
-          description: URL of the product page on the merchant's website.
-          example: https://example.com/path
-        categories:
-          type: array
-          description: Nested array of category strings representing the product taxonomy.
-          items:
-            type: array
-            items:
-              type: string
-          example:
-          - - example_value
-    StoreObject:
-      type: object
-      description: >-
-        Address details for in-store transactions where the purchase is made
-        at a physical merchant location.
-      properties:
-        name:
-          type: string
-          description: Store location name.
-          example: Example Merchant
-        address:
-          $ref: '#/components/schemas/AddressObject'
-    DiscountObject:
-      type: object
-      description: Represents a discount applied to the checkout.
-      properties:
-        discount_amount:
-          type: integer
-          description: The discount amount in cents.
-          minimum: 0
-          example: 1
-        discount_display_name:
-          type: string
-          description: Customer-facing name or description of the discount.
           example: Example Merchant
     Error:
       type: object
@@ -864,3 +729,48 @@ components:
           type: string
           description: The specific field that caused the error, if applicable.
           example: example_value
+    StoreObject:
+      type: object
+      description: Address details for in-store transactions where the purchase is made at a physical merchant location.
+      properties:
+        name:
+          type: string
+          description: Store location name.
+          example: Example Merchant
+        address:
+          $ref: '#/components/schemas/AddressObject'
+  responses:
+    Unauthorized:
+      description: Unauthorized. Authentication credentials are missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request. The request body or parameters are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found. The requested resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    CheckoutToken:
+      name: token
+      in: path
+      required: true
+      description: The checkout token that represents the purchase and customer information for a specific checkout session.
+      schema:
+        type: string
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic Authentication using the merchant's public API key as the username and private API key as the password, Base64-encoded as per RFC 7617.
+externalDocs:
+  description: Affirm Checkout API Reference
+  url: https://docs.affirm.com/developers/reference/the-checkout-object

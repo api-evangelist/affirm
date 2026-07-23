@@ -1,0 +1,279 @@
+openapi: 3.1.0
+info:
+  title: Affirm Checkout Authorization API
+  description: The Affirm Checkout API enables merchants to initiate and manage the Affirm buy now pay later checkout flow for customers at the point of purchase. It provides endpoints to create and store checkout sessions, read and update checkout objects, and resend checkout links via email or SMS. The API supports both redirect and direct checkout integration patterns. Once a customer authorizes a loan, the resulting checkout token is exchanged server-side to complete the transaction authorization via the Transactions API. Authentication uses HTTP Basic Authentication with the merchant's public and private API keys.
+  version: '1.0'
+  contact:
+    name: Affirm Developer Support
+    url: https://docs.affirm.com/developers/docs/development-quickstart
+  termsOfService: https://www.affirm.com/legal/merchant-terms
+servers:
+- url: https://api.affirm.com/api/v1
+  description: Production Server
+- url: https://sandbox.affirm.com/api/v1
+  description: Sandbox Server
+security:
+- basicAuth: []
+tags:
+- name: Authorization
+  description: Server-side operations for authorizing Affirm transactions after a customer completes the checkout flow and a checkout token is returned.
+paths:
+  /transactions:
+    post:
+      operationId: authorizeDirectTransaction
+      summary: Affirm Authorize a Transaction
+      description: Exchanges a checkout token for a transaction authorization, completing the server-side portion of the Direct API flow. This call must be made from the merchant server after the browser-side affirm.js returns a checkout token via the user_confirmation_url callback. The authorization places a hold on the customer's Affirm credit. The resulting transaction must be captured within the authorization window to transfer funds to the merchant.
+      tags:
+      - Authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - checkout_token
+              properties:
+                checkout_token:
+                  type: string
+                  description: The checkout token returned by the Affirm checkout flow via the user_confirmation_url callback. This token is single-use and expires after a short window.
+                order_id:
+                  type: string
+                  description: The merchant's internal order identifier to associate with this authorization for reconciliation purposes.
+            examples:
+              authorizeDirectTransactionRequestExample:
+                summary: Default authorizeDirectTransaction request
+                x-microcks-default: true
+                value:
+                  checkout_token: abc123def456abc123def456abc123de
+                  order_id: '500123'
+      responses:
+        '200':
+          description: Transaction authorized successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+              examples:
+                authorizeDirectTransaction200Example:
+                  summary: Default authorizeDirectTransaction 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    checkout_id: '500123'
+                    order_id: '500123'
+                    status: authorized
+                    amount: 1
+                    amount_refunded: 1
+                    currency: USD
+                    created: '2025-03-15T14:30:00Z'
+                    authorization_expiration: '2025-03-15T14:30:00Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+  /files:
+    post:
+      operationId: uploadFile
+      summary: Affirm Upload a File
+      description: Uploads a file to Affirm's servers for use as dispute evidence. Returns a file identifier that can be referenced when submitting evidence via the Disputes API. Supported file types include images (JPEG, PNG) and documents (PDF).
+      tags:
+      - Authorization
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The file to upload as binary data.
+                purpose:
+                  type: string
+                  description: The intended purpose of the uploaded file.
+                  enum:
+                  - dispute_evidence
+      responses:
+        '200':
+          description: File uploaded successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileObject'
+              examples:
+                uploadFile200Example:
+                  summary: Default uploadFile 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    filename: Example Merchant
+                    size: 1
+                    content_type: standard
+                    purpose: example_value
+                    created: '2025-03-15T14:30:00Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+  /files/{id}:
+    get:
+      operationId: downloadFile
+      summary: Affirm Download a File
+      description: Downloads a previously uploaded file by its identifier. Returns the raw file content with the appropriate content type header.
+      tags:
+      - Authorization
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The unique identifier of the file to download.
+        schema:
+          type: string
+        example: '500123'
+      responses:
+        '200':
+          description: File content returned successfully.
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+components:
+  responses:
+    Unauthorized:
+      description: Unauthorized. Authentication credentials are missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request. The request body or parameters are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found. The requested resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Transaction:
+      type: object
+      description: Represents an Affirm payment transaction at any point in its lifecycle.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for this transaction.
+          example: '500123'
+        checkout_id:
+          type: string
+          description: Identifier of the checkout session that originated this transaction.
+          example: '500123'
+        order_id:
+          type: string
+          description: Merchant's internal order identifier.
+          example: '500123'
+        status:
+          type: string
+          description: Current lifecycle status of the transaction.
+          enum:
+          - authorized
+          - captured
+          - voided
+          - refunded
+          - partially_refunded
+          example: authorized
+        amount:
+          type: integer
+          description: Original authorized amount in cents.
+          example: 1
+        amount_refunded:
+          type: integer
+          description: Cumulative amount refunded in cents.
+          example: 1
+        currency:
+          type: string
+          description: ISO 4217 currency code.
+          example: USD
+        created:
+          type: string
+          format: date-time
+          description: Creation timestamp in RFC 3339 format.
+          example: '2025-03-15T14:30:00Z'
+        authorization_expiration:
+          type: string
+          format: date-time
+          description: Timestamp after which the authorization can no longer be captured.
+          example: '2025-03-15T14:30:00Z'
+    FileObject:
+      type: object
+      description: Represents a file uploaded to Affirm's servers.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the uploaded file.
+          example: '500123'
+        filename:
+          type: string
+          description: Original filename of the uploaded file.
+          example: Example Merchant
+        size:
+          type: integer
+          description: File size in bytes.
+          example: 1
+        content_type:
+          type: string
+          description: MIME type of the uploaded file.
+          example: standard
+        purpose:
+          type: string
+          description: Intended purpose of the file.
+          example: example_value
+        created:
+          type: string
+          format: date-time
+          description: Upload timestamp in RFC 3339 format.
+          example: '2025-03-15T14:30:00Z'
+    Error:
+      type: object
+      description: Standard error response returned by the Affirm API.
+      properties:
+        status_code:
+          type: integer
+          description: HTTP status code of the error.
+          example: 1
+        code:
+          type: string
+          description: Machine-readable error code string.
+          example: example_value
+        message:
+          type: string
+          description: Human-readable description of the error.
+          example: example_value
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic Authentication using the merchant's public API key as the username and private API key as the password, Base64-encoded as per RFC 7617.
+externalDocs:
+  description: Affirm Checkout API Reference
+  url: https://docs.affirm.com/developers/reference/the-checkout-object

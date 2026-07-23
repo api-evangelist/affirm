@@ -1,0 +1,627 @@
+openapi: 3.1.0
+info:
+  title: Affirm Checkout Authorization Transactions API
+  description: The Affirm Checkout API enables merchants to initiate and manage the Affirm buy now pay later checkout flow for customers at the point of purchase. It provides endpoints to create and store checkout sessions, read and update checkout objects, and resend checkout links via email or SMS. The API supports both redirect and direct checkout integration patterns. Once a customer authorizes a loan, the resulting checkout token is exchanged server-side to complete the transaction authorization via the Transactions API. Authentication uses HTTP Basic Authentication with the merchant's public and private API keys.
+  version: '1.0'
+  contact:
+    name: Affirm Developer Support
+    url: https://docs.affirm.com/developers/docs/development-quickstart
+  termsOfService: https://www.affirm.com/legal/merchant-terms
+servers:
+- url: https://api.affirm.com/api/v1
+  description: Production Server
+- url: https://sandbox.affirm.com/api/v1
+  description: Sandbox Server
+security:
+- basicAuth: []
+tags:
+- name: Transactions
+  description: Post-authorization transaction management operations including capture, void, and refund.
+paths:
+  /transactions/{id}/capture:
+    post:
+      operationId: captureDirectTransaction
+      summary: Affirm Capture a Transaction
+      description: Captures a previously authorized transaction to initiate transfer of funds to the merchant. Capture may be for the full authorized amount or a partial amount when split capture is in use. The merchant should capture only upon order fulfillment or shipment to align with Affirm's terms of service.
+      tags:
+      - Transactions
+      parameters:
+      - $ref: '#/components/parameters/TransactionId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  description: Amount to capture in cents. Defaults to the full authorized amount.
+                order_id:
+                  type: string
+                  description: Merchant order identifier for this capture event.
+                shipping_carrier:
+                  type: string
+                  description: Name of the shipping carrier for this fulfillment.
+                shipping_confirmation:
+                  type: string
+                  description: Tracking number or shipment confirmation.
+            examples:
+              captureDirectTransactionRequestExample:
+                summary: Default captureDirectTransaction request
+                x-microcks-default: true
+                value:
+                  amount: 1
+                  order_id: '500123'
+                  shipping_carrier: example_value
+                  shipping_confirmation: example_value
+      responses:
+        '200':
+          description: Transaction captured successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+              examples:
+                captureDirectTransaction200Example:
+                  summary: Default captureDirectTransaction 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    checkout_id: '500123'
+                    order_id: '500123'
+                    status: authorized
+                    amount: 1
+                    amount_refunded: 1
+                    currency: USD
+                    created: '2025-03-15T14:30:00Z'
+                    authorization_expiration: '2025-03-15T14:30:00Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+  /transactions/{id}/void:
+    post:
+      operationId: voidDirectTransaction
+      summary: Affirm Void a Transaction
+      description: Voids an authorized but uncaptured transaction, releasing the hold on the customer's Affirm credit. Used when an order is cancelled prior to fulfillment. A voided transaction cannot be captured or refunded.
+      tags:
+      - Transactions
+      parameters:
+      - $ref: '#/components/parameters/TransactionId'
+      responses:
+        '200':
+          description: Transaction voided successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+              examples:
+                voidDirectTransaction200Example:
+                  summary: Default voidDirectTransaction 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    checkout_id: '500123'
+                    order_id: '500123'
+                    status: authorized
+                    amount: 1
+                    amount_refunded: 1
+                    currency: USD
+                    created: '2025-03-15T14:30:00Z'
+                    authorization_expiration: '2025-03-15T14:30:00Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+  /transactions/{id}/refund:
+    post:
+      operationId: refundDirectTransaction
+      summary: Affirm Refund a Transaction
+      description: Issues a full or partial refund on a captured Direct API transaction. Partial refunds can be applied multiple times until the total refunded amount equals the captured amount. The customer's Affirm account is credited and the merchant's settlement is adjusted.
+      tags:
+      - Transactions
+      parameters:
+      - $ref: '#/components/parameters/TransactionId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  description: Amount to refund in cents. Defaults to the full captured amount.
+            examples:
+              refundDirectTransactionRequestExample:
+                summary: Default refundDirectTransaction request
+                x-microcks-default: true
+                value:
+                  amount: 1
+      responses:
+        '200':
+          description: Transaction refunded successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+              examples:
+                refundDirectTransaction200Example:
+                  summary: Default refundDirectTransaction 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    checkout_id: '500123'
+                    order_id: '500123'
+                    status: authorized
+                    amount: 1
+                    amount_refunded: 1
+                    currency: USD
+                    created: '2025-03-15T14:30:00Z'
+                    authorization_expiration: '2025-03-15T14:30:00Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+  /transactions:
+    get:
+      operationId: listTransactions
+      summary: Affirm List Transactions
+      description: Returns a paginated list of all transactions for the authenticated merchant. Transactions represent authorized Affirm loans that can be captured, refunded, or voided. Results are sorted by creation date in descending order.
+      tags:
+      - Transactions
+      parameters:
+      - $ref: '#/components/parameters/PageLimit'
+      - $ref: '#/components/parameters/PageCursor'
+      responses:
+        '200':
+          description: A list of transaction objects.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Transaction_2'
+                  total:
+                    type: integer
+                    description: Total number of transactions matching the query.
+                  next_cursor:
+                    type: string
+                    description: Cursor token for fetching the next page of results.
+              examples:
+                listTransactions200Example:
+                  summary: Default listTransactions 200 response
+                  x-microcks-default: true
+                  value:
+                    data:
+                    - id: {}
+                      checkout_id: {}
+                      order_id: {}
+                      status: {}
+                      amount: {}
+                      amount_refunded: {}
+                      currency: {}
+                      created: {}
+                      authorization_expiration: {}
+                      provider_id: {}
+                      remove_tax: {}
+                      events: {}
+                      token: {}
+                    total: 1
+                    next_cursor: example_value
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+    post:
+      operationId: authorizeTransaction
+      summary: Affirm Authorize a Transaction
+      description: Authorizes a new transaction using a checkout token obtained after a customer completes the Affirm checkout flow. The checkout token is a one-time-use token that must be exchanged server-side within the authorization window. A successful authorization places a hold on the customer's Affirm credit and returns a transaction object with status "authorized". The transaction must subsequently be captured to initiate transfer of funds to the merchant.
+      tags:
+      - Transactions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - checkout_token
+              properties:
+                checkout_token:
+                  type: string
+                  description: The one-time-use checkout token returned by the Affirm checkout flow after customer authorization.
+                order_id:
+                  type: string
+                  description: The merchant's internal order identifier to associate with this transaction for reconciliation.
+            examples:
+              authorizeTransactionRequestExample:
+                summary: Default authorizeTransaction request
+                x-microcks-default: true
+                value:
+                  checkout_token: abc123def456abc123def456abc123de
+                  order_id: '500123'
+      responses:
+        '200':
+          description: Transaction successfully authorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction_2'
+              examples:
+                authorizeTransaction200Example:
+                  summary: Default authorizeTransaction 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    checkout_id: '500123'
+                    order_id: '500123'
+                    status: authorized
+                    amount: 1
+                    amount_refunded: 1
+                    currency: USD
+                    created: '2025-03-15T14:30:00Z'
+                    authorization_expiration: '2025-03-15T14:30:00Z'
+                    provider_id: 1
+                    remove_tax: true
+                    events:
+                    - {}
+                    token: abc123def456abc123def456abc123de
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+  /transactions/{id}:
+    get:
+      operationId: readTransaction
+      summary: Affirm Read a Transaction
+      description: Retrieves the full details of a specific transaction by its unique identifier. Returns the transaction object including current status, amounts, associated events, order metadata, and authorization expiration time.
+      tags:
+      - Transactions
+      parameters:
+      - $ref: '#/components/parameters/TransactionId'
+      responses:
+        '200':
+          description: Transaction object retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction_2'
+              examples:
+                readTransaction200Example:
+                  summary: Default readTransaction 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    checkout_id: '500123'
+                    order_id: '500123'
+                    status: authorized
+                    amount: 1
+                    amount_refunded: 1
+                    currency: USD
+                    created: '2025-03-15T14:30:00Z'
+                    authorization_expiration: '2025-03-15T14:30:00Z'
+                    provider_id: 1
+                    remove_tax: true
+                    events:
+                    - {}
+                    token: abc123def456abc123def456abc123de
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+    post:
+      operationId: updateTransaction
+      summary: Affirm Update a Transaction
+      description: Updates mutable fields on an existing transaction, such as the merchant order ID. Only fields included in the request body are updated; omitted fields remain unchanged.
+      tags:
+      - Transactions
+      parameters:
+      - $ref: '#/components/parameters/TransactionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order_id:
+                  type: string
+                  description: Updated merchant order identifier to associate with this transaction.
+            examples:
+              updateTransactionRequestExample:
+                summary: Default updateTransaction request
+                x-microcks-default: true
+                value:
+                  order_id: '500123'
+      responses:
+        '200':
+          description: Transaction updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction_2'
+              examples:
+                updateTransaction200Example:
+                  summary: Default updateTransaction 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    checkout_id: '500123'
+                    order_id: '500123'
+                    status: authorized
+                    amount: 1
+                    amount_refunded: 1
+                    currency: USD
+                    created: '2025-03-15T14:30:00Z'
+                    authorization_expiration: '2025-03-15T14:30:00Z'
+                    provider_id: 1
+                    remove_tax: true
+                    events:
+                    - {}
+                    token: abc123def456abc123def456abc123de
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+components:
+  parameters:
+    PageLimit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    TransactionId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the transaction.
+      schema:
+        type: string
+    PageCursor:
+      name: cursor
+      in: query
+      required: false
+      description: Pagination cursor returned from a previous list response.
+      schema:
+        type: string
+  responses:
+    Unauthorized:
+      description: Unauthorized. Authentication credentials are missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request. The request body or parameters are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found. The requested resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Transaction:
+      type: object
+      description: Represents an Affirm payment transaction at any point in its lifecycle.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for this transaction.
+          example: '500123'
+        checkout_id:
+          type: string
+          description: Identifier of the checkout session that originated this transaction.
+          example: '500123'
+        order_id:
+          type: string
+          description: Merchant's internal order identifier.
+          example: '500123'
+        status:
+          type: string
+          description: Current lifecycle status of the transaction.
+          enum:
+          - authorized
+          - captured
+          - voided
+          - refunded
+          - partially_refunded
+          example: authorized
+        amount:
+          type: integer
+          description: Original authorized amount in cents.
+          example: 1
+        amount_refunded:
+          type: integer
+          description: Cumulative amount refunded in cents.
+          example: 1
+        currency:
+          type: string
+          description: ISO 4217 currency code.
+          example: USD
+        created:
+          type: string
+          format: date-time
+          description: Creation timestamp in RFC 3339 format.
+          example: '2025-03-15T14:30:00Z'
+        authorization_expiration:
+          type: string
+          format: date-time
+          description: Timestamp after which the authorization can no longer be captured.
+          example: '2025-03-15T14:30:00Z'
+    Transaction_2:
+      type: object
+      description: Represents an Affirm payment transaction, capturing the full lifecycle from authorization through capture, refund, and void operations.
+      properties:
+        id:
+          type: string
+          description: A unique identifier representing the transaction.
+          example: '500123'
+        checkout_id:
+          type: string
+          description: A unique identifier referencing the Checkout object that originated this transaction.
+          example: '500123'
+        order_id:
+          type: string
+          description: Identifies the order within the merchant's order management system.
+          example: '500123'
+        status:
+          type: string
+          description: Current state of the transaction.
+          enum:
+          - authorized
+          - captured
+          - voided
+          - refunded
+          - partially_refunded
+          example: authorized
+        amount:
+          type: integer
+          description: The original amount financed to the customer in this transaction, expressed in the smallest currency unit (e.g., cents for USD).
+          example: 1
+        amount_refunded:
+          type: integer
+          description: The cumulative amount refunded back to the customer from this transaction, expressed in the smallest currency unit.
+          example: 1
+        currency:
+          type: string
+          description: Local transaction currency following ISO 4217 standards.
+          example: USD
+        created:
+          type: string
+          format: date-time
+          description: The time when the transaction was created, in RFC 3339 format.
+          example: '2025-03-15T14:30:00Z'
+        authorization_expiration:
+          type: string
+          format: date-time
+          description: The time when the transaction authorization expires and can no longer be captured, in RFC 3339 format.
+          example: '2025-03-15T14:30:00Z'
+        provider_id:
+          type: integer
+          description: A unique identifier of the provider financing the transaction.
+          example: 1
+        remove_tax:
+          type: boolean
+          description: Indicates whether tax was paid by the provider (applicable to Affirm Connect only).
+          example: true
+        events:
+          type: array
+          description: Array of TransactionEvent objects documenting the transaction history.
+          items:
+            $ref: '#/components/schemas/TransactionEvent'
+          example:
+          - example_value
+        token:
+          type: string
+          description: A JWT signing the JSON response. If PII is included, this token is also encrypted.
+          example: abc123def456abc123def456abc123de
+    Error:
+      type: object
+      description: Standard error response returned by the Affirm API.
+      properties:
+        status_code:
+          type: integer
+          description: HTTP status code of the error.
+          example: 1
+        code:
+          type: string
+          description: Machine-readable error code string.
+          example: example_value
+        message:
+          type: string
+          description: Human-readable description of the error.
+          example: example_value
+    TransactionEvent:
+      type: object
+      description: Represents a single event in the lifecycle of a transaction, such as an authorization, capture, refund, or void.
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the transaction event.
+          example: '500123'
+        type:
+          type: string
+          description: The type of transaction event.
+          enum:
+          - auth
+          - capture
+          - refund
+          - void
+          - update
+          example: auth
+        amount:
+          type: integer
+          description: The amount associated with this event in the smallest currency unit.
+          example: 1
+        currency:
+          type: string
+          description: The ISO 4217 currency code for this event.
+          example: USD
+        fee:
+          type: integer
+          description: The fee charged by Affirm for this event in the smallest currency unit.
+          example: 1
+        created:
+          type: string
+          format: date-time
+          description: The time when this event was created, in RFC 3339 format.
+          example: '2025-03-15T14:30:00Z'
+        reference_id:
+          type: string
+          description: An external reference identifier associated with this event.
+          example: '500123'
+        metadata:
+          type: object
+          description: Additional key-value metadata associated with this event for merchant tracking purposes.
+          additionalProperties:
+            type: string
+          example: {}
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic Authentication using the merchant's public API key as the username and private API key as the password, Base64-encoded as per RFC 7617.
+externalDocs:
+  description: Affirm Checkout API Reference
+  url: https://docs.affirm.com/developers/reference/the-checkout-object

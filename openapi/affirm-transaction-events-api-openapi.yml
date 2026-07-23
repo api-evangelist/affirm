@@ -1,0 +1,165 @@
+openapi: 3.1.0
+info:
+  title: Affirm Checkout Authorization Transaction Events API
+  description: The Affirm Checkout API enables merchants to initiate and manage the Affirm buy now pay later checkout flow for customers at the point of purchase. It provides endpoints to create and store checkout sessions, read and update checkout objects, and resend checkout links via email or SMS. The API supports both redirect and direct checkout integration patterns. Once a customer authorizes a loan, the resulting checkout token is exchanged server-side to complete the transaction authorization via the Transactions API. Authentication uses HTTP Basic Authentication with the merchant's public and private API keys.
+  version: '1.0'
+  contact:
+    name: Affirm Developer Support
+    url: https://docs.affirm.com/developers/docs/development-quickstart
+  termsOfService: https://www.affirm.com/legal/merchant-terms
+servers:
+- url: https://api.affirm.com/api/v1
+  description: Production Server
+- url: https://sandbox.affirm.com/api/v1
+  description: Sandbox Server
+security:
+- basicAuth: []
+tags:
+- name: Transaction Events
+  description: Operations for listing transaction event records associated with transaction lifecycle changes.
+paths:
+  /transaction_events:
+    get:
+      operationId: listTransactionEvents
+      summary: Affirm List Transaction Events
+      description: Returns a paginated list of transaction event records for the authenticated merchant. Each event documents a change in a transaction's lifecycle, such as an authorization, capture, refund, or void. Events include timestamps, amounts, fees, and reference identifiers for reconciliation.
+      tags:
+      - Transaction Events
+      parameters:
+      - $ref: '#/components/parameters/PageLimit'
+      - $ref: '#/components/parameters/PageCursor'
+      responses:
+        '200':
+          description: A list of transaction event objects.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TransactionEvent'
+                  next_cursor:
+                    type: string
+                    description: Cursor for the next page of results.
+              examples:
+                listTransactionEvents200Example:
+                  summary: Default listTransactionEvents 200 response
+                  x-microcks-default: true
+                  value:
+                    data:
+                    - id: {}
+                      type: {}
+                      amount: {}
+                      currency: {}
+                      fee: {}
+                      created: {}
+                      reference_id: {}
+                      metadata: {}
+                    next_cursor: example_value
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+components:
+  parameters:
+    PageLimit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    PageCursor:
+      name: cursor
+      in: query
+      required: false
+      description: Pagination cursor returned from a previous list response.
+      schema:
+        type: string
+  responses:
+    Unauthorized:
+      description: Unauthorized. Authentication credentials are missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      description: Standard error response returned by the Affirm API.
+      properties:
+        status_code:
+          type: integer
+          description: HTTP status code of the error.
+          example: 1
+        code:
+          type: string
+          description: Machine-readable error code string.
+          example: example_value
+        message:
+          type: string
+          description: Human-readable description of the error.
+          example: example_value
+        field:
+          type: string
+          description: The specific field that caused the error, if applicable.
+          example: example_value
+    TransactionEvent:
+      type: object
+      description: Represents a single event in the lifecycle of a transaction, such as an authorization, capture, refund, or void.
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the transaction event.
+          example: '500123'
+        type:
+          type: string
+          description: The type of transaction event.
+          enum:
+          - auth
+          - capture
+          - refund
+          - void
+          - update
+          example: auth
+        amount:
+          type: integer
+          description: The amount associated with this event in the smallest currency unit.
+          example: 1
+        currency:
+          type: string
+          description: The ISO 4217 currency code for this event.
+          example: USD
+        fee:
+          type: integer
+          description: The fee charged by Affirm for this event in the smallest currency unit.
+          example: 1
+        created:
+          type: string
+          format: date-time
+          description: The time when this event was created, in RFC 3339 format.
+          example: '2025-03-15T14:30:00Z'
+        reference_id:
+          type: string
+          description: An external reference identifier associated with this event.
+          example: '500123'
+        metadata:
+          type: object
+          description: Additional key-value metadata associated with this event for merchant tracking purposes.
+          additionalProperties:
+            type: string
+          example: {}
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic Authentication using the merchant's public API key as the username and private API key as the password, Base64-encoded as per RFC 7617.
+externalDocs:
+  description: Affirm Checkout API Reference
+  url: https://docs.affirm.com/developers/reference/the-checkout-object

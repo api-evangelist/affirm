@@ -1,59 +1,35 @@
 openapi: 3.1.0
 info:
-  title: Affirm Promos API
-  description: >-
-    The Affirm Promos API is a server-side endpoint that enables merchants to
-    render dynamic promotional pricing text and present Affirm-hosted educational
-    modals on their website. It accepts a purchase amount and returns financing
-    terms, "as low as" monthly payment messaging, APR rates, and modal content
-    including headlines, descriptions, and legal disclosures. The API supports
-    multiple installment term options and page-type context such as product,
-    cart, and homepage to customize the displayed messaging. Merchants
-    authenticate requests using their public API key appended to the base URL
-    path.
-  version: '2.0'
+  title: Affirm Checkout Authorization Promos API
+  description: The Affirm Checkout API enables merchants to initiate and manage the Affirm buy now pay later checkout flow for customers at the point of purchase. It provides endpoints to create and store checkout sessions, read and update checkout objects, and resend checkout links via email or SMS. The API supports both redirect and direct checkout integration patterns. Once a customer authorizes a loan, the resulting checkout token is exchanged server-side to complete the transaction authorization via the Transactions API. Authentication uses HTTP Basic Authentication with the merchant's public and private API keys.
+  version: '1.0'
   contact:
     name: Affirm Developer Support
     url: https://docs.affirm.com/developers/docs/development-quickstart
   termsOfService: https://www.affirm.com/legal/merchant-terms
-externalDocs:
-  description: Affirm Promos API Integration Overview
-  url: https://docs.affirm.com/developers/docs/promos-api-integration-overview
 servers:
-- url: https://www.affirm.com/api/promos/v2/{public_api_key}
+- url: https://api.affirm.com/api/v1
   description: Production Server
-  variables:
-    public_api_key:
-      default: YOUR_PUBLIC_KEY
-      description: The merchant's public API key obtained from the Affirm Merchant Portal.
+- url: https://sandbox.affirm.com/api/v1
+  description: Sandbox Server
+security:
+- basicAuth: []
 tags:
 - name: Promos
-  description: >-
-    Operations for retrieving dynamic promotional messaging and financing
-    term information to display on merchant web pages.
+  description: Operations for retrieving dynamic promotional messaging and financing term information to display on merchant web pages.
 paths:
   /:
     get:
       operationId: getPromo
       summary: Affirm Get Promotional Messaging
-      description: >-
-        Returns dynamic promotional financing messaging and modal content
-        for a given purchase amount. The response includes "as low as" (ALA)
-        payment text, APR rates, available installment term offers, and
-        Affirm-hosted modal content for the specified page type and locale.
-        Merchants display this content inline on product, cart, and landing
-        pages to inform customers about available buy now pay later financing
-        options before reaching checkout.
+      description: Returns dynamic promotional financing messaging and modal content for a given purchase amount. The response includes "as low as" (ALA) payment text, APR rates, available installment term offers, and Affirm-hosted modal content for the specified page type and locale. Merchants display this content inline on product, cart, and landing pages to inform customers about available buy now pay later financing options before reaching checkout.
       tags:
       - Promos
       parameters:
       - name: amount
         in: query
         required: true
-        description: >-
-          Purchase amount in the smallest currency unit (e.g., cents for
-          USD or CAD). The API uses this to calculate available financing
-          terms and monthly payment messaging.
+        description: Purchase amount in the smallest currency unit (e.g., cents for USD or CAD). The API uses this to calculate available financing terms and monthly payment messaging.
         schema:
           type: integer
           minimum: 0
@@ -62,9 +38,7 @@ paths:
       - name: page_type
         in: query
         required: false
-        description: >-
-          The type of page on which the promotional messaging will be
-          displayed. Controls which financing messaging template is returned.
+        description: The type of page on which the promotional messaging will be displayed. Controls which financing messaging template is returned.
         schema:
           type: string
           enum:
@@ -82,9 +56,7 @@ paths:
       - name: template_field
         in: query
         required: false
-        description: >-
-          Locale identifier controlling the language and currency of the
-          returned promotional content.
+        description: Locale identifier controlling the language and currency of the returned promotional content.
         schema:
           type: string
           enum:
@@ -96,10 +68,7 @@ paths:
       - name: field
         in: query
         required: false
-        description: >-
-          Specifies which content fields to include in the response. Use
-          "ala" for as-low-as messaging only, "modal" for modal content
-          only, or "all" for both.
+        description: Specifies which content fields to include in the response. Use "ala" for as-low-as messaging only, "modal" for modal content only, or "all" for both.
         schema:
           type: string
           enum:
@@ -110,28 +79,21 @@ paths:
       - name: use_best_terms
         in: query
         required: false
-        description: >-
-          When true, returns the most favorable available financing terms
-          for the given amount rather than the default program terms.
+        description: When true, returns the most favorable available financing terms for the given amount rather than the default program terms.
         schema:
           type: boolean
         example: true
       - name: show_cta
         in: query
         required: false
-        description: >-
-          When true, includes a call-to-action element in the modal
-          content response.
+        description: When true, includes a call-to-action element in the modal content response.
         schema:
           type: boolean
         example: true
       - name: items
         in: query
         required: false
-        description: >-
-          Stringified JSON array of item objects to enable item-level
-          financing evaluation. Each item should include sku, display_name,
-          qty, and unit_price fields.
+        description: Stringified JSON array of item objects to enable item-level financing evaluation. Each item should include sku, display_name, qty, and unit_price fields.
         schema:
           type: string
         example: example_value
@@ -168,45 +130,51 @@ paths:
         delay: 0
         dispatcher: FALLBACK
 components:
-  responses:
-    BadRequest:
-      description: Bad request. The query parameters are invalid or missing.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized. The public API key is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    PromoResponse:
+    FinancingTerm:
       type: object
-      description: >-
-        Response containing promotional messaging content and financing offer
-        details for the requested purchase amount.
+      description: A single available financing term option including APR and payment details.
       properties:
-        promo:
-          $ref: '#/components/schemas/PromoContent'
-        offer:
-          $ref: '#/components/schemas/OfferContent'
+        amount:
+          type: integer
+          description: Purchase amount this term applies to, in cents.
+          example: 1
+        loan_type:
+          type: string
+          description: Type of financing loan (e.g., split_pay, installment).
+          example: standard
+        apr:
+          type: number
+          description: Annual percentage rate for this financing term.
+          minimum: 0
+          example: 1
+        installment_amount:
+          type: integer
+          description: Monthly installment payment amount in cents.
+          example: 1
+        installment_count:
+          type: integer
+          description: Total number of installment payments.
+          example: 1
+        interest_amount:
+          type: integer
+          description: Total interest charged over the life of the loan in cents.
+          example: 1
+        total_amount:
+          type: integer
+          description: Total amount paid including principal and interest, in cents.
+          example: 1
     PromoContent:
       type: object
       description: Promotional messaging content including ALA text and modal content.
       properties:
         ala:
           type: string
-          description: >-
-            Plain text "as low as" monthly payment message, suitable for
-            inline display on product and cart pages.
+          description: Plain text "as low as" monthly payment message, suitable for inline display on product and cart pages.
           example: example_value
         html_ala:
           type: string
-          description: >-
-            HTML-formatted "as low as" monthly payment message with
-            appropriate markup for web display.
+          description: HTML-formatted "as low as" monthly payment message with appropriate markup for web display.
           example: example_value
         headline:
           type: string
@@ -230,6 +198,22 @@ components:
           example: Example description text
         config:
           $ref: '#/components/schemas/PromoConfig'
+    Error:
+      type: object
+      description: Standard error response returned by the Affirm API.
+      properties:
+        status_code:
+          type: integer
+          description: HTTP status code of the error.
+          example: 1
+        code:
+          type: string
+          description: Machine-readable error code string.
+          example: example_value
+        message:
+          type: string
+          description: Human-readable description of the error.
+          example: example_value
     PromoConfig:
       type: object
       description: Internal configuration data returned with the promo response.
@@ -286,6 +270,14 @@ components:
             hero2x: https://example.com
             logo: https://example.com
             logo2x: https://example.com
+    PromoResponse:
+      type: object
+      description: Response containing promotional messaging content and financing offer details for the requested purchase amount.
+      properties:
+        promo:
+          $ref: '#/components/schemas/PromoContent'
+        offer:
+          $ref: '#/components/schemas/OfferContent'
     OfferContent:
       type: object
       description: Available financing offer details for the requested purchase amount.
@@ -305,52 +297,24 @@ components:
             $ref: '#/components/schemas/FinancingTerm'
           example:
           - example_value
-    FinancingTerm:
-      type: object
-      description: A single available financing term option including APR and payment details.
-      properties:
-        amount:
-          type: integer
-          description: Purchase amount this term applies to, in cents.
-          example: 1
-        loan_type:
-          type: string
-          description: Type of financing loan (e.g., split_pay, installment).
-          example: standard
-        apr:
-          type: number
-          description: Annual percentage rate for this financing term.
-          minimum: 0
-          example: 1
-        installment_amount:
-          type: integer
-          description: Monthly installment payment amount in cents.
-          example: 1
-        installment_count:
-          type: integer
-          description: Total number of installment payments.
-          example: 1
-        interest_amount:
-          type: integer
-          description: Total interest charged over the life of the loan in cents.
-          example: 1
-        total_amount:
-          type: integer
-          description: Total amount paid including principal and interest, in cents.
-          example: 1
-    Error:
-      type: object
-      description: Standard error response returned by the Affirm API.
-      properties:
-        status_code:
-          type: integer
-          description: HTTP status code of the error.
-          example: 1
-        code:
-          type: string
-          description: Machine-readable error code string.
-          example: example_value
-        message:
-          type: string
-          description: Human-readable description of the error.
-          example: example_value
+  responses:
+    Unauthorized:
+      description: Unauthorized. The public API key is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request. The query parameters are invalid or missing.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic Authentication using the merchant's public API key as the username and private API key as the password, Base64-encoded as per RFC 7617.
+externalDocs:
+  description: Affirm Checkout API Reference
+  url: https://docs.affirm.com/developers/reference/the-checkout-object

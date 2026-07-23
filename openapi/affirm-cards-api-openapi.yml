@@ -1,0 +1,303 @@
+openapi: 3.1.0
+info:
+  title: Affirm Checkout Authorization Cards API
+  description: The Affirm Checkout API enables merchants to initiate and manage the Affirm buy now pay later checkout flow for customers at the point of purchase. It provides endpoints to create and store checkout sessions, read and update checkout objects, and resend checkout links via email or SMS. The API supports both redirect and direct checkout integration patterns. Once a customer authorizes a loan, the resulting checkout token is exchanged server-side to complete the transaction authorization via the Transactions API. Authentication uses HTTP Basic Authentication with the merchant's public and private API keys.
+  version: '1.0'
+  contact:
+    name: Affirm Developer Support
+    url: https://docs.affirm.com/developers/docs/development-quickstart
+  termsOfService: https://www.affirm.com/legal/merchant-terms
+servers:
+- url: https://api.affirm.com/api/v1
+  description: Production Server
+- url: https://sandbox.affirm.com/api/v1
+  description: Sandbox Server
+security:
+- basicAuth: []
+tags:
+- name: Cards
+  description: Operations for managing virtual card numbers (VCN) issued via the Affirm Lite integration pattern.
+paths:
+  /cards/{id}:
+    get:
+      operationId: readCard
+      summary: Affirm Read a Card
+      description: Retrieves the details of a virtual card number (VCN) issued via Affirm Lite. Returns card number, expiration, CVV, and billing address information needed for payment processing through traditional card networks.
+      tags:
+      - Cards
+      parameters:
+      - $ref: '#/components/parameters/CardId'
+      responses:
+        '200':
+          description: Card retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+              examples:
+                readCard200Example:
+                  summary: Default readCard 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    checkout_id: '500123'
+                    status: active
+                    number: example_value
+                    cvv: example_value
+                    expiration: example_value
+                    billing:
+                      address:
+                        line1: {}
+                        city: {}
+                        state: {}
+                        zipcode: {}
+                        country: {}
+                    amount: 1
+                    currency: USD
+                    created: '2025-03-15T14:30:00Z'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+  /cards/{id}/cancel:
+    post:
+      operationId: cancelCard
+      summary: Affirm Cancel a Card
+      description: Cancels a virtual card number (VCN) issued via Affirm Lite, rendering it unusable for further charges. Used when an order is cancelled or the card is no longer needed.
+      tags:
+      - Cards
+      parameters:
+      - $ref: '#/components/parameters/CardId'
+      responses:
+        '200':
+          description: Card cancelled successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+              examples:
+                cancelCard200Example:
+                  summary: Default cancelCard 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    checkout_id: '500123'
+                    status: active
+                    number: example_value
+                    cvv: example_value
+                    expiration: example_value
+                    billing:
+                      address:
+                        line1: {}
+                        city: {}
+                        state: {}
+                        zipcode: {}
+                        country: {}
+                    amount: 1
+                    currency: USD
+                    created: '2025-03-15T14:30:00Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+  /cards/{id}/finalize:
+    post:
+      operationId: finalizeCard
+      summary: Affirm Finalize a Card
+      description: Finalizes a virtual card number (VCN), updating the card details with the final purchase amount and completing the Affirm Lite transaction lifecycle.
+      tags:
+      - Cards
+      parameters:
+      - $ref: '#/components/parameters/CardId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  description: Final authorized amount in cents.
+                order_id:
+                  type: string
+                  description: Merchant order identifier for this finalization.
+            examples:
+              finalizeCardRequestExample:
+                summary: Default finalizeCard request
+                x-microcks-default: true
+                value:
+                  amount: 1
+                  order_id: '500123'
+      responses:
+        '200':
+          description: Card finalized successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+              examples:
+                finalizeCard200Example:
+                  summary: Default finalizeCard 200 response
+                  x-microcks-default: true
+                  value:
+                    id: '500123'
+                    checkout_id: '500123'
+                    status: active
+                    number: example_value
+                    cvv: example_value
+                    expiration: example_value
+                    billing:
+                      address:
+                        line1: {}
+                        city: {}
+                        state: {}
+                        zipcode: {}
+                        country: {}
+                    amount: 1
+                    currency: USD
+                    created: '2025-03-15T14:30:00Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
+components:
+  responses:
+    Unauthorized:
+      description: Unauthorized. Authentication credentials are missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request. The request body or parameters are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found. The requested resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    CardId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the virtual card.
+      schema:
+        type: string
+  schemas:
+    Card:
+      type: object
+      description: Represents an Affirm-issued virtual card number (VCN) used in the Affirm Lite integration pattern to process payments through traditional card networks.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for this virtual card.
+          example: '500123'
+        checkout_id:
+          type: string
+          description: Checkout session identifier associated with this card.
+          example: '500123'
+        status:
+          type: string
+          description: Current status of the virtual card.
+          enum:
+          - active
+          - cancelled
+          - finalized
+          example: active
+        number:
+          type: string
+          description: Virtual card number (PAN).
+          example: example_value
+        cvv:
+          type: string
+          description: Card verification value.
+          example: example_value
+        expiration:
+          type: string
+          description: Card expiration date in MM/YY format.
+          example: example_value
+        billing:
+          type: object
+          description: Billing address associated with this virtual card.
+          properties:
+            address:
+              type: object
+              properties:
+                line1:
+                  type: string
+                  description: Street address line 1.
+                city:
+                  type: string
+                  description: City.
+                state:
+                  type: string
+                  description: State code.
+                zipcode:
+                  type: string
+                  description: ZIP or postal code.
+                country:
+                  type: string
+                  description: ISO 3166-1 alpha-2 country code.
+          example:
+            address:
+              line1: example_value
+              city: example_value
+              state: example_value
+              zipcode: example_value
+              country: example_value
+        amount:
+          type: integer
+          description: Authorized amount on this virtual card in cents.
+          example: 1
+        currency:
+          type: string
+          description: ISO 4217 currency code.
+          example: USD
+        created:
+          type: string
+          format: date-time
+          description: Card creation timestamp in RFC 3339 format.
+          example: '2025-03-15T14:30:00Z'
+    Error:
+      type: object
+      description: Standard error response returned by the Affirm API.
+      properties:
+        status_code:
+          type: integer
+          description: HTTP status code of the error.
+          example: 1
+        code:
+          type: string
+          description: Machine-readable error code string.
+          example: example_value
+        message:
+          type: string
+          description: Human-readable description of the error.
+          example: example_value
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic Authentication using the merchant's public API key as the username and private API key as the password, Base64-encoded as per RFC 7617.
+externalDocs:
+  description: Affirm Checkout API Reference
+  url: https://docs.affirm.com/developers/reference/the-checkout-object

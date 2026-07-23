@@ -1,47 +1,28 @@
 openapi: 3.1.0
 info:
-  title: Affirm Disputes API
-  description: >-
-    The Affirm Disputes API (V3) provides merchants with programmatic access
-    to manage payment disputes initiated by customers. It supports listing and
-    retrieving individual dispute records, submitting evidence to contest a
-    dispute, and closing disputes. The API integrates with the Files API so
-    merchants can attach supporting documentation as evidence when responding
-    to disputes. This interface allows merchants to handle chargeback workflows
-    programmatically rather than relying solely on the Merchant Portal UI.
-    Authentication uses HTTP Basic Authentication with the merchant's public
-    and private API keys.
-  version: '3.0'
+  title: Affirm Checkout Authorization Disputes API
+  description: The Affirm Checkout API enables merchants to initiate and manage the Affirm buy now pay later checkout flow for customers at the point of purchase. It provides endpoints to create and store checkout sessions, read and update checkout objects, and resend checkout links via email or SMS. The API supports both redirect and direct checkout integration patterns. Once a customer authorizes a loan, the resulting checkout token is exchanged server-side to complete the transaction authorization via the Transactions API. Authentication uses HTTP Basic Authentication with the merchant's public and private API keys.
+  version: '1.0'
   contact:
     name: Affirm Developer Support
     url: https://docs.affirm.com/developers/docs/development-quickstart
   termsOfService: https://www.affirm.com/legal/merchant-terms
-externalDocs:
-  description: Affirm Disputes API V3 Reference
-  url: https://docs.affirm.com/developers/reference/introduction
 servers:
-- url: https://api.affirm.com/api/v3
+- url: https://api.affirm.com/api/v1
   description: Production Server
-- url: https://sandbox.affirm.com/api/v3
+- url: https://sandbox.affirm.com/api/v1
   description: Sandbox Server
-tags:
-- name: Disputes
-  description: >-
-    Operations for listing, retrieving, contesting, and closing payment
-    disputes initiated by customers.
 security:
 - basicAuth: []
+tags:
+- name: Disputes
+  description: Operations for listing, retrieving, contesting, and closing payment disputes initiated by customers.
 paths:
   /disputes:
     get:
       operationId: listDisputes
       summary: Affirm List Disputes
-      description: >-
-        Returns a paginated list of all payment disputes for the authenticated
-        merchant. Disputes represent customer-initiated challenges to Affirm
-        transactions. Results include dispute status, associated transaction
-        identifiers, dispute reason codes, and submission deadlines for evidence.
-        Use filtering parameters to narrow results by status or date range.
+      description: Returns a paginated list of all payment disputes for the authenticated merchant. Disputes represent customer-initiated challenges to Affirm transactions. Results include dispute status, associated transaction identifiers, dispute reason codes, and submission deadlines for evidence. Use filtering parameters to narrow results by status or date range.
       tags:
       - Disputes
       parameters:
@@ -117,12 +98,7 @@ paths:
     get:
       operationId: getDispute
       summary: Affirm Get a Dispute
-      description: >-
-        Retrieves the full details of a specific dispute by its unique
-        identifier. Returns dispute status, reason code, associated transaction
-        and charge information, evidence submission deadline, evidence already
-        submitted, and the dispute resolution outcome if the dispute has been
-        closed.
+      description: Retrieves the full details of a specific dispute by its unique identifier. Returns dispute status, reason code, associated transaction and charge information, evidence submission deadline, evidence already submitted, and the dispute resolution outcome if the dispute has been closed.
       tags:
       - Disputes
       parameters:
@@ -163,13 +139,7 @@ paths:
     post:
       operationId: closeDispute
       summary: Affirm Close a Dispute
-      description: >-
-        Closes a dispute and transitions it to the merchant-lost state,
-        indicating the merchant accepts the dispute and concedes to the
-        customer's claim. This action is irreversible and results in the
-        disputed amount being returned to the customer. Use this endpoint
-        when the merchant chooses not to contest the dispute or determines
-        the customer's claim is valid.
+      description: Closes a dispute and transitions it to the merchant-lost state, indicating the merchant accepts the dispute and concedes to the customer's claim. This action is irreversible and results in the disputed amount being returned to the customer. Use this endpoint when the merchant chooses not to contest the dispute or determines the customer's claim is valid.
       tags:
       - Disputes
       parameters:
@@ -183,9 +153,7 @@ paths:
               properties:
                 reason:
                   type: string
-                  description: >-
-                    Optional explanation for why the merchant is closing the
-                    dispute without contesting it.
+                  description: Optional explanation for why the merchant is closing the dispute without contesting it.
             examples:
               closeDisputeRequestExample:
                 summary: Default closeDispute request
@@ -230,13 +198,7 @@ paths:
     post:
       operationId: submitDisputeEvidence
       summary: Affirm Submit Dispute Evidence
-      description: >-
-        Submits supporting evidence to contest an open dispute on behalf of
-        the merchant. Evidence may include uploaded file references (obtained
-        from the Files API), text descriptions, tracking information, and
-        other supporting documentation. Evidence must be submitted before the
-        dispute's evidence submission deadline. The submitted evidence is
-        reviewed by Affirm to determine the dispute outcome.
+      description: Submits supporting evidence to contest an open dispute on behalf of the merchant. Evidence may include uploaded file references (obtained from the Files API), text descriptions, tracking information, and other supporting documentation. Evidence must be submitted before the dispute's evidence submission deadline. The submitted evidence is reviewed by Affirm to determine the dispute outcome.
       tags:
       - Disputes
       parameters:
@@ -294,31 +256,15 @@ paths:
         delay: 0
         dispatcher: FALLBACK
 components:
-  securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
-      description: >-
-        HTTP Basic Authentication using the merchant's public API key as the
-        username and private API key as the password, Base64-encoded as
-        per RFC 7617.
-  parameters:
-    DisputeId:
-      name: dispute_id
-      in: path
-      required: true
-      description: The unique identifier of the dispute.
-      schema:
-        type: string
   responses:
-    BadRequest:
-      description: Bad request. The request body or parameters are invalid.
+    Unauthorized:
+      description: Unauthorized. Authentication credentials are missing or invalid.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized. Authentication credentials are missing or invalid.
+    BadRequest:
+      description: Bad request. The request body or parameters are invalid.
       content:
         application/json:
           schema:
@@ -332,10 +278,7 @@ components:
   schemas:
     Dispute:
       type: object
-      description: >-
-        Represents a payment dispute filed by a customer against an Affirm
-        transaction, including its current status, reason, and any evidence
-        submitted by the merchant.
+      description: Represents a payment dispute filed by a customer against an Affirm transaction, including its current status, reason, and any evidence submitted by the merchant.
       properties:
         id:
           type: string
@@ -360,9 +303,7 @@ components:
           example: open
         reason_code:
           type: string
-          description: >-
-            Standardized reason code categorizing the nature of the dispute
-            (e.g., item_not_received, item_not_as_described, unauthorized).
+          description: Standardized reason code categorizing the nature of the dispute (e.g., item_not_received, item_not_as_described, unauthorized).
           example: example_value
         amount:
           type: integer
@@ -380,9 +321,7 @@ components:
         evidence_due_by:
           type: string
           format: date-time
-          description: >-
-            Deadline by which the merchant must submit evidence to contest
-            this dispute, in RFC 3339 format.
+          description: Deadline by which the merchant must submit evidence to contest this dispute, in RFC 3339 format.
           example: '2025-03-15T14:30:00Z'
         closed_at:
           type: string
@@ -393,9 +332,7 @@ components:
         outcome:
           type: string
           nullable: true
-          description: >-
-            Final outcome of the dispute after review. Only set when status
-            is won or lost.
+          description: Final outcome of the dispute after review. Only set when status is won or lost.
           enum:
           - merchant_won
           - merchant_lost
@@ -409,30 +346,22 @@ components:
           - example_value
     EvidenceRequest:
       type: object
-      description: >-
-        Request body for submitting evidence to contest a dispute. May include
-        file references, textual explanations, and shipping/tracking details.
+      description: Request body for submitting evidence to contest a dispute. May include file references, textual explanations, and shipping/tracking details.
       properties:
         files:
           type: array
-          description: >-
-            Array of file identifiers uploaded via the Files API to attach
-            as documentary evidence.
+          description: Array of file identifiers uploaded via the Files API to attach as documentary evidence.
           items:
             type: string
           example:
           - example_value
         explanation:
           type: string
-          description: >-
-            Textual explanation of the merchant's position and why the
-            dispute should be decided in the merchant's favor.
+          description: Textual explanation of the merchant's position and why the dispute should be decided in the merchant's favor.
           example: example_value
         tracking_number:
           type: string
-          description: >-
-            Shipment tracking number demonstrating that the order was
-            delivered as expected.
+          description: Shipment tracking number demonstrating that the order was delivered as expected.
           example: example_value
         shipping_carrier:
           type: string
@@ -440,15 +369,11 @@ components:
           example: example_value
         customer_communication:
           type: string
-          description: >-
-            Description or summary of communications with the customer
-            regarding the disputed order.
+          description: Description or summary of communications with the customer regarding the disputed order.
           example: example_value
         refund_policy_disclosure:
           type: string
-          description: >-
-            Description of the merchant's refund policy as shown to the
-            customer at the time of purchase.
+          description: Description of the merchant's refund policy as shown to the customer at the time of purchase.
           example: example_value
     EvidenceItem:
       type: object
@@ -468,9 +393,7 @@ components:
           example: file
         content:
           type: string
-          description: >-
-            For text evidence, the content of the explanation. For file
-            evidence, the file identifier.
+          description: For text evidence, the content of the explanation. For file evidence, the file identifier.
           example: example_value
         submitted_at:
           type: string
@@ -493,3 +416,19 @@ components:
           type: string
           description: Human-readable description of the error.
           example: example_value
+  parameters:
+    DisputeId:
+      name: dispute_id
+      in: path
+      required: true
+      description: The unique identifier of the dispute.
+      schema:
+        type: string
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic Authentication using the merchant's public API key as the username and private API key as the password, Base64-encoded as per RFC 7617.
+externalDocs:
+  description: Affirm Checkout API Reference
+  url: https://docs.affirm.com/developers/reference/the-checkout-object
