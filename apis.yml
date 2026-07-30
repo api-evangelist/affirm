@@ -5,7 +5,20 @@ kind: company
 description: Affirm is a buy-now-pay-later platform offering installment loans at
   point-of-sale via merchant SDKs and direct APIs. Public Series A through F-funded
   company.
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/affirm.png
 tags:
 - Fintech
 - BNPL
@@ -48,6 +61,94 @@ apis:
   properties:
   - type: Documentation
     url: https://docs.affirm.com/developers
+- aid: affirm:affirm-authorization-api
+  name: Affirm Authorization API
+  description: >-
+    Server-side operations for authorizing Affirm transactions after a customer completes the checkout
+    flow and a checkout token is returned.
+  humanURL: https://docs.affirm.com/developers
+  baseURL: https://api.affirm.com
+  tags:
+  - Authorization
+  properties:
+  - type: OpenAPI
+    url: openapi/affirm-authorization-api-openapi.yml
+- aid: affirm:affirm-cards-api
+  name: Affirm Cards API
+  description: >-
+    Operations for managing virtual card numbers (VCN) issued via the Affirm Lite integration pattern.
+  humanURL: https://docs.affirm.com/developers
+  baseURL: https://api.affirm.com
+  tags:
+  - Cards
+  properties:
+  - type: OpenAPI
+    url: openapi/affirm-cards-api-openapi.yml
+- aid: affirm:affirm-checkouts-api
+  name: Affirm Checkouts API
+  description: Operations for creating, retrieving, updating, and resending Affirm checkout sessions.
+  humanURL: https://docs.affirm.com/developers
+  baseURL: https://api.affirm.com
+  tags:
+  - Checkouts
+  properties:
+  - type: OpenAPI
+    url: openapi/affirm-checkouts-api-openapi.yml
+- aid: affirm:affirm-disputes-api
+  name: Affirm Disputes API
+  description: >-
+    Operations for listing, retrieving, contesting, and closing payment disputes initiated by customers.
+  humanURL: https://docs.affirm.com/developers
+  baseURL: https://api.affirm.com
+  tags:
+  - Disputes
+  properties:
+  - type: OpenAPI
+    url: openapi/affirm-disputes-api-openapi.yml
+- aid: affirm:affirm-promos-api
+  name: Affirm Promos API
+  description: >-
+    Operations for retrieving dynamic promotional messaging and financing term information to display
+    on merchant web pages.
+  humanURL: https://docs.affirm.com/developers
+  baseURL: https://api.affirm.com
+  tags:
+  - Promos
+  properties:
+  - type: OpenAPI
+    url: openapi/affirm-promos-api-openapi.yml
+- aid: affirm:affirm-settlement-events-api
+  name: Affirm Settlement Events API
+  description: Operations for listing settlement events and summaries that track disbursement activity.
+  humanURL: https://docs.affirm.com/developers
+  baseURL: https://api.affirm.com
+  tags:
+  - Settlement Events
+  properties:
+  - type: OpenAPI
+    url: openapi/affirm-settlement-events-api-openapi.yml
+- aid: affirm:affirm-transaction-events-api
+  name: Affirm Transaction Events API
+  description: >-
+    Operations for listing transaction event records associated with transaction lifecycle changes.
+  humanURL: https://docs.affirm.com/developers
+  baseURL: https://api.affirm.com
+  tags:
+  - Transaction Events
+  properties:
+  - type: OpenAPI
+    url: openapi/affirm-transaction-events-api-openapi.yml
+- aid: affirm:affirm-transactions-api
+  name: Affirm Transactions API
+  description: >-
+    Post-authorization transaction management operations including capture, void, and refund.
+  humanURL: https://docs.affirm.com/developers
+  baseURL: https://api.affirm.com
+  tags:
+  - Transactions
+  properties:
+  - type: OpenAPI
+    url: openapi/affirm-transactions-api-openapi.yml
 common:
 - type: AgenticAccess
   url: agentic-access/affirm-agentic-access.yml
