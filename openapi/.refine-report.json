@@ -1,0 +1,28 @@
+{
+  "provider": "affirm",
+  "sources": [
+    "affirm-authorization-api-openapi.yml",
+    "affirm-cards-api-openapi.yml",
+    "affirm-checkouts-api-openapi.yml",
+    "affirm-disputes-api-openapi.yml",
+    "affirm-promos-api-openapi.yml",
+    "affirm-settlement-events-api-openapi.yml",
+    "affirm-transaction-events-api-openapi.yml",
+    "affirm-transactions-api-openapi.yml"
+  ],
+  "outputs": [
+    "affirm-authorization-api-openapi.yml",
+    "affirm-cards-api-openapi.yml",
+    "affirm-checkouts-api-openapi.yml",
+    "affirm-disputes-api-openapi.yml",
+    "affirm-promos-api-openapi.yml",
+    "affirm-settlement-events-api-openapi.yml",
+    "affirm-transaction-events-api-openapi.yml",
+    "affirm-transactions-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
