@@ -150,6 +150,10 @@ apis:
   - type: OpenAPI
     url: openapi/affirm-transactions-api-openapi.yml
 common:
+- type: Documentation
+  url: https://www.affirm.com/docs
+- type: ChangeLog
+  url: https://docs.affirm.com/affirm-developers/changelog
 - type: AgenticAccess
   url: agentic-access/affirm-agentic-access.yml
 - type: TrustCenter
