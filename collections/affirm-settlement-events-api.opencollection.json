@@ -1,0 +1,75 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Affirm Checkout Authorization Settlement Events API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Settlement Events",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Affirm List Settlement Events",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.affirm.com/api/v1/settlement_events",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return per page."
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor returned from a previous list response."
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of settlement events representing individual disbursement line items from Affirm to the merchant. Each settlement event is tied to a transaction event and includes the net amount disbursed after fees. Used for financial reconciliation and accounting."
+        },
+        {
+          "info": {
+            "name": "Affirm List Settlement Event Summaries",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.affirm.com/api/v1/settlement_event_summaries",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return per page."
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor returned from a previous list response."
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of settlement event summary records that aggregate settlement activity by disbursement batch. Each summary includes the total amount disbursed, the date of the disbursement, and a count of associated settlement events. Used for high-level financial reconciliation."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

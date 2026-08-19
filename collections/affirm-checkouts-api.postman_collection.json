@@ -1,0 +1,1250 @@
+{
+  "item": [
+    {
+      "id": "a2e36544-3644-47ab-a1a7-454fcef0f2a4",
+      "name": "Checkouts",
+      "description": {
+        "content": "Operations for creating, retrieving, updating, and resending Affirm checkout sessions.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "465658a2-927f-4f11-a02d-72408a64744c",
+          "name": "Affirm Store a Checkout",
+          "request": {
+            "name": "Affirm Store a Checkout",
+            "description": {
+              "content": "Creates and stores a new checkout object on Affirm's servers, returning a checkout token that can be used to initiate the Affirm checkout UI. This endpoint is used in the server-side store pattern where checkout data is submitted from the merchant server rather than from the browser via affirm.js. The checkout token returned must be used to redirect or open the Affirm checkout experience for the customer.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "checkouts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"merchant\": {\n    \"user_confirmation_url\": \"<uri>\",\n    \"user_cancel_url\": \"<uri>\",\n    \"public_api_key\": \"<string>\",\n    \"user_confirmation_url_action\": \"POST\",\n    \"name\": \"<string>\"\n  },\n  \"items\": [\n    {\n      \"display_name\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"unit_price\": \"<integer>\",\n      \"qty\": \"<integer>\",\n      \"item_image_url\": \"<uri>\",\n      \"item_url\": \"<uri>\",\n      \"categories\": [\n        [\n          \"<string>\",\n          \"<string>\"\n        ],\n        [\n          \"<string>\",\n          \"<string>\"\n        ]\n      ]\n    },\n    {\n      \"display_name\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"unit_price\": \"<integer>\",\n      \"qty\": \"<integer>\",\n      \"item_image_url\": \"<uri>\",\n      \"item_url\": \"<uri>\",\n      \"categories\": [\n        [\n          \"<string>\",\n          \"<string>\"\n        ],\n        [\n          \"<string>\",\n          \"<string>\"\n        ]\n      ]\n    }\n  ],\n  \"currency\": \"<string>\",\n  \"total\": \"<integer>\",\n  \"shipping\": {\n    \"name\": {\n      \"first\": \"<string>\",\n      \"last\": \"<string>\",\n      \"full\": \"<string>\"\n    },\n    \"address\": {\n      \"line1\": \"<string>\",\n      \"line2\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"zipcode\": \"<string>\",\n      \"country\": \"<string>\"\n    },\n    \"email\": \"<email>\",\n    \"phone_number\": \"<string>\"\n  },\n  \"billing\": {\n    \"name\": {\n      \"first\": \"<string>\",\n      \"last\": \"<string>\",\n      \"full\": \"<string>\"\n    },\n    \"address\": {\n      \"line1\": \"<string>\",\n      \"line2\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"zipcode\": \"<string>\",\n      \"country\": \"<string>\"\n    },\n    \"email\": \"<email>\",\n    \"phone_number\": \"<string>\"\n  },\n  \"store\": {\n    \"name\": \"<string>\",\n    \"address\": {\n      \"line1\": \"<string>\",\n      \"line2\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"zipcode\": \"<string>\",\n      \"country\": \"<string>\"\n    }\n  },\n  \"discounts\": {\n    \"key_0\": {\n      \"discount_amount\": \"<integer>\",\n      \"discount_display_name\": \"<string>\"\n    }\n  },\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  },\n  \"order_id\": \"<string>\",\n  \"financing_program\": \"<string>\",\n  \"shipping_amount\": \"<integer>\",\n  \"tax_amount\": \"<integer>\",\n  \"checkout_expiration\": \"<dateTime>\",\n  \"expiration_time\": \"<dateTime>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "65ecd17d-4b2f-4c90-870c-2d5b1ef24e76",
+              "name": "Checkout created and stored successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"merchant\": {\n    \"public_api_key\": {},\n    \"user_confirmation_url\": {},\n    \"user_cancel_url\": {},\n    \"user_confirmation_url_action\": {},\n    \"name\": {}\n  },\n  \"shipping\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"billing\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"store\": {\n    \"name\": {},\n    \"address\": {}\n  },\n  \"items\": [\n    {}\n  ],\n  \"discounts\": {},\n  \"metadata\": {},\n  \"order_id\": \"500123\",\n  \"currency\": \"USD\",\n  \"financing_program\": \"example_value\",\n  \"shipping_amount\": 1,\n  \"tax_amount\": 1,\n  \"total\": 1,\n  \"checkout_expiration\": \"2025-03-15T14:30:00Z\",\n  \"expiration_time\": \"2025-03-15T14:30:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"checkout_token\": \"abc123def456abc123def456abc123de\",\n  \"redirect_url\": \"https://example.com/path\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "799dfaaf-3453-4942-b524-efe9bfab2b68",
+              "name": "Bad request. The request body or parameters are invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"merchant\": {\n    \"public_api_key\": {},\n    \"user_confirmation_url\": {},\n    \"user_cancel_url\": {},\n    \"user_confirmation_url_action\": {},\n    \"name\": {}\n  },\n  \"shipping\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"billing\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"store\": {\n    \"name\": {},\n    \"address\": {}\n  },\n  \"items\": [\n    {}\n  ],\n  \"discounts\": {},\n  \"metadata\": {},\n  \"order_id\": \"500123\",\n  \"currency\": \"USD\",\n  \"financing_program\": \"example_value\",\n  \"shipping_amount\": 1,\n  \"tax_amount\": 1,\n  \"total\": 1,\n  \"checkout_expiration\": \"2025-03-15T14:30:00Z\",\n  \"expiration_time\": \"2025-03-15T14:30:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status_code\": 1,\n  \"code\": \"example_value\",\n  \"message\": \"example_value\",\n  \"field\": \"example_value\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ac4fe41d-5edc-4c84-9e2b-fd43b30184de",
+              "name": "Unauthorized. Authentication credentials are missing or invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkouts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"merchant\": {\n    \"public_api_key\": {},\n    \"user_confirmation_url\": {},\n    \"user_cancel_url\": {},\n    \"user_confirmation_url_action\": {},\n    \"name\": {}\n  },\n  \"shipping\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"billing\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"store\": {\n    \"name\": {},\n    \"address\": {}\n  },\n  \"items\": [\n    {}\n  ],\n  \"discounts\": {},\n  \"metadata\": {},\n  \"order_id\": \"500123\",\n  \"currency\": \"USD\",\n  \"financing_program\": \"example_value\",\n  \"shipping_amount\": 1,\n  \"tax_amount\": 1,\n  \"total\": 1,\n  \"checkout_expiration\": \"2025-03-15T14:30:00Z\",\n  \"expiration_time\": \"2025-03-15T14:30:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status_code\": 1,\n  \"code\": \"example_value\",\n  \"message\": \"example_value\",\n  \"field\": \"example_value\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ccd07ac1-8383-46fd-a9b3-2ca3d729f5ab",
+          "name": "Affirm Direct Checkout",
+          "request": {
+            "name": "Affirm Direct Checkout",
+            "description": {
+              "content": "Creates a checkout and directly authorizes the transaction in a single server-side call, without requiring the customer to interact with the Affirm checkout UI. This endpoint is used for the Direct API integration pattern where the merchant captures the customer's financing decision inline and handles the authorization flow programmatically. Returns a checkout token upon success.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "checkouts",
+                "direct"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"merchant\": {\n    \"user_confirmation_url\": \"<uri>\",\n    \"user_cancel_url\": \"<uri>\",\n    \"public_api_key\": \"<string>\",\n    \"user_confirmation_url_action\": \"POST\",\n    \"name\": \"<string>\"\n  },\n  \"items\": [\n    {\n      \"display_name\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"unit_price\": \"<integer>\",\n      \"qty\": \"<integer>\",\n      \"item_image_url\": \"<uri>\",\n      \"item_url\": \"<uri>\",\n      \"categories\": [\n        [\n          \"<string>\",\n          \"<string>\"\n        ],\n        [\n          \"<string>\",\n          \"<string>\"\n        ]\n      ]\n    },\n    {\n      \"display_name\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"unit_price\": \"<integer>\",\n      \"qty\": \"<integer>\",\n      \"item_image_url\": \"<uri>\",\n      \"item_url\": \"<uri>\",\n      \"categories\": [\n        [\n          \"<string>\",\n          \"<string>\"\n        ],\n        [\n          \"<string>\",\n          \"<string>\"\n        ]\n      ]\n    }\n  ],\n  \"currency\": \"<string>\",\n  \"total\": \"<integer>\",\n  \"shipping\": {\n    \"name\": {\n      \"first\": \"<string>\",\n      \"last\": \"<string>\",\n      \"full\": \"<string>\"\n    },\n    \"address\": {\n      \"line1\": \"<string>\",\n      \"line2\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"zipcode\": \"<string>\",\n      \"country\": \"<string>\"\n    },\n    \"email\": \"<email>\",\n    \"phone_number\": \"<string>\"\n  },\n  \"billing\": {\n    \"name\": {\n      \"first\": \"<string>\",\n      \"last\": \"<string>\",\n      \"full\": \"<string>\"\n    },\n    \"address\": {\n      \"line1\": \"<string>\",\n      \"line2\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"zipcode\": \"<string>\",\n      \"country\": \"<string>\"\n    },\n    \"email\": \"<email>\",\n    \"phone_number\": \"<string>\"\n  },\n  \"store\": {\n    \"name\": \"<string>\",\n    \"address\": {\n      \"line1\": \"<string>\",\n      \"line2\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"zipcode\": \"<string>\",\n      \"country\": \"<string>\"\n    }\n  },\n  \"discounts\": {\n    \"key_0\": {\n      \"discount_amount\": \"<integer>\",\n      \"discount_display_name\": \"<string>\"\n    }\n  },\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  },\n  \"order_id\": \"<string>\",\n  \"financing_program\": \"<string>\",\n  \"shipping_amount\": \"<integer>\",\n  \"tax_amount\": \"<integer>\",\n  \"checkout_expiration\": \"<dateTime>\",\n  \"expiration_time\": \"<dateTime>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f278aaca-c312-474e-88dc-fe0ab19cbb92",
+              "name": "Direct checkout authorized successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkouts",
+                    "direct"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"merchant\": {\n    \"public_api_key\": {},\n    \"user_confirmation_url\": {},\n    \"user_cancel_url\": {},\n    \"user_confirmation_url_action\": {},\n    \"name\": {}\n  },\n  \"shipping\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"billing\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"store\": {\n    \"name\": {},\n    \"address\": {}\n  },\n  \"items\": [\n    {}\n  ],\n  \"discounts\": {},\n  \"metadata\": {},\n  \"order_id\": \"500123\",\n  \"currency\": \"USD\",\n  \"financing_program\": \"example_value\",\n  \"shipping_amount\": 1,\n  \"tax_amount\": 1,\n  \"total\": 1,\n  \"checkout_expiration\": \"2025-03-15T14:30:00Z\",\n  \"expiration_time\": \"2025-03-15T14:30:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"checkout_token\": \"abc123def456abc123def456abc123de\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1f90abe6-fa95-4b26-af6f-20e90f16e16c",
+              "name": "Bad request. The request body or parameters are invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkouts",
+                    "direct"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"merchant\": {\n    \"public_api_key\": {},\n    \"user_confirmation_url\": {},\n    \"user_cancel_url\": {},\n    \"user_confirmation_url_action\": {},\n    \"name\": {}\n  },\n  \"shipping\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"billing\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"store\": {\n    \"name\": {},\n    \"address\": {}\n  },\n  \"items\": [\n    {}\n  ],\n  \"discounts\": {},\n  \"metadata\": {},\n  \"order_id\": \"500123\",\n  \"currency\": \"USD\",\n  \"financing_program\": \"example_value\",\n  \"shipping_amount\": 1,\n  \"tax_amount\": 1,\n  \"total\": 1,\n  \"checkout_expiration\": \"2025-03-15T14:30:00Z\",\n  \"expiration_time\": \"2025-03-15T14:30:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status_code\": 1,\n  \"code\": \"example_value\",\n  \"message\": \"example_value\",\n  \"field\": \"example_value\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "626db6ef-1084-40e4-b13a-45781a24ac8d",
+              "name": "Unauthorized. Authentication credentials are missing or invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkouts",
+                    "direct"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"merchant\": {\n    \"public_api_key\": {},\n    \"user_confirmation_url\": {},\n    \"user_cancel_url\": {},\n    \"user_confirmation_url_action\": {},\n    \"name\": {}\n  },\n  \"shipping\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"billing\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"store\": {\n    \"name\": {},\n    \"address\": {}\n  },\n  \"items\": [\n    {}\n  ],\n  \"discounts\": {},\n  \"metadata\": {},\n  \"order_id\": \"500123\",\n  \"currency\": \"USD\",\n  \"financing_program\": \"example_value\",\n  \"shipping_amount\": 1,\n  \"tax_amount\": 1,\n  \"total\": 1,\n  \"checkout_expiration\": \"2025-03-15T14:30:00Z\",\n  \"expiration_time\": \"2025-03-15T14:30:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status_code\": 1,\n  \"code\": \"example_value\",\n  \"message\": \"example_value\",\n  \"field\": \"example_value\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "54f1884e-d8b1-433a-9ae9-117136963af7",
+          "name": "Affirm Read a Checkout",
+          "request": {
+            "name": "Affirm Read a Checkout",
+            "description": {
+              "content": "Retrieves the details of an existing checkout object by its token. Returns full checkout information including order totals, shipping and billing details, merchant configuration, checkout status, and metadata. Used to verify checkout state before or after the customer completes the Affirm flow.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "checkouts",
+                ":token"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "token",
+                  "description": "(Required) The checkout token that represents the purchase and customer information for a specific checkout session."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "bd79d7ee-4866-418c-8af9-1e45ae343e7b",
+              "name": "Checkout object retrieved successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkouts",
+                    ":token"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) The checkout token that represents the purchase and customer information for a specific checkout session."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"checkout_id\": \"500123\",\n  \"checkout_status\": \"pending\",\n  \"checkout_flow_type\": \"standard\",\n  \"currency\": \"USD\",\n  \"total\": 1,\n  \"shipping_amount\": 1,\n  \"tax_amount\": 1,\n  \"order_id\": \"500123\",\n  \"financial_program_name\": \"Example Merchant\",\n  \"financial_program_external_name\": \"Example Merchant\",\n  \"billing_frequency\": \"example_value\",\n  \"api_version\": \"example_value\",\n  \"product_type\": \"standard\",\n  \"billing\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"shipping\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"merchant\": {\n    \"public_api_key\": {},\n    \"user_confirmation_url\": {},\n    \"user_cancel_url\": {},\n    \"user_confirmation_url_action\": {},\n    \"name\": {}\n  },\n  \"metadata\": {},\n  \"meta\": {\n    \"user_timezone\": \"2025-03-15T14:30:00Z\",\n    \"tracking_uuid\": \"550e8400-e29b-41d4-a716-446655440000\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "08476338-76ed-45ea-ab59-d1388a357e75",
+              "name": "Unauthorized. Authentication credentials are missing or invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkouts",
+                    ":token"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) The checkout token that represents the purchase and customer information for a specific checkout session."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status_code\": 1,\n  \"code\": \"example_value\",\n  \"message\": \"example_value\",\n  \"field\": \"example_value\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1a2bb66c-c936-4fb8-9c58-9e1c31886629",
+              "name": "Not found. The requested resource does not exist.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkouts",
+                    ":token"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) The checkout token that represents the purchase and customer information for a specific checkout session."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status_code\": 1,\n  \"code\": \"example_value\",\n  \"message\": \"example_value\",\n  \"field\": \"example_value\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "45f0d1c3-088a-49f7-ab82-1e776f8e6582",
+          "name": "Affirm Update a Checkout",
+          "request": {
+            "name": "Affirm Update a Checkout",
+            "description": {
+              "content": "Updates an existing checkout object with new or modified order information. Only fields included in the request body are updated; omitted fields retain their existing values. The checkout must not yet have been confirmed by the customer. Used to adjust order totals, shipping, or item details after the checkout session has been created.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "checkouts",
+                ":token"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "token",
+                  "description": "(Required) The checkout token that represents the purchase and customer information for a specific checkout session."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"merchant\": {\n    \"user_confirmation_url\": \"<uri>\",\n    \"user_cancel_url\": \"<uri>\",\n    \"public_api_key\": \"<string>\",\n    \"user_confirmation_url_action\": \"POST\",\n    \"name\": \"<string>\"\n  },\n  \"items\": [\n    {\n      \"display_name\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"unit_price\": \"<integer>\",\n      \"qty\": \"<integer>\",\n      \"item_image_url\": \"<uri>\",\n      \"item_url\": \"<uri>\",\n      \"categories\": [\n        [\n          \"<string>\",\n          \"<string>\"\n        ],\n        [\n          \"<string>\",\n          \"<string>\"\n        ]\n      ]\n    },\n    {\n      \"display_name\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"unit_price\": \"<integer>\",\n      \"qty\": \"<integer>\",\n      \"item_image_url\": \"<uri>\",\n      \"item_url\": \"<uri>\",\n      \"categories\": [\n        [\n          \"<string>\",\n          \"<string>\"\n        ],\n        [\n          \"<string>\",\n          \"<string>\"\n        ]\n      ]\n    }\n  ],\n  \"currency\": \"<string>\",\n  \"total\": \"<integer>\",\n  \"shipping\": {\n    \"name\": {\n      \"first\": \"<string>\",\n      \"last\": \"<string>\",\n      \"full\": \"<string>\"\n    },\n    \"address\": {\n      \"line1\": \"<string>\",\n      \"line2\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"zipcode\": \"<string>\",\n      \"country\": \"<string>\"\n    },\n    \"email\": \"<email>\",\n    \"phone_number\": \"<string>\"\n  },\n  \"billing\": {\n    \"name\": {\n      \"first\": \"<string>\",\n      \"last\": \"<string>\",\n      \"full\": \"<string>\"\n    },\n    \"address\": {\n      \"line1\": \"<string>\",\n      \"line2\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"zipcode\": \"<string>\",\n      \"country\": \"<string>\"\n    },\n    \"email\": \"<email>\",\n    \"phone_number\": \"<string>\"\n  },\n  \"store\": {\n    \"name\": \"<string>\",\n    \"address\": {\n      \"line1\": \"<string>\",\n      \"line2\": \"<string>\",\n      \"city\": \"<string>\",\n      \"state\": \"<string>\",\n      \"zipcode\": \"<string>\",\n      \"country\": \"<string>\"\n    }\n  },\n  \"discounts\": {\n    \"key_0\": {\n      \"discount_amount\": \"<integer>\",\n      \"discount_display_name\": \"<string>\"\n    }\n  },\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  },\n  \"order_id\": \"<string>\",\n  \"financing_program\": \"<string>\",\n  \"shipping_amount\": \"<integer>\",\n  \"tax_amount\": \"<integer>\",\n  \"checkout_expiration\": \"<dateTime>\",\n  \"expiration_time\": \"<dateTime>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7ba8569f-592a-445f-8273-9078d34751a4",
+              "name": "Checkout updated successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkouts",
+                    ":token"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) The checkout token that represents the purchase and customer information for a specific checkout session."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"merchant\": {\n    \"public_api_key\": {},\n    \"user_confirmation_url\": {},\n    \"user_cancel_url\": {},\n    \"user_confirmation_url_action\": {},\n    \"name\": {}\n  },\n  \"shipping\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"billing\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"store\": {\n    \"name\": {},\n    \"address\": {}\n  },\n  \"items\": [\n    {}\n  ],\n  \"discounts\": {},\n  \"metadata\": {},\n  \"order_id\": \"500123\",\n  \"currency\": \"USD\",\n  \"financing_program\": \"example_value\",\n  \"shipping_amount\": 1,\n  \"tax_amount\": 1,\n  \"total\": 1,\n  \"checkout_expiration\": \"2025-03-15T14:30:00Z\",\n  \"expiration_time\": \"2025-03-15T14:30:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"checkout_id\": \"500123\",\n  \"checkout_status\": \"pending\",\n  \"checkout_flow_type\": \"standard\",\n  \"currency\": \"USD\",\n  \"total\": 1,\n  \"shipping_amount\": 1,\n  \"tax_amount\": 1,\n  \"order_id\": \"500123\",\n  \"financial_program_name\": \"Example Merchant\",\n  \"financial_program_external_name\": \"Example Merchant\",\n  \"billing_frequency\": \"example_value\",\n  \"api_version\": \"example_value\",\n  \"product_type\": \"standard\",\n  \"billing\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"shipping\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"merchant\": {\n    \"public_api_key\": {},\n    \"user_confirmation_url\": {},\n    \"user_cancel_url\": {},\n    \"user_confirmation_url_action\": {},\n    \"name\": {}\n  },\n  \"metadata\": {},\n  \"meta\": {\n    \"user_timezone\": \"2025-03-15T14:30:00Z\",\n    \"tracking_uuid\": \"550e8400-e29b-41d4-a716-446655440000\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1af8d5f1-7dc0-465e-a9df-08749c54ffc7",
+              "name": "Bad request. The request body or parameters are invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkouts",
+                    ":token"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) The checkout token that represents the purchase and customer information for a specific checkout session."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"merchant\": {\n    \"public_api_key\": {},\n    \"user_confirmation_url\": {},\n    \"user_cancel_url\": {},\n    \"user_confirmation_url_action\": {},\n    \"name\": {}\n  },\n  \"shipping\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"billing\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"store\": {\n    \"name\": {},\n    \"address\": {}\n  },\n  \"items\": [\n    {}\n  ],\n  \"discounts\": {},\n  \"metadata\": {},\n  \"order_id\": \"500123\",\n  \"currency\": \"USD\",\n  \"financing_program\": \"example_value\",\n  \"shipping_amount\": 1,\n  \"tax_amount\": 1,\n  \"total\": 1,\n  \"checkout_expiration\": \"2025-03-15T14:30:00Z\",\n  \"expiration_time\": \"2025-03-15T14:30:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status_code\": 1,\n  \"code\": \"example_value\",\n  \"message\": \"example_value\",\n  \"field\": \"example_value\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c0251db5-6295-4141-9c5d-3bc665e4acec",
+              "name": "Unauthorized. Authentication credentials are missing or invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkouts",
+                    ":token"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) The checkout token that represents the purchase and customer information for a specific checkout session."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"merchant\": {\n    \"public_api_key\": {},\n    \"user_confirmation_url\": {},\n    \"user_cancel_url\": {},\n    \"user_confirmation_url_action\": {},\n    \"name\": {}\n  },\n  \"shipping\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"billing\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"store\": {\n    \"name\": {},\n    \"address\": {}\n  },\n  \"items\": [\n    {}\n  ],\n  \"discounts\": {},\n  \"metadata\": {},\n  \"order_id\": \"500123\",\n  \"currency\": \"USD\",\n  \"financing_program\": \"example_value\",\n  \"shipping_amount\": 1,\n  \"tax_amount\": 1,\n  \"total\": 1,\n  \"checkout_expiration\": \"2025-03-15T14:30:00Z\",\n  \"expiration_time\": \"2025-03-15T14:30:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status_code\": 1,\n  \"code\": \"example_value\",\n  \"message\": \"example_value\",\n  \"field\": \"example_value\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "17fadade-061a-4f75-82c0-81f2a0505d92",
+              "name": "Not found. The requested resource does not exist.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkouts",
+                    ":token"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) The checkout token that represents the purchase and customer information for a specific checkout session."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"merchant\": {\n    \"public_api_key\": {},\n    \"user_confirmation_url\": {},\n    \"user_cancel_url\": {},\n    \"user_confirmation_url_action\": {},\n    \"name\": {}\n  },\n  \"shipping\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"billing\": {\n    \"name\": {},\n    \"address\": {},\n    \"email\": {},\n    \"phone_number\": {}\n  },\n  \"store\": {\n    \"name\": {},\n    \"address\": {}\n  },\n  \"items\": [\n    {}\n  ],\n  \"discounts\": {},\n  \"metadata\": {},\n  \"order_id\": \"500123\",\n  \"currency\": \"USD\",\n  \"financing_program\": \"example_value\",\n  \"shipping_amount\": 1,\n  \"tax_amount\": 1,\n  \"total\": 1,\n  \"checkout_expiration\": \"2025-03-15T14:30:00Z\",\n  \"expiration_time\": \"2025-03-15T14:30:00Z\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status_code\": 1,\n  \"code\": \"example_value\",\n  \"message\": \"example_value\",\n  \"field\": \"example_value\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2f98c490-5782-40a7-ab09-5bb1853089fc",
+          "name": "Affirm Resend a Checkout",
+          "request": {
+            "name": "Affirm Resend a Checkout",
+            "description": {
+              "content": "Resends the Affirm checkout link to the customer via email or SMS. Used in telesales and remote checkout flows where the customer needs to complete the Affirm financing application on their own device after initiating the order with a merchant representative.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "checkouts",
+                ":token",
+                "resend"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "token",
+                  "description": "(Required) The checkout token that represents the purchase and customer information for a specific checkout session."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"<email>\",\n  \"phone_number\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "6ec26629-b8c1-4bf6-a12d-b552ab5701b9",
+              "name": "Checkout link resent successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkouts",
+                    ":token",
+                    "resend"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) The checkout token that represents the purchase and customer information for a specific checkout session."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"merchant@example.com\",\n  \"phone_number\": \"example_value\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bfba0122-d340-4f4f-9e3f-fdf98d36f34b",
+              "name": "Bad request. The request body or parameters are invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkouts",
+                    ":token",
+                    "resend"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) The checkout token that represents the purchase and customer information for a specific checkout session."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"merchant@example.com\",\n  \"phone_number\": \"example_value\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status_code\": 1,\n  \"code\": \"example_value\",\n  \"message\": \"example_value\",\n  \"field\": \"example_value\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "71c4b6e4-f6d4-49b3-bb12-2908d3a413cb",
+              "name": "Unauthorized. Authentication credentials are missing or invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkouts",
+                    ":token",
+                    "resend"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) The checkout token that represents the purchase and customer information for a specific checkout session."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"merchant@example.com\",\n  \"phone_number\": \"example_value\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status_code\": 1,\n  \"code\": \"example_value\",\n  \"message\": \"example_value\",\n  \"field\": \"example_value\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0f9354f9-af87-4130-ab93-20373dec45ab",
+              "name": "Not found. The requested resource does not exist.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkouts",
+                    ":token",
+                    "resend"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) The checkout token that represents the purchase and customer information for a specific checkout session."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"merchant@example.com\",\n  \"phone_number\": \"example_value\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status_code\": 1,\n  \"code\": \"example_value\",\n  \"message\": \"example_value\",\n  \"field\": \"example_value\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.affirm.com/api/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "{{basicAuthUsername}}"
+      },
+      {
+        "key": "password",
+        "value": "{{basicAuthPassword}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "038ab674-d7fb-47e6-b633-2f393fc6f679",
+    "name": "Affirm Checkout Authorization Checkouts API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Affirm Checkout API enables merchants to initiate and manage the Affirm buy now pay later checkout flow for customers at the point of purchase. It provides endpoints to create and store checkout sessions, read and update checkout objects, and resend checkout links via email or SMS. The API supports both redirect and direct checkout integration patterns. Once a customer authorizes a loan, the resulting checkout token is exchanged server-side to complete the transaction authorization via the Transactions API. Authentication uses HTTP Basic Authentication with the merchant's public and private API keys.\n\nContact Support:\n Name: Affirm Developer Support",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Affirm Checkout Authorization Cards API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Cards",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Affirm Read a Card",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.affirm.com/api/v1/cards/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the virtual card."
+              }
+            ]
+          },
+          "docs": "Retrieves the details of a virtual card number (VCN) issued via Affirm Lite. Returns card number, expiration, CVV, and billing address information needed for payment processing through traditional card networks."
+        },
+        {
+          "info": {
+            "name": "Affirm Cancel a Card",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.affirm.com/api/v1/cards/:id/cancel",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the virtual card."
+              }
+            ]
+          },
+          "docs": "Cancels a virtual card number (VCN) issued via Affirm Lite, rendering it unusable for further charges. Used when an order is cancelled or the card is no longer needed."
+        },
+        {
+          "info": {
+            "name": "Affirm Finalize a Card",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.affirm.com/api/v1/cards/:id/finalize",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the virtual card."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Finalizes a virtual card number (VCN), updating the card details with the final purchase amount and completing the Affirm Lite transaction lifecycle."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
