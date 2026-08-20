@@ -68,6 +68,9 @@ apis:
   humanURL: https://docs.affirm.com/developers
   baseURL: https://api.affirm.com
   tags:
+  - Transaction
+  - Settlement
+  tags_raw:
   - Transactions
   - Settlements
   properties:
@@ -157,6 +160,8 @@ apis:
   humanURL: https://docs.affirm.com/developers
   baseURL: https://api.affirm.com
   tags:
+  - Transaction
+  tags_raw:
   - Transactions
   properties:
   - type: OpenAPI
