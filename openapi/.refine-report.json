@@ -1,28 +1,42 @@
 {
   "provider": "affirm",
   "sources": [
-    "affirm-authorization-api-openapi.yml",
-    "affirm-cards-api-openapi.yml",
-    "affirm-checkouts-api-openapi.yml",
-    "affirm-disputes-api-openapi.yml",
-    "affirm-promos-api-openapi.yml",
-    "affirm-settlement-events-api-openapi.yml",
-    "affirm-transaction-events-api-openapi.yml",
-    "affirm-transactions-api-openapi.yml"
+    "_original/affirm-checkout-openapi.yml",
+    "_original/affirm-direct-api-openapi.yml",
+    "_original/affirm-disputes-openapi.yml",
+    "_original/affirm-promos-openapi.yml",
+    "_original/affirm-transactions-openapi.yml"
   ],
   "outputs": [
+    "affirm-checkouts-api-openapi.yml",
     "affirm-authorization-api-openapi.yml",
     "affirm-cards-api-openapi.yml",
-    "affirm-checkouts-api-openapi.yml",
+    "affirm-transactions-api-openapi.yml",
     "affirm-disputes-api-openapi.yml",
     "affirm-promos-api-openapi.yml",
     "affirm-settlement-events-api-openapi.yml",
-    "affirm-transaction-events-api-openapi.yml",
-    "affirm-transactions-api-openapi.yml"
+    "affirm-transaction-events-api-openapi.yml"
   ],
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (5 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "affirm-checkout-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "affirm-direct-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "affirm-disputes-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "affirm-promos-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "affirm-transactions-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "tag 'Transactions' spans 2 source specs (affirm-direct-api-openapi.yml, affirm-transactions-openapi.yml): per-path servers applied"
+  ],
+  "skipped": [
+    "affirm-authorization-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "affirm-cards-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "affirm-checkouts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "affirm-disputes-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "affirm-promos-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "affirm-settlement-events-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "affirm-transaction-events-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "affirm-transactions-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

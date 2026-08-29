@@ -1,16 +1,16 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Affirm Checkout Authorization Disputes API
-  description: The Affirm Checkout API enables merchants to initiate and manage the Affirm buy now pay later checkout flow for customers at the point of purchase. It provides endpoints to create and store checkout sessions, read and update checkout objects, and resend checkout links via email or SMS. The API supports both redirect and direct checkout integration patterns. Once a customer authorizes a loan, the resulting checkout token is exchanged server-side to complete the transaction authorization via the Transactions API. Authentication uses HTTP Basic Authentication with the merchant's public and private API keys.
-  version: '1.0'
+  title: Affirm Disputes API
+  description: The Affirm Disputes API (V3) provides merchants with programmatic access to manage payment disputes initiated by customers. It supports listing and retrieving individual dispute records, submitting evidence to contest a dispute, and closing disputes. The API integrates with the Files API so merchants can attach supporting documentation as evidence when responding to disputes. This interface allows merchants to handle chargeback workflows programmatically rather than relying solely on the Merchant Portal UI. Authentication uses HTTP Basic Authentication with the merchant's public and private API keys.
+  version: '3.0'
   contact:
     name: Affirm Developer Support
     url: https://docs.affirm.com/developers/docs/development-quickstart
   termsOfService: https://www.affirm.com/legal/merchant-terms
 servers:
-- url: https://api.affirm.com/api/v1
+- url: https://api.affirm.com/api/v3
   description: Production Server
-- url: https://sandbox.affirm.com/api/v1
+- url: https://sandbox.affirm.com/api/v3
   description: Sandbox Server
 security:
 - basicAuth: []
@@ -256,25 +256,6 @@ paths:
         delay: 0
         dispatcher: FALLBACK
 components:
-  responses:
-    Unauthorized:
-      description: Unauthorized. Authentication credentials are missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad request. The request body or parameters are invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Not found. The requested resource does not exist.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
     Dispute:
       type: object
@@ -416,6 +397,25 @@ components:
           type: string
           description: Human-readable description of the error.
           example: example_value
+  responses:
+    Unauthorized:
+      description: Unauthorized. Authentication credentials are missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found. The requested resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request. The request body or parameters are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   parameters:
     DisputeId:
       name: dispute_id
@@ -430,5 +430,5 @@ components:
       scheme: basic
       description: HTTP Basic Authentication using the merchant's public API key as the username and private API key as the password, Base64-encoded as per RFC 7617.
 externalDocs:
-  description: Affirm Checkout API Reference
-  url: https://docs.affirm.com/developers/reference/the-checkout-object
+  description: Affirm Disputes API V3 Reference
+  url: https://docs.affirm.com/developers/reference/introduction

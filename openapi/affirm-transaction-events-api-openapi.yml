@@ -1,7 +1,7 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Affirm Checkout Authorization Transaction Events API
-  description: The Affirm Checkout API enables merchants to initiate and manage the Affirm buy now pay later checkout flow for customers at the point of purchase. It provides endpoints to create and store checkout sessions, read and update checkout objects, and resend checkout links via email or SMS. The API supports both redirect and direct checkout integration patterns. Once a customer authorizes a loan, the resulting checkout token is exchanged server-side to complete the transaction authorization via the Transactions API. Authentication uses HTTP Basic Authentication with the merchant's public and private API keys.
+  title: Affirm Transactions Transaction Events API
+  description: The Affirm Transactions API provides server-side endpoints for managing the full lifecycle of Affirm payment transactions after a customer completes checkout. It supports authorization, capture, void, and refund operations, as well as listing and retrieving transaction details and associated settlement and transaction events. Merchants use this API to reconcile charges, process partial or full refunds, and track disbursement activity. The API uses HTTPS with HTTP Basic authentication using the merchant's public and private API keys.
   version: '1.0'
   contact:
     name: Affirm Developer Support
@@ -64,7 +64,21 @@ paths:
         delay: 0
         dispatcher: FALLBACK
 components:
+  responses:
+    Unauthorized:
+      description: Unauthorized. Authentication credentials are missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   parameters:
+    PageCursor:
+      name: cursor
+      in: query
+      required: false
+      description: Pagination cursor returned from a previous list response.
+      schema:
+        type: string
     PageLimit:
       name: limit
       in: query
@@ -75,20 +89,6 @@ components:
         minimum: 1
         maximum: 100
         default: 20
-    PageCursor:
-      name: cursor
-      in: query
-      required: false
-      description: Pagination cursor returned from a previous list response.
-      schema:
-        type: string
-  responses:
-    Unauthorized:
-      description: Unauthorized. Authentication credentials are missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
     Error:
       type: object
@@ -161,5 +161,5 @@ components:
       scheme: basic
       description: HTTP Basic Authentication using the merchant's public API key as the username and private API key as the password, Base64-encoded as per RFC 7617.
 externalDocs:
-  description: Affirm Checkout API Reference
-  url: https://docs.affirm.com/developers/reference/the-checkout-object
+  description: Affirm Transactions API Reference
+  url: https://docs.affirm.com/developers/reference/transaction-api-endpoints

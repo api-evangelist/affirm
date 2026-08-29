@@ -1,7 +1,7 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Affirm Checkout Authorization Cards API
-  description: The Affirm Checkout API enables merchants to initiate and manage the Affirm buy now pay later checkout flow for customers at the point of purchase. It provides endpoints to create and store checkout sessions, read and update checkout objects, and resend checkout links via email or SMS. The API supports both redirect and direct checkout integration patterns. Once a customer authorizes a loan, the resulting checkout token is exchanged server-side to complete the transaction authorization via the Transactions API. Authentication uses HTTP Basic Authentication with the merchant's public and private API keys.
+  title: Affirm Direct Cards API
+  description: The Affirm Direct API is a flexible integration that allows merchants to embed the full Affirm checkout and payment authorization flow directly into their website, giving complete control over the front-end user experience and back-end transaction processing logic. It supports inline checkout via modal or redirect to affirm.com, and handles the full transaction lifecycle including authorization, capture, void, and refund operations. This spec covers the server-side endpoints used in the Direct API integration pattern, including the checkout token exchange for authorization and subsequent transaction management operations. Authentication is handled via HTTP Basic Authentication using API keys from the Affirm Merchant Portal.
   version: '1.0'
   contact:
     name: Affirm Developer Support
@@ -182,14 +182,14 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad request. The request body or parameters are invalid.
+    NotFound:
+      description: Not found. The requested resource does not exist.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Not found. The requested resource does not exist.
+    BadRequest:
+      description: Bad request. The request body or parameters are invalid.
       content:
         application/json:
           schema:
@@ -299,5 +299,5 @@ components:
       scheme: basic
       description: HTTP Basic Authentication using the merchant's public API key as the username and private API key as the password, Base64-encoded as per RFC 7617.
 externalDocs:
-  description: Affirm Checkout API Reference
-  url: https://docs.affirm.com/developers/reference/the-checkout-object
+  description: Affirm Direct API Overview
+  url: https://docs.affirm.com/payments/docs/direct-api-overview

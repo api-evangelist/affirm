@@ -1,19 +1,19 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Affirm Checkout Authorization Promos API
-  description: The Affirm Checkout API enables merchants to initiate and manage the Affirm buy now pay later checkout flow for customers at the point of purchase. It provides endpoints to create and store checkout sessions, read and update checkout objects, and resend checkout links via email or SMS. The API supports both redirect and direct checkout integration patterns. Once a customer authorizes a loan, the resulting checkout token is exchanged server-side to complete the transaction authorization via the Transactions API. Authentication uses HTTP Basic Authentication with the merchant's public and private API keys.
-  version: '1.0'
+  title: Affirm Promos API
+  description: The Affirm Promos API is a server-side endpoint that enables merchants to render dynamic promotional pricing text and present Affirm-hosted educational modals on their website. It accepts a purchase amount and returns financing terms, "as low as" monthly payment messaging, APR rates, and modal content including headlines, descriptions, and legal disclosures. The API supports multiple installment term options and page-type context such as product, cart, and homepage to customize the displayed messaging. Merchants authenticate requests using their public API key appended to the base URL path.
+  version: '2.0'
   contact:
     name: Affirm Developer Support
     url: https://docs.affirm.com/developers/docs/development-quickstart
   termsOfService: https://www.affirm.com/legal/merchant-terms
 servers:
-- url: https://api.affirm.com/api/v1
+- url: https://www.affirm.com/api/promos/v2/{public_api_key}
   description: Production Server
-- url: https://sandbox.affirm.com/api/v1
-  description: Sandbox Server
-security:
-- basicAuth: []
+  variables:
+    public_api_key:
+      default: YOUR_PUBLIC_KEY
+      description: The merchant's public API key obtained from the Affirm Merchant Portal.
 tags:
 - name: Promos
   description: Operations for retrieving dynamic promotional messaging and financing term information to display on merchant web pages.
@@ -131,6 +131,81 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
+    OfferContent:
+      type: object
+      description: Available financing offer details for the requested purchase amount.
+      properties:
+        minimum_loan_amount:
+          type: number
+          description: Minimum purchase amount eligible for Affirm financing.
+          example: 1
+        maximum_loan_amount:
+          type: number
+          description: Maximum purchase amount eligible for Affirm financing.
+          example: 1
+        terms:
+          type: array
+          description: Array of available financing term options for this amount.
+          items:
+            $ref: '#/components/schemas/FinancingTerm'
+          example:
+          - example_value
+    PromoConfig:
+      type: object
+      description: Internal configuration data returned with the promo response.
+      properties:
+        promo_prequal_enabled:
+          type: boolean
+          description: Indicates whether prequalification is enabled for this merchant.
+          example: true
+        merchant_name:
+          type: string
+          description: The merchant's display name.
+          example: Example Merchant
+        merchant_ari:
+          type: string
+          description: Affirm Resource Identifier for the merchant.
+          example: example_value
+        user_ari:
+          type: string
+          description: Affirm Resource Identifier for the current user session.
+          example: example_value
+        toast_enabled:
+          type: boolean
+          description: Indicates whether toast notifications are enabled for this integration.
+          example: true
+        enabled_integrations:
+          type: array
+          description: List of enabled Affirm integration features for this merchant.
+          items:
+            type: string
+          example:
+          - example_value
+        images:
+          type: object
+          description: Image asset URLs for use in the promotional modal.
+          properties:
+            hero:
+              type: string
+              format: uri
+              description: Standard resolution hero image URL.
+            hero2x:
+              type: string
+              format: uri
+              description: High resolution (2x) hero image URL.
+            logo:
+              type: string
+              format: uri
+              description: Standard resolution Affirm logo URL.
+            logo2x:
+              type: string
+              format: uri
+              description: High resolution (2x) Affirm logo URL.
+          example:
+            hero: https://example.com
+            hero2x: https://example.com
+            logo: https://example.com
+            logo2x: https://example.com
     FinancingTerm:
       type: object
       description: A single available financing term option including APR and payment details.
@@ -214,62 +289,6 @@ components:
           type: string
           description: Human-readable description of the error.
           example: example_value
-    PromoConfig:
-      type: object
-      description: Internal configuration data returned with the promo response.
-      properties:
-        promo_prequal_enabled:
-          type: boolean
-          description: Indicates whether prequalification is enabled for this merchant.
-          example: true
-        merchant_name:
-          type: string
-          description: The merchant's display name.
-          example: Example Merchant
-        merchant_ari:
-          type: string
-          description: Affirm Resource Identifier for the merchant.
-          example: example_value
-        user_ari:
-          type: string
-          description: Affirm Resource Identifier for the current user session.
-          example: example_value
-        toast_enabled:
-          type: boolean
-          description: Indicates whether toast notifications are enabled for this integration.
-          example: true
-        enabled_integrations:
-          type: array
-          description: List of enabled Affirm integration features for this merchant.
-          items:
-            type: string
-          example:
-          - example_value
-        images:
-          type: object
-          description: Image asset URLs for use in the promotional modal.
-          properties:
-            hero:
-              type: string
-              format: uri
-              description: Standard resolution hero image URL.
-            hero2x:
-              type: string
-              format: uri
-              description: High resolution (2x) hero image URL.
-            logo:
-              type: string
-              format: uri
-              description: Standard resolution Affirm logo URL.
-            logo2x:
-              type: string
-              format: uri
-              description: High resolution (2x) Affirm logo URL.
-          example:
-            hero: https://example.com
-            hero2x: https://example.com
-            logo: https://example.com
-            logo2x: https://example.com
     PromoResponse:
       type: object
       description: Response containing promotional messaging content and financing offer details for the requested purchase amount.
@@ -278,25 +297,6 @@ components:
           $ref: '#/components/schemas/PromoContent'
         offer:
           $ref: '#/components/schemas/OfferContent'
-    OfferContent:
-      type: object
-      description: Available financing offer details for the requested purchase amount.
-      properties:
-        minimum_loan_amount:
-          type: number
-          description: Minimum purchase amount eligible for Affirm financing.
-          example: 1
-        maximum_loan_amount:
-          type: number
-          description: Maximum purchase amount eligible for Affirm financing.
-          example: 1
-        terms:
-          type: array
-          description: Array of available financing term options for this amount.
-          items:
-            $ref: '#/components/schemas/FinancingTerm'
-          example:
-          - example_value
   responses:
     Unauthorized:
       description: Unauthorized. The public API key is missing or invalid.
@@ -310,11 +310,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-  securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
-      description: HTTP Basic Authentication using the merchant's public API key as the username and private API key as the password, Base64-encoded as per RFC 7617.
 externalDocs:
-  description: Affirm Checkout API Reference
-  url: https://docs.affirm.com/developers/reference/the-checkout-object
+  description: Affirm Promos API Integration Overview
+  url: https://docs.affirm.com/developers/docs/promos-api-integration-overview

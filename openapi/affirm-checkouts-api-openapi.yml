@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Affirm Checkout Authorization Checkouts API
+  title: Affirm Checkout Checkouts API
   description: The Affirm Checkout API enables merchants to initiate and manage the Affirm buy now pay later checkout flow for customers at the point of purchase. It provides endpoints to create and store checkout sessions, read and update checkout objects, and resend checkout links via email or SMS. The API supports both redirect and direct checkout integration patterns. Once a customer authorizes a loan, the resulting checkout token is exchanged server-side to complete the transaction authorization via the Transactions API. Authentication uses HTTP Basic Authentication with the merchant's public and private API keys.
   version: '1.0'
   contact:
@@ -392,34 +392,39 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    AddressObject:
+    MerchantObject:
       type: object
-      description: A postal address.
+      description: Merchant-specific configuration for the checkout, including callback URLs and the public API key.
+      required:
+      - user_confirmation_url
+      - user_cancel_url
       properties:
-        line1:
+        public_api_key:
           type: string
-          description: Primary street address line.
-          example: example_value
-        line2:
+          description: The merchant's public API key. Required for checkout and store endpoints when submitting from a server context.
+          example: abc123def456abc123def456abc123de
+        user_confirmation_url:
           type: string
-          description: Secondary address line (apartment, suite, unit, etc.).
-          example: example_value
-        city:
+          format: uri
+          description: The URL the customer is redirected to after successfully completing the Affirm checkout flow. A checkout_token is delivered to this URL via POST or GET depending on user_confirmation_url_action.
+          example: https://example.com/path
+        user_cancel_url:
           type: string
-          description: City or locality.
-          example: example_value
-        state:
+          format: uri
+          description: The URL the customer is redirected to if they cancel or abandon the Affirm checkout flow.
+          example: https://example.com/path
+        user_confirmation_url_action:
           type: string
-          description: State, province, or region code.
-          example: example_value
-        zipcode:
+          description: Determines how the checkout_token is delivered to the user_confirmation_url. "POST" sends it as a form body field; "GET" appends it as a query parameter.
+          enum:
+          - POST
+          - GET
+          default: POST
+          example: POST
+        name:
           type: string
-          description: Postal or ZIP code.
-          example: example_value
-        country:
-          type: string
-          description: ISO 3166-1 alpha-2 country code.
-          example: example_value
+          description: The merchant's display name, shown to customers during checkout.
+          example: Example Merchant
     CheckoutRequest:
       type: object
       description: Request body for creating or updating an Affirm checkout session, containing all order and customer information required to initiate the Affirm financing flow.
@@ -556,6 +561,16 @@ components:
           type: string
           description: Customer-facing name or description of the discount.
           example: Example Merchant
+    StoreObject:
+      type: object
+      description: Address details for in-store transactions where the purchase is made at a physical merchant location.
+      properties:
+        name:
+          type: string
+          description: Store location name.
+          example: Example Merchant
+        address:
+          $ref: '#/components/schemas/AddressObject'
     ContactObject:
       type: object
       description: Contact information for shipping or billing, including name, address, email, and phone number.
@@ -573,21 +588,33 @@ components:
           type: string
           description: Phone number for the contact in E.164 format.
           example: example_value
-    NameObject:
+    AddressObject:
       type: object
-      description: A person's name split into first and last components.
+      description: A postal address.
       properties:
-        first:
+        line1:
           type: string
-          description: First name.
+          description: Primary street address line.
           example: example_value
-        last:
+        line2:
           type: string
-          description: Last name.
+          description: Secondary address line (apartment, suite, unit, etc.).
           example: example_value
-        full:
+        city:
           type: string
-          description: Full name as a single string.
+          description: City or locality.
+          example: example_value
+        state:
+          type: string
+          description: State, province, or region code.
+          example: example_value
+        zipcode:
+          type: string
+          description: Postal or ZIP code.
+          example: example_value
+        country:
+          type: string
+          description: ISO 3166-1 alpha-2 country code.
           example: example_value
     Checkout:
       type: object
@@ -676,39 +703,6 @@ components:
           example:
             user_timezone: '2025-03-15T14:30:00Z'
             tracking_uuid: 550e8400-e29b-41d4-a716-446655440000
-    MerchantObject:
-      type: object
-      description: Merchant-specific configuration for the checkout, including callback URLs and the public API key.
-      required:
-      - user_confirmation_url
-      - user_cancel_url
-      properties:
-        public_api_key:
-          type: string
-          description: The merchant's public API key. Required for checkout and store endpoints when submitting from a server context.
-          example: abc123def456abc123def456abc123de
-        user_confirmation_url:
-          type: string
-          format: uri
-          description: The URL the customer is redirected to after successfully completing the Affirm checkout flow. A checkout_token is delivered to this URL via POST or GET depending on user_confirmation_url_action.
-          example: https://example.com/path
-        user_cancel_url:
-          type: string
-          format: uri
-          description: The URL the customer is redirected to if they cancel or abandon the Affirm checkout flow.
-          example: https://example.com/path
-        user_confirmation_url_action:
-          type: string
-          description: Determines how the checkout_token is delivered to the user_confirmation_url. "POST" sends it as a form body field; "GET" appends it as a query parameter.
-          enum:
-          - POST
-          - GET
-          default: POST
-          example: POST
-        name:
-          type: string
-          description: The merchant's display name, shown to customers during checkout.
-          example: Example Merchant
     Error:
       type: object
       description: Standard error response returned by the Affirm API.
@@ -729,16 +723,22 @@ components:
           type: string
           description: The specific field that caused the error, if applicable.
           example: example_value
-    StoreObject:
+    NameObject:
       type: object
-      description: Address details for in-store transactions where the purchase is made at a physical merchant location.
+      description: A person's name split into first and last components.
       properties:
-        name:
+        first:
           type: string
-          description: Store location name.
-          example: Example Merchant
-        address:
-          $ref: '#/components/schemas/AddressObject'
+          description: First name.
+          example: example_value
+        last:
+          type: string
+          description: Last name.
+          example: example_value
+        full:
+          type: string
+          description: Full name as a single string.
+          example: example_value
   responses:
     Unauthorized:
       description: Unauthorized. Authentication credentials are missing or invalid.
@@ -746,14 +746,14 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad request. The request body or parameters are invalid.
+    NotFound:
+      description: Not found. The requested resource does not exist.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Not found. The requested resource does not exist.
+    BadRequest:
+      description: Bad request. The request body or parameters are invalid.
       content:
         application/json:
           schema:
