@@ -34,6 +34,12 @@ accessModel:
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/affirm.png
 tags:
 - Fintech
+- Buy Now Pay Later
+- Lending
+- Payments
+- Consumer
+tags_raw:
+- Fintech
 - BNPL
 - Lending
 - Payments
@@ -47,6 +53,9 @@ apis:
   humanURL: https://docs.affirm.com/developers
   baseURL: https://api.affirm.com
   tags:
+  - Checkout
+  - Buy Now Pay Later
+  tags_raw:
   - Checkout
   - BNPL
   properties:
