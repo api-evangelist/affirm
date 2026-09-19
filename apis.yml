@@ -115,6 +115,8 @@ apis:
   humanURL: https://docs.affirm.com/developers
   baseURL: https://api.affirm.com
   tags:
+  - Checkout
+  tags_raw:
   - Checkouts
   properties:
   - type: OpenAPI
