@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Affirm Transactions Settlement Events API
-  description: The Affirm Transactions API provides server-side endpoints for managing the full lifecycle of Affirm payment transactions after a customer completes checkout. It supports authorization, capture, void, and refund operations, as well as listing and retrieving transaction details and associated settlement and transaction events. Merchants use this API to reconcile charges, process partial or full refunds, and track disbursement activity. The API uses HTTPS with HTTP Basic authentication using the merchant's public and private API keys.
+  description: The Affirm Transactions API provides server-side endpoints for managing the full lifecycle of Affirm payment transactions after a customer completes checkout.
   version: '1.0'
   contact:
     name: Affirm Developer Support
@@ -106,6 +106,31 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
+    SettlementEventSummary:
+      type: object
+      description: An aggregated summary of settlement activity for a single disbursement batch from Affirm to the merchant.
+      properties:
+        id:
+          type: string
+          description: A unique identifier for this settlement event summary.
+          example: '500123'
+        total_amount:
+          type: integer
+          description: Total amount disbursed in this batch in the smallest currency unit.
+          example: 1
+        currency:
+          type: string
+          description: ISO 4217 currency code for this disbursement.
+          example: USD
+        event_count:
+          type: integer
+          description: Number of individual settlement events included in this batch.
+          example: 1
+        disbursed_at:
+          type: string
+          format: date-time
+          description: Timestamp when the disbursement was initiated, in RFC 3339 format.
+          example: '2025-03-15T14:30:00Z'
     SettlementEvent:
       type: object
       description: Represents a single disbursement line item from Affirm to the merchant, associated with a specific transaction event.
@@ -143,31 +168,6 @@ components:
           - refund
           - void
           example: capture
-    SettlementEventSummary:
-      type: object
-      description: An aggregated summary of settlement activity for a single disbursement batch from Affirm to the merchant.
-      properties:
-        id:
-          type: string
-          description: A unique identifier for this settlement event summary.
-          example: '500123'
-        total_amount:
-          type: integer
-          description: Total amount disbursed in this batch in the smallest currency unit.
-          example: 1
-        currency:
-          type: string
-          description: ISO 4217 currency code for this disbursement.
-          example: USD
-        event_count:
-          type: integer
-          description: Number of individual settlement events included in this batch.
-          example: 1
-        disbursed_at:
-          type: string
-          format: date-time
-          description: Timestamp when the disbursement was initiated, in RFC 3339 format.
-          example: '2025-03-15T14:30:00Z'
     Error:
       type: object
       description: Standard error response returned by the Affirm API.
@@ -188,13 +188,6 @@ components:
           type: string
           description: The specific field that caused the error, if applicable.
           example: example_value
-  responses:
-    Unauthorized:
-      description: Unauthorized. Authentication credentials are missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   parameters:
     PageCursor:
       name: cursor
@@ -213,6 +206,13 @@ components:
         minimum: 1
         maximum: 100
         default: 20
+  responses:
+    Unauthorized:
+      description: Unauthorized. Authentication credentials are missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     basicAuth:
       type: http

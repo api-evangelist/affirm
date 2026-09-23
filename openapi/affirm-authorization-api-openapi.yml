@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Affirm Direct Authorization API
-  description: The Affirm Direct API is a flexible integration that allows merchants to embed the full Affirm checkout and payment authorization flow directly into their website, giving complete control over the front-end user experience and back-end transaction processing logic. It supports inline checkout via modal or redirect to affirm.com, and handles the full transaction lifecycle including authorization, capture, void, and refund operations. This spec covers the server-side endpoints used in the Direct API integration pattern, including the checkout token exchange for authorization and subsequent transaction management operations. Authentication is handled via HTTP Basic Authentication using API keys from the Affirm Merchant Portal.
+  description: The Affirm Direct API is a flexible integration that allows merchants to embed the full Affirm checkout and payment authorization flow directly into their website, giving complete control over the front-end user experience and back-end transaction processing logic.
   version: '1.0'
   contact:
     name: Affirm Developer Support
@@ -156,52 +156,26 @@ paths:
         delay: 0
         dispatcher: FALLBACK
 components:
+  responses:
+    NotFound:
+      description: Not found. The requested resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized. Authentication credentials are missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request. The request body or parameters are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    FileObject:
-      type: object
-      description: Represents a file uploaded to Affirm's servers.
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the uploaded file.
-          example: '500123'
-        filename:
-          type: string
-          description: Original filename of the uploaded file.
-          example: Example Merchant
-        size:
-          type: integer
-          description: File size in bytes.
-          example: 1
-        content_type:
-          type: string
-          description: MIME type of the uploaded file.
-          example: standard
-        purpose:
-          type: string
-          description: Intended purpose of the file.
-          example: example_value
-        created:
-          type: string
-          format: date-time
-          description: Upload timestamp in RFC 3339 format.
-          example: '2025-03-15T14:30:00Z'
-    Error:
-      type: object
-      description: Standard error response returned by the Affirm API.
-      properties:
-        status_code:
-          type: integer
-          description: HTTP status code of the error.
-          example: 1
-        code:
-          type: string
-          description: Machine-readable error code string.
-          example: example_value
-        message:
-          type: string
-          description: Human-readable description of the error.
-          example: example_value
     Transaction:
       type: object
       description: Represents an Affirm payment transaction at any point in its lifecycle.
@@ -250,25 +224,51 @@ components:
           format: date-time
           description: Timestamp after which the authorization can no longer be captured.
           example: '2025-03-15T14:30:00Z'
-  responses:
-    Unauthorized:
-      description: Unauthorized. Authentication credentials are missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Not found. The requested resource does not exist.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad request. The request body or parameters are invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      description: Standard error response returned by the Affirm API.
+      properties:
+        status_code:
+          type: integer
+          description: HTTP status code of the error.
+          example: 1
+        code:
+          type: string
+          description: Machine-readable error code string.
+          example: example_value
+        message:
+          type: string
+          description: Human-readable description of the error.
+          example: example_value
+    FileObject:
+      type: object
+      description: Represents a file uploaded to Affirm's servers.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the uploaded file.
+          example: '500123'
+        filename:
+          type: string
+          description: Original filename of the uploaded file.
+          example: Example Merchant
+        size:
+          type: integer
+          description: File size in bytes.
+          example: 1
+        content_type:
+          type: string
+          description: MIME type of the uploaded file.
+          example: standard
+        purpose:
+          type: string
+          description: Intended purpose of the file.
+          example: example_value
+        created:
+          type: string
+          format: date-time
+          description: Upload timestamp in RFC 3339 format.
+          example: '2025-03-15T14:30:00Z'
   securitySchemes:
     basicAuth:
       type: http

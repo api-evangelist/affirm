@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Affirm Promos API
-  description: The Affirm Promos API is a server-side endpoint that enables merchants to render dynamic promotional pricing text and present Affirm-hosted educational modals on their website. It accepts a purchase amount and returns financing terms, "as low as" monthly payment messaging, APR rates, and modal content including headlines, descriptions, and legal disclosures. The API supports multiple installment term options and page-type context such as product, cart, and homepage to customize the displayed messaging. Merchants authenticate requests using their public API key appended to the base URL path.
+  description: The Affirm Promos API is a server-side endpoint that enables merchants to render dynamic promotional pricing text and present Affirm-hosted educational modals on their website.
   version: '2.0'
   contact:
     name: Affirm Developer Support
@@ -131,25 +131,6 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    OfferContent:
-      type: object
-      description: Available financing offer details for the requested purchase amount.
-      properties:
-        minimum_loan_amount:
-          type: number
-          description: Minimum purchase amount eligible for Affirm financing.
-          example: 1
-        maximum_loan_amount:
-          type: number
-          description: Maximum purchase amount eligible for Affirm financing.
-          example: 1
-        terms:
-          type: array
-          description: Array of available financing term options for this amount.
-          items:
-            $ref: '#/components/schemas/FinancingTerm'
-          example:
-          - example_value
     PromoConfig:
       type: object
       description: Internal configuration data returned with the promo response.
@@ -206,39 +187,6 @@ components:
             hero2x: https://example.com
             logo: https://example.com
             logo2x: https://example.com
-    FinancingTerm:
-      type: object
-      description: A single available financing term option including APR and payment details.
-      properties:
-        amount:
-          type: integer
-          description: Purchase amount this term applies to, in cents.
-          example: 1
-        loan_type:
-          type: string
-          description: Type of financing loan (e.g., split_pay, installment).
-          example: standard
-        apr:
-          type: number
-          description: Annual percentage rate for this financing term.
-          minimum: 0
-          example: 1
-        installment_amount:
-          type: integer
-          description: Monthly installment payment amount in cents.
-          example: 1
-        installment_count:
-          type: integer
-          description: Total number of installment payments.
-          example: 1
-        interest_amount:
-          type: integer
-          description: Total interest charged over the life of the loan in cents.
-          example: 1
-        total_amount:
-          type: integer
-          description: Total amount paid including principal and interest, in cents.
-          example: 1
     PromoContent:
       type: object
       description: Promotional messaging content including ALA text and modal content.
@@ -273,6 +221,66 @@ components:
           example: Example description text
         config:
           $ref: '#/components/schemas/PromoConfig'
+    FinancingTerm:
+      type: object
+      description: A single available financing term option including APR and payment details.
+      properties:
+        amount:
+          type: integer
+          description: Purchase amount this term applies to, in cents.
+          example: 1
+        loan_type:
+          type: string
+          description: Type of financing loan (e.g., split_pay, installment).
+          example: standard
+        apr:
+          type: number
+          description: Annual percentage rate for this financing term.
+          minimum: 0
+          example: 1
+        installment_amount:
+          type: integer
+          description: Monthly installment payment amount in cents.
+          example: 1
+        installment_count:
+          type: integer
+          description: Total number of installment payments.
+          example: 1
+        interest_amount:
+          type: integer
+          description: Total interest charged over the life of the loan in cents.
+          example: 1
+        total_amount:
+          type: integer
+          description: Total amount paid including principal and interest, in cents.
+          example: 1
+    PromoResponse:
+      type: object
+      description: Response containing promotional messaging content and financing offer details for the requested purchase amount.
+      properties:
+        promo:
+          $ref: '#/components/schemas/PromoContent'
+        offer:
+          $ref: '#/components/schemas/OfferContent'
+    OfferContent:
+      type: object
+      description: Available financing offer details for the requested purchase amount.
+      properties:
+        minimum_loan_amount:
+          type: number
+          description: Minimum purchase amount eligible for Affirm financing.
+          example: 1
+        maximum_loan_amount:
+          type: number
+          description: Maximum purchase amount eligible for Affirm financing.
+          example: 1
+        terms:
+          type: array
+          description: Array of available financing term options for this amount.
+          items:
+            $ref: '#/components/schemas/FinancingTerm'
+          example:
+          - example_value
     Error:
       type: object
       description: Standard error response returned by the Affirm API.
@@ -289,14 +297,6 @@ components:
           type: string
           description: Human-readable description of the error.
           example: example_value
-    PromoResponse:
-      type: object
-      description: Response containing promotional messaging content and financing offer details for the requested purchase amount.
-      properties:
-        promo:
-          $ref: '#/components/schemas/PromoContent'
-        offer:
-          $ref: '#/components/schemas/OfferContent'
   responses:
     Unauthorized:
       description: Unauthorized. The public API key is missing or invalid.

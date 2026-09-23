@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Affirm Checkout Checkouts API
-  description: The Affirm Checkout API enables merchants to initiate and manage the Affirm buy now pay later checkout flow for customers at the point of purchase. It provides endpoints to create and store checkout sessions, read and update checkout objects, and resend checkout links via email or SMS. The API supports both redirect and direct checkout integration patterns. Once a customer authorizes a loan, the resulting checkout token is exchanged server-side to complete the transaction authorization via the Transactions API. Authentication uses HTTP Basic Authentication with the merchant's public and private API keys.
+  description: The Affirm Checkout API enables merchants to initiate and manage the Affirm buy now pay later checkout flow for customers at the point of purchase.
   version: '1.0'
   contact:
     name: Affirm Developer Support
@@ -391,117 +391,71 @@ paths:
         delay: 0
         dispatcher: FALLBACK
 components:
+  parameters:
+    CheckoutToken:
+      name: token
+      in: path
+      required: true
+      description: The checkout token that represents the purchase and customer information for a specific checkout session.
+      schema:
+        type: string
   schemas:
-    MerchantObject:
+    ContactObject:
       type: object
-      description: Merchant-specific configuration for the checkout, including callback URLs and the public API key.
-      required:
-      - user_confirmation_url
-      - user_cancel_url
+      description: Contact information for shipping or billing, including name, address, email, and phone number.
       properties:
-        public_api_key:
+        name:
+          $ref: '#/components/schemas/NameObject'
+        address:
+          $ref: '#/components/schemas/AddressObject'
+        email:
           type: string
-          description: The merchant's public API key. Required for checkout and store endpoints when submitting from a server context.
-          example: abc123def456abc123def456abc123de
-        user_confirmation_url:
+          format: email
+          description: Email address for the contact.
+          example: merchant@example.com
+        phone_number:
           type: string
-          format: uri
-          description: The URL the customer is redirected to after successfully completing the Affirm checkout flow. A checkout_token is delivered to this URL via POST or GET depending on user_confirmation_url_action.
-          example: https://example.com/path
-        user_cancel_url:
-          type: string
-          format: uri
-          description: The URL the customer is redirected to if they cancel or abandon the Affirm checkout flow.
-          example: https://example.com/path
-        user_confirmation_url_action:
-          type: string
-          description: Determines how the checkout_token is delivered to the user_confirmation_url. "POST" sends it as a form body field; "GET" appends it as a query parameter.
-          enum:
-          - POST
-          - GET
-          default: POST
-          example: POST
+          description: Phone number for the contact in E.164 format.
+          example: example_value
+    StoreObject:
+      type: object
+      description: Address details for in-store transactions where the purchase is made at a physical merchant location.
+      properties:
         name:
           type: string
-          description: The merchant's display name, shown to customers during checkout.
+          description: Store location name.
           example: Example Merchant
-    CheckoutRequest:
+        address:
+          $ref: '#/components/schemas/AddressObject'
+    NameObject:
       type: object
-      description: Request body for creating or updating an Affirm checkout session, containing all order and customer information required to initiate the Affirm financing flow.
-      required:
-      - merchant
-      - items
-      - currency
-      - total
+      description: A person's name split into first and last components.
       properties:
-        merchant:
-          $ref: '#/components/schemas/MerchantObject'
-        shipping:
-          $ref: '#/components/schemas/ContactObject'
-        billing:
-          $ref: '#/components/schemas/ContactObject'
-        store:
-          $ref: '#/components/schemas/StoreObject'
-        items:
-          type: array
-          description: Array of item objects representing the products being purchased in this checkout.
-          items:
-            $ref: '#/components/schemas/ItemObject'
-          example:
-          - example_value
-        discounts:
-          type: object
-          description: A map of discount codes to discount objects. Each key is the discount code and each value contains the discount amount and name.
-          additionalProperties:
-            $ref: '#/components/schemas/DiscountObject'
-          example: {}
-        metadata:
-          type: object
-          description: Arbitrary key-value metadata for merchant tracking. Values must be strings.
-          additionalProperties:
-            type: string
-          example: {}
-        order_id:
+        first:
           type: string
-          description: The merchant's internal order identifier. Stored for future reference and reconciliation.
-          example: '500123'
-        currency:
-          type: string
-          description: Three-letter ISO 4217 currency code in uppercase. Supported values are USD, CAD, and GBP.
-          enum:
-          - USD
-          - CAD
-          - GBP
-          example: USD
-        financing_program:
-          type: string
-          description: Financing program code to apply to this checkout, if applicable. Determines the available loan terms presented to the customer.
+          description: First name.
           example: example_value
-        shipping_amount:
-          type: integer
-          description: The total shipping amount in cents.
-          minimum: 0
-          example: 1
-        tax_amount:
-          type: integer
-          description: The total tax amount in cents.
-          minimum: 0
-          example: 1
-        total:
-          type: integer
-          description: The total amount of the checkout in cents (USD, CAD) or pence (GBP).
-          minimum: 0
-          example: 1
-        checkout_expiration:
+        last:
           type: string
-          format: date-time
-          description: ISO 8601 timestamp specifying when the checkout session expires.
-          example: '2025-03-15T14:30:00Z'
-        expiration_time:
+          description: Last name.
+          example: example_value
+        full:
           type: string
-          format: date-time
-          description: Time-to-live deadline by which the customer must confirm the checkout.
-          example: '2025-03-15T14:30:00Z'
+          description: Full name as a single string.
+          example: example_value
+    DiscountObject:
+      type: object
+      description: Represents a discount applied to the checkout.
+      properties:
+        discount_amount:
+          type: integer
+          description: The discount amount in cents.
+          minimum: 0
+          example: 1
+        discount_display_name:
+          type: string
+          description: Customer-facing name or description of the discount.
+          example: Example Merchant
     ItemObject:
       type: object
       description: Represents a single line item in the checkout, including product details and pricing.
@@ -548,74 +502,6 @@ components:
               type: string
           example:
           - - example_value
-    DiscountObject:
-      type: object
-      description: Represents a discount applied to the checkout.
-      properties:
-        discount_amount:
-          type: integer
-          description: The discount amount in cents.
-          minimum: 0
-          example: 1
-        discount_display_name:
-          type: string
-          description: Customer-facing name or description of the discount.
-          example: Example Merchant
-    StoreObject:
-      type: object
-      description: Address details for in-store transactions where the purchase is made at a physical merchant location.
-      properties:
-        name:
-          type: string
-          description: Store location name.
-          example: Example Merchant
-        address:
-          $ref: '#/components/schemas/AddressObject'
-    ContactObject:
-      type: object
-      description: Contact information for shipping or billing, including name, address, email, and phone number.
-      properties:
-        name:
-          $ref: '#/components/schemas/NameObject'
-        address:
-          $ref: '#/components/schemas/AddressObject'
-        email:
-          type: string
-          format: email
-          description: Email address for the contact.
-          example: merchant@example.com
-        phone_number:
-          type: string
-          description: Phone number for the contact in E.164 format.
-          example: example_value
-    AddressObject:
-      type: object
-      description: A postal address.
-      properties:
-        line1:
-          type: string
-          description: Primary street address line.
-          example: example_value
-        line2:
-          type: string
-          description: Secondary address line (apartment, suite, unit, etc.).
-          example: example_value
-        city:
-          type: string
-          description: City or locality.
-          example: example_value
-        state:
-          type: string
-          description: State, province, or region code.
-          example: example_value
-        zipcode:
-          type: string
-          description: Postal or ZIP code.
-          example: example_value
-        country:
-          type: string
-          description: ISO 3166-1 alpha-2 country code.
-          example: example_value
     Checkout:
       type: object
       description: Represents an Affirm checkout session with full order details, customer information, and current checkout status.
@@ -703,6 +589,83 @@ components:
           example:
             user_timezone: '2025-03-15T14:30:00Z'
             tracking_uuid: 550e8400-e29b-41d4-a716-446655440000
+    CheckoutRequest:
+      type: object
+      description: Request body for creating or updating an Affirm checkout session, containing all order and customer information required to initiate the Affirm financing flow.
+      required:
+      - merchant
+      - items
+      - currency
+      - total
+      properties:
+        merchant:
+          $ref: '#/components/schemas/MerchantObject'
+        shipping:
+          $ref: '#/components/schemas/ContactObject'
+        billing:
+          $ref: '#/components/schemas/ContactObject'
+        store:
+          $ref: '#/components/schemas/StoreObject'
+        items:
+          type: array
+          description: Array of item objects representing the products being purchased in this checkout.
+          items:
+            $ref: '#/components/schemas/ItemObject'
+          example:
+          - example_value
+        discounts:
+          type: object
+          description: A map of discount codes to discount objects. Each key is the discount code and each value contains the discount amount and name.
+          additionalProperties:
+            $ref: '#/components/schemas/DiscountObject'
+          example: {}
+        metadata:
+          type: object
+          description: Arbitrary key-value metadata for merchant tracking. Values must be strings.
+          additionalProperties:
+            type: string
+          example: {}
+        order_id:
+          type: string
+          description: The merchant's internal order identifier. Stored for future reference and reconciliation.
+          example: '500123'
+        currency:
+          type: string
+          description: Three-letter ISO 4217 currency code in uppercase. Supported values are USD, CAD, and GBP.
+          enum:
+          - USD
+          - CAD
+          - GBP
+          example: USD
+        financing_program:
+          type: string
+          description: Financing program code to apply to this checkout, if applicable. Determines the available loan terms presented to the customer.
+          example: example_value
+        shipping_amount:
+          type: integer
+          description: The total shipping amount in cents.
+          minimum: 0
+          example: 1
+        tax_amount:
+          type: integer
+          description: The total tax amount in cents.
+          minimum: 0
+          example: 1
+        total:
+          type: integer
+          description: The total amount of the checkout in cents (USD, CAD) or pence (GBP).
+          minimum: 0
+          example: 1
+        checkout_expiration:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp specifying when the checkout session expires.
+          example: '2025-03-15T14:30:00Z'
+        expiration_time:
+          type: string
+          format: date-time
+          description: Time-to-live deadline by which the customer must confirm the checkout.
+          example: '2025-03-15T14:30:00Z'
     Error:
       type: object
       description: Standard error response returned by the Affirm API.
@@ -723,31 +686,76 @@ components:
           type: string
           description: The specific field that caused the error, if applicable.
           example: example_value
-    NameObject:
+    AddressObject:
       type: object
-      description: A person's name split into first and last components.
+      description: A postal address.
       properties:
-        first:
+        line1:
           type: string
-          description: First name.
+          description: Primary street address line.
           example: example_value
-        last:
+        line2:
           type: string
-          description: Last name.
+          description: Secondary address line (apartment, suite, unit, etc.).
           example: example_value
-        full:
+        city:
           type: string
-          description: Full name as a single string.
+          description: City or locality.
           example: example_value
+        state:
+          type: string
+          description: State, province, or region code.
+          example: example_value
+        zipcode:
+          type: string
+          description: Postal or ZIP code.
+          example: example_value
+        country:
+          type: string
+          description: ISO 3166-1 alpha-2 country code.
+          example: example_value
+    MerchantObject:
+      type: object
+      description: Merchant-specific configuration for the checkout, including callback URLs and the public API key.
+      required:
+      - user_confirmation_url
+      - user_cancel_url
+      properties:
+        public_api_key:
+          type: string
+          description: The merchant's public API key. Required for checkout and store endpoints when submitting from a server context.
+          example: abc123def456abc123def456abc123de
+        user_confirmation_url:
+          type: string
+          format: uri
+          description: The URL the customer is redirected to after successfully completing the Affirm checkout flow. A checkout_token is delivered to this URL via POST or GET depending on user_confirmation_url_action.
+          example: https://example.com/path
+        user_cancel_url:
+          type: string
+          format: uri
+          description: The URL the customer is redirected to if they cancel or abandon the Affirm checkout flow.
+          example: https://example.com/path
+        user_confirmation_url_action:
+          type: string
+          description: Determines how the checkout_token is delivered to the user_confirmation_url. "POST" sends it as a form body field; "GET" appends it as a query parameter.
+          enum:
+          - POST
+          - GET
+          default: POST
+          example: POST
+        name:
+          type: string
+          description: The merchant's display name, shown to customers during checkout.
+          example: Example Merchant
   responses:
-    Unauthorized:
-      description: Unauthorized. Authentication credentials are missing or invalid.
+    NotFound:
+      description: Not found. The requested resource does not exist.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Not found. The requested resource does not exist.
+    Unauthorized:
+      description: Unauthorized. Authentication credentials are missing or invalid.
       content:
         application/json:
           schema:
@@ -758,14 +766,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-  parameters:
-    CheckoutToken:
-      name: token
-      in: path
-      required: true
-      description: The checkout token that represents the purchase and customer information for a specific checkout session.
-      schema:
-        type: string
   securitySchemes:
     basicAuth:
       type: http

@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Affirm Disputes API
-  description: The Affirm Disputes API (V3) provides merchants with programmatic access to manage payment disputes initiated by customers. It supports listing and retrieving individual dispute records, submitting evidence to contest a dispute, and closing disputes. The API integrates with the Files API so merchants can attach supporting documentation as evidence when responding to disputes. This interface allows merchants to handle chargeback workflows programmatically rather than relying solely on the Merchant Portal UI. Authentication uses HTTP Basic Authentication with the merchant's public and private API keys.
+  description: The Affirm Disputes API (V3) provides merchants with programmatic access to manage payment disputes initiated by customers.
   version: '3.0'
   contact:
     name: Affirm Developer Support
@@ -256,7 +256,90 @@ paths:
         delay: 0
         dispatcher: FALLBACK
 components:
+  parameters:
+    DisputeId:
+      name: dispute_id
+      in: path
+      required: true
+      description: The unique identifier of the dispute.
+      schema:
+        type: string
+  responses:
+    NotFound:
+      description: Not found. The requested resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized. Authentication credentials are missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request. The request body or parameters are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
+    EvidenceItem:
+      type: object
+      description: A single piece of evidence associated with a dispute.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for this evidence item.
+          example: '500123'
+        type:
+          type: string
+          description: Type of evidence (file, text, tracking).
+          enum:
+          - file
+          - text
+          - tracking
+          example: file
+        content:
+          type: string
+          description: For text evidence, the content of the explanation. For file evidence, the file identifier.
+          example: example_value
+        submitted_at:
+          type: string
+          format: date-time
+          description: Timestamp when this evidence was submitted, in RFC 3339 format.
+          example: '2025-03-15T14:30:00Z'
+    EvidenceRequest:
+      type: object
+      description: Request body for submitting evidence to contest a dispute. May include file references, textual explanations, and shipping/tracking details.
+      properties:
+        files:
+          type: array
+          description: Array of file identifiers uploaded via the Files API to attach as documentary evidence.
+          items:
+            type: string
+          example:
+          - example_value
+        explanation:
+          type: string
+          description: Textual explanation of the merchant's position and why the dispute should be decided in the merchant's favor.
+          example: example_value
+        tracking_number:
+          type: string
+          description: Shipment tracking number demonstrating that the order was delivered as expected.
+          example: example_value
+        shipping_carrier:
+          type: string
+          description: Name of the shipping carrier used for the disputed order.
+          example: example_value
+        customer_communication:
+          type: string
+          description: Description or summary of communications with the customer regarding the disputed order.
+          example: example_value
+        refund_policy_disclosure:
+          type: string
+          description: Description of the merchant's refund policy as shown to the customer at the time of purchase.
+          example: example_value
     Dispute:
       type: object
       description: Represents a payment dispute filed by a customer against an Affirm transaction, including its current status, reason, and any evidence submitted by the merchant.
@@ -325,62 +408,6 @@ components:
             $ref: '#/components/schemas/EvidenceItem'
           example:
           - example_value
-    EvidenceRequest:
-      type: object
-      description: Request body for submitting evidence to contest a dispute. May include file references, textual explanations, and shipping/tracking details.
-      properties:
-        files:
-          type: array
-          description: Array of file identifiers uploaded via the Files API to attach as documentary evidence.
-          items:
-            type: string
-          example:
-          - example_value
-        explanation:
-          type: string
-          description: Textual explanation of the merchant's position and why the dispute should be decided in the merchant's favor.
-          example: example_value
-        tracking_number:
-          type: string
-          description: Shipment tracking number demonstrating that the order was delivered as expected.
-          example: example_value
-        shipping_carrier:
-          type: string
-          description: Name of the shipping carrier used for the disputed order.
-          example: example_value
-        customer_communication:
-          type: string
-          description: Description or summary of communications with the customer regarding the disputed order.
-          example: example_value
-        refund_policy_disclosure:
-          type: string
-          description: Description of the merchant's refund policy as shown to the customer at the time of purchase.
-          example: example_value
-    EvidenceItem:
-      type: object
-      description: A single piece of evidence associated with a dispute.
-      properties:
-        id:
-          type: string
-          description: Unique identifier for this evidence item.
-          example: '500123'
-        type:
-          type: string
-          description: Type of evidence (file, text, tracking).
-          enum:
-          - file
-          - text
-          - tracking
-          example: file
-        content:
-          type: string
-          description: For text evidence, the content of the explanation. For file evidence, the file identifier.
-          example: example_value
-        submitted_at:
-          type: string
-          format: date-time
-          description: Timestamp when this evidence was submitted, in RFC 3339 format.
-          example: '2025-03-15T14:30:00Z'
     Error:
       type: object
       description: Standard error response returned by the Affirm API.
@@ -397,33 +424,6 @@ components:
           type: string
           description: Human-readable description of the error.
           example: example_value
-  responses:
-    Unauthorized:
-      description: Unauthorized. Authentication credentials are missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Not found. The requested resource does not exist.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad request. The request body or parameters are invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-  parameters:
-    DisputeId:
-      name: dispute_id
-      in: path
-      required: true
-      description: The unique identifier of the dispute.
-      schema:
-        type: string
   securitySchemes:
     basicAuth:
       type: http

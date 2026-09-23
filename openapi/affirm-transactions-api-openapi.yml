@@ -422,14 +422,14 @@ paths:
       description: Sandbox Server
 components:
   responses:
-    Unauthorized:
-      description: Unauthorized. Authentication credentials are missing or invalid.
+    NotFound:
+      description: Not found. The requested resource does not exist.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Not found. The requested resource does not exist.
+    Unauthorized:
+      description: Unauthorized. Authentication credentials are missing or invalid.
       content:
         application/json:
           schema:
@@ -440,23 +440,32 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+  parameters:
+    TransactionId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the transaction.
+      schema:
+        type: string
+    PageCursor:
+      name: cursor
+      in: query
+      required: false
+      description: Pagination cursor returned from a previous list response.
+      schema:
+        type: string
+    PageLimit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
   schemas:
-    Error:
-      type: object
-      description: Standard error response returned by the Affirm API.
-      properties:
-        status_code:
-          type: integer
-          description: HTTP status code of the error.
-          example: 1
-        code:
-          type: string
-          description: Machine-readable error code string.
-          example: example_value
-        message:
-          type: string
-          description: Human-readable description of the error.
-          example: example_value
     Transaction:
       type: object
       description: Represents an Affirm payment transaction at any point in its lifecycle.
@@ -505,7 +514,7 @@ components:
           format: date-time
           description: Timestamp after which the authorization can no longer be captured.
           example: '2025-03-15T14:30:00Z'
-    Error_2:
+    Error:
       type: object
       description: Standard error response returned by the Affirm API.
       properties:
@@ -520,10 +529,6 @@ components:
         message:
           type: string
           description: Human-readable description of the error.
-          example: example_value
-        field:
-          type: string
-          description: The specific field that caused the error, if applicable.
           example: example_value
     Transaction_2:
       type: object
@@ -592,6 +597,26 @@ components:
           type: string
           description: A JWT signing the JSON response. If PII is included, this token is also encrypted.
           example: abc123def456abc123def456abc123de
+    Error_2:
+      type: object
+      description: Standard error response returned by the Affirm API.
+      properties:
+        status_code:
+          type: integer
+          description: HTTP status code of the error.
+          example: 1
+        code:
+          type: string
+          description: Machine-readable error code string.
+          example: example_value
+        message:
+          type: string
+          description: Human-readable description of the error.
+          example: example_value
+        field:
+          type: string
+          description: The specific field that caused the error, if applicable.
+          example: example_value
     TransactionEvent:
       type: object
       description: Represents a single event in the lifecycle of a transaction, such as an authorization, capture, refund, or void.
@@ -637,31 +662,6 @@ components:
           additionalProperties:
             type: string
           example: {}
-  parameters:
-    TransactionId:
-      name: id
-      in: path
-      required: true
-      description: The unique identifier of the transaction.
-      schema:
-        type: string
-    PageCursor:
-      name: cursor
-      in: query
-      required: false
-      description: Pagination cursor returned from a previous list response.
-      schema:
-        type: string
-    PageLimit:
-      name: limit
-      in: query
-      required: false
-      description: Maximum number of records to return per page.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 20
   securitySchemes:
     basicAuth:
       type: http

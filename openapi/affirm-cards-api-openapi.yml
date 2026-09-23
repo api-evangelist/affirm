@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Affirm Direct Cards API
-  description: The Affirm Direct API is a flexible integration that allows merchants to embed the full Affirm checkout and payment authorization flow directly into their website, giving complete control over the front-end user experience and back-end transaction processing logic. It supports inline checkout via modal or redirect to affirm.com, and handles the full transaction lifecycle including authorization, capture, void, and refund operations. This spec covers the server-side endpoints used in the Direct API integration pattern, including the checkout token exchange for authorization and subsequent transaction management operations. Authentication is handled via HTTP Basic Authentication using API keys from the Affirm Merchant Portal.
+  description: The Affirm Direct API is a flexible integration that allows merchants to embed the full Affirm checkout and payment authorization flow directly into their website, giving complete control over the front-end user experience and back-end transaction processing logic.
   version: '1.0'
   contact:
     name: Affirm Developer Support
@@ -176,14 +176,14 @@ paths:
         dispatcher: FALLBACK
 components:
   responses:
-    Unauthorized:
-      description: Unauthorized. Authentication credentials are missing or invalid.
+    NotFound:
+      description: Not found. The requested resource does not exist.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Not found. The requested resource does not exist.
+    Unauthorized:
+      description: Unauthorized. Authentication credentials are missing or invalid.
       content:
         application/json:
           schema:
@@ -194,14 +194,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-  parameters:
-    CardId:
-      name: id
-      in: path
-      required: true
-      description: The unique identifier of the virtual card.
-      schema:
-        type: string
   schemas:
     Card:
       type: object
@@ -293,6 +285,14 @@ components:
           type: string
           description: Human-readable description of the error.
           example: example_value
+  parameters:
+    CardId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the virtual card.
+      schema:
+        type: string
   securitySchemes:
     basicAuth:
       type: http

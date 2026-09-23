@@ -27,7 +27,8 @@
     "affirm-disputes-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
     "affirm-promos-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
     "affirm-transactions-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "tag 'Transactions' spans 2 source specs (affirm-direct-api-openapi.yml, affirm-transactions-openapi.yml): per-path servers applied"
+    "tag 'Transactions' spans 2 source specs (affirm-direct-api-openapi.yml, affirm-transactions-openapi.yml): per-path servers applied",
+    "apis.yml register: already-registered"
   ],
   "skipped": [
     "affirm-authorization-api-openapi.yml: previously refined output, superseded by openapi/_original/",
