@@ -38,12 +38,14 @@ tags:
 - Lending
 - Payments
 - Consumer
+- Agentic Commerce
 tags_raw:
 - Fintech
 - BNPL
 - Lending
 - Payments
 - Consumer
+- Agentic Commerce
 created: '2026-05-08'
 modified: '2026-05-08'
 specificationVersion: '0.23'
@@ -61,8 +63,6 @@ apis:
   properties:
   - type: Documentation
     url: https://docs.affirm.com/developers
-  - url: graphql/affirm-graphql.md
-    type: GraphQL
 - name: Affirm Charges API
   description: Capture, void, and refund Affirm charges; read transaction details.
   humanURL: https://docs.affirm.com/developers
