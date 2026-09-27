@@ -131,6 +131,83 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
+    PromoResponse:
+      type: object
+      description: Response containing promotional messaging content and financing offer details for the requested purchase amount.
+      properties:
+        promo:
+          $ref: '#/components/schemas/PromoContent'
+        offer:
+          $ref: '#/components/schemas/OfferContent'
+    OfferContent:
+      type: object
+      description: Available financing offer details for the requested purchase amount.
+      properties:
+        minimum_loan_amount:
+          type: number
+          description: Minimum purchase amount eligible for Affirm financing.
+          example: 1
+        maximum_loan_amount:
+          type: number
+          description: Maximum purchase amount eligible for Affirm financing.
+          example: 1
+        terms:
+          type: array
+          description: Array of available financing term options for this amount.
+          items:
+            $ref: '#/components/schemas/FinancingTerm'
+          example:
+          - example_value
+    Error:
+      type: object
+      description: Standard error response returned by the Affirm API.
+      properties:
+        status_code:
+          type: integer
+          description: HTTP status code of the error.
+          example: 1
+        code:
+          type: string
+          description: Machine-readable error code string.
+          example: example_value
+        message:
+          type: string
+          description: Human-readable description of the error.
+          example: example_value
+    PromoContent:
+      type: object
+      description: Promotional messaging content including ALA text and modal content.
+      properties:
+        ala:
+          type: string
+          description: Plain text "as low as" monthly payment message, suitable for inline display on product and cart pages.
+          example: example_value
+        html_ala:
+          type: string
+          description: HTML-formatted "as low as" monthly payment message with appropriate markup for web display.
+          example: example_value
+        headline:
+          type: string
+          description: Modal headline text displayed at the top of the Affirm educational modal.
+          example: example_value
+        tagline:
+          type: string
+          description: Modal tagline or subheading text.
+          example: example_value
+        button:
+          type: string
+          description: Call-to-action button label text for the modal.
+          example: example_value
+        html_footer:
+          type: string
+          description: HTML-formatted legal disclosure footer for the modal.
+          example: example_value
+        description:
+          type: string
+          description: Full description text for the educational modal explaining Affirm financing.
+          example: Example description text
+        config:
+          $ref: '#/components/schemas/PromoConfig'
     PromoConfig:
       type: object
       description: Internal configuration data returned with the promo response.
@@ -187,40 +264,6 @@ components:
             hero2x: https://example.com
             logo: https://example.com
             logo2x: https://example.com
-    PromoContent:
-      type: object
-      description: Promotional messaging content including ALA text and modal content.
-      properties:
-        ala:
-          type: string
-          description: Plain text "as low as" monthly payment message, suitable for inline display on product and cart pages.
-          example: example_value
-        html_ala:
-          type: string
-          description: HTML-formatted "as low as" monthly payment message with appropriate markup for web display.
-          example: example_value
-        headline:
-          type: string
-          description: Modal headline text displayed at the top of the Affirm educational modal.
-          example: example_value
-        tagline:
-          type: string
-          description: Modal tagline or subheading text.
-          example: example_value
-        button:
-          type: string
-          description: Call-to-action button label text for the modal.
-          example: example_value
-        html_footer:
-          type: string
-          description: HTML-formatted legal disclosure footer for the modal.
-          example: example_value
-        description:
-          type: string
-          description: Full description text for the educational modal explaining Affirm financing.
-          example: Example description text
-        config:
-          $ref: '#/components/schemas/PromoConfig'
     FinancingTerm:
       type: object
       description: A single available financing term option including APR and payment details.
@@ -254,58 +297,15 @@ components:
           type: integer
           description: Total amount paid including principal and interest, in cents.
           example: 1
-    PromoResponse:
-      type: object
-      description: Response containing promotional messaging content and financing offer details for the requested purchase amount.
-      properties:
-        promo:
-          $ref: '#/components/schemas/PromoContent'
-        offer:
-          $ref: '#/components/schemas/OfferContent'
-    OfferContent:
-      type: object
-      description: Available financing offer details for the requested purchase amount.
-      properties:
-        minimum_loan_amount:
-          type: number
-          description: Minimum purchase amount eligible for Affirm financing.
-          example: 1
-        maximum_loan_amount:
-          type: number
-          description: Maximum purchase amount eligible for Affirm financing.
-          example: 1
-        terms:
-          type: array
-          description: Array of available financing term options for this amount.
-          items:
-            $ref: '#/components/schemas/FinancingTerm'
-          example:
-          - example_value
-    Error:
-      type: object
-      description: Standard error response returned by the Affirm API.
-      properties:
-        status_code:
-          type: integer
-          description: HTTP status code of the error.
-          example: 1
-        code:
-          type: string
-          description: Machine-readable error code string.
-          example: example_value
-        message:
-          type: string
-          description: Human-readable description of the error.
-          example: example_value
   responses:
-    Unauthorized:
-      description: Unauthorized. The public API key is missing or invalid.
+    BadRequest:
+      description: Bad request. The query parameters are invalid or missing.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad request. The query parameters are invalid or missing.
+    Unauthorized:
+      description: Unauthorized. The public API key is missing or invalid.
       content:
         application/json:
           schema:
