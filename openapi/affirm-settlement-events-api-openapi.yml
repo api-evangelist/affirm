@@ -124,6 +124,43 @@ components:
         maximum: 100
         default: 20
   schemas:
+    SettlementEvent:
+      type: object
+      description: Represents a single disbursement line item from Affirm to the merchant, associated with a specific transaction event.
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the settlement event.
+          example: '500123'
+        transaction_id:
+          type: string
+          description: The identifier of the transaction this settlement event belongs to.
+          example: '500123'
+        transaction_event_id:
+          type: string
+          description: The identifier of the specific transaction event that triggered this settlement.
+          example: '500123'
+        amount:
+          type: integer
+          description: Net disbursement amount in the smallest currency unit.
+          example: 1
+        currency:
+          type: string
+          description: ISO 4217 currency code for this settlement.
+          example: USD
+        created:
+          type: string
+          format: date-time
+          description: Timestamp when this settlement event was created, in RFC 3339 format.
+          example: '2025-03-15T14:30:00Z'
+        type:
+          type: string
+          description: The type of settlement event corresponding to the transaction action.
+          enum:
+          - capture
+          - refund
+          - void
+          example: capture
     SettlementEventSummary:
       type: object
       description: An aggregated summary of settlement activity for a single disbursement batch from Affirm to the merchant.
@@ -169,43 +206,6 @@ components:
           type: string
           description: The specific field that caused the error, if applicable.
           example: example_value
-    SettlementEvent:
-      type: object
-      description: Represents a single disbursement line item from Affirm to the merchant, associated with a specific transaction event.
-      properties:
-        id:
-          type: string
-          description: A unique identifier for the settlement event.
-          example: '500123'
-        transaction_id:
-          type: string
-          description: The identifier of the transaction this settlement event belongs to.
-          example: '500123'
-        transaction_event_id:
-          type: string
-          description: The identifier of the specific transaction event that triggered this settlement.
-          example: '500123'
-        amount:
-          type: integer
-          description: Net disbursement amount in the smallest currency unit.
-          example: 1
-        currency:
-          type: string
-          description: ISO 4217 currency code for this settlement.
-          example: USD
-        created:
-          type: string
-          format: date-time
-          description: Timestamp when this settlement event was created, in RFC 3339 format.
-          example: '2025-03-15T14:30:00Z'
-        type:
-          type: string
-          description: The type of settlement event corresponding to the transaction action.
-          enum:
-          - capture
-          - refund
-          - void
-          example: capture
   responses:
     Unauthorized:
       description: Unauthorized. Authentication credentials are missing or invalid.

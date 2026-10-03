@@ -256,32 +256,57 @@ paths:
         delay: 0
         dispatcher: FALLBACK
 components:
+  responses:
+    NotFound:
+      description: Not found. The requested resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request. The request body or parameters are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized. Authentication credentials are missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    EvidenceItem:
+    EvidenceRequest:
       type: object
-      description: A single piece of evidence associated with a dispute.
+      description: Request body for submitting evidence to contest a dispute. May include file references, textual explanations, and shipping/tracking details.
       properties:
-        id:
+        files:
+          type: array
+          description: Array of file identifiers uploaded via the Files API to attach as documentary evidence.
+          items:
+            type: string
+          example:
+          - example_value
+        explanation:
           type: string
-          description: Unique identifier for this evidence item.
-          example: '500123'
-        type:
-          type: string
-          description: Type of evidence (file, text, tracking).
-          enum:
-          - file
-          - text
-          - tracking
-          example: file
-        content:
-          type: string
-          description: For text evidence, the content of the explanation. For file evidence, the file identifier.
+          description: Textual explanation of the merchant's position and why the dispute should be decided in the merchant's favor.
           example: example_value
-        submitted_at:
+        tracking_number:
           type: string
-          format: date-time
-          description: Timestamp when this evidence was submitted, in RFC 3339 format.
-          example: '2025-03-15T14:30:00Z'
+          description: Shipment tracking number demonstrating that the order was delivered as expected.
+          example: example_value
+        shipping_carrier:
+          type: string
+          description: Name of the shipping carrier used for the disputed order.
+          example: example_value
+        customer_communication:
+          type: string
+          description: Description or summary of communications with the customer regarding the disputed order.
+          example: example_value
+        refund_policy_disclosure:
+          type: string
+          description: Description of the merchant's refund policy as shown to the customer at the time of purchase.
+          example: example_value
     Dispute:
       type: object
       description: Represents a payment dispute filed by a customer against an Affirm transaction, including its current status, reason, and any evidence submitted by the merchant.
@@ -366,56 +391,31 @@ components:
           type: string
           description: Human-readable description of the error.
           example: example_value
-    EvidenceRequest:
+    EvidenceItem:
       type: object
-      description: Request body for submitting evidence to contest a dispute. May include file references, textual explanations, and shipping/tracking details.
+      description: A single piece of evidence associated with a dispute.
       properties:
-        files:
-          type: array
-          description: Array of file identifiers uploaded via the Files API to attach as documentary evidence.
-          items:
-            type: string
-          example:
-          - example_value
-        explanation:
+        id:
           type: string
-          description: Textual explanation of the merchant's position and why the dispute should be decided in the merchant's favor.
-          example: example_value
-        tracking_number:
+          description: Unique identifier for this evidence item.
+          example: '500123'
+        type:
           type: string
-          description: Shipment tracking number demonstrating that the order was delivered as expected.
-          example: example_value
-        shipping_carrier:
+          description: Type of evidence (file, text, tracking).
+          enum:
+          - file
+          - text
+          - tracking
+          example: file
+        content:
           type: string
-          description: Name of the shipping carrier used for the disputed order.
+          description: For text evidence, the content of the explanation. For file evidence, the file identifier.
           example: example_value
-        customer_communication:
+        submitted_at:
           type: string
-          description: Description or summary of communications with the customer regarding the disputed order.
-          example: example_value
-        refund_policy_disclosure:
-          type: string
-          description: Description of the merchant's refund policy as shown to the customer at the time of purchase.
-          example: example_value
-  responses:
-    BadRequest:
-      description: Bad request. The request body or parameters are invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized. Authentication credentials are missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Not found. The requested resource does not exist.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+          format: date-time
+          description: Timestamp when this evidence was submitted, in RFC 3339 format.
+          example: '2025-03-15T14:30:00Z'
   parameters:
     DisputeId:
       name: dispute_id
