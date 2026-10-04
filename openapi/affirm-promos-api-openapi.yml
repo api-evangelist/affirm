@@ -131,66 +131,6 @@ paths:
         dispatcher: FALLBACK
 components:
   schemas:
-    FinancingTerm:
-      type: object
-      description: A single available financing term option including APR and payment details.
-      properties:
-        amount:
-          type: integer
-          description: Purchase amount this term applies to, in cents.
-          example: 1
-        loan_type:
-          type: string
-          description: Type of financing loan (e.g., split_pay, installment).
-          example: standard
-        apr:
-          type: number
-          description: Annual percentage rate for this financing term.
-          minimum: 0
-          example: 1
-        installment_amount:
-          type: integer
-          description: Monthly installment payment amount in cents.
-          example: 1
-        installment_count:
-          type: integer
-          description: Total number of installment payments.
-          example: 1
-        interest_amount:
-          type: integer
-          description: Total interest charged over the life of the loan in cents.
-          example: 1
-        total_amount:
-          type: integer
-          description: Total amount paid including principal and interest, in cents.
-          example: 1
-    PromoResponse:
-      type: object
-      description: Response containing promotional messaging content and financing offer details for the requested purchase amount.
-      properties:
-        promo:
-          $ref: '#/components/schemas/PromoContent'
-        offer:
-          $ref: '#/components/schemas/OfferContent'
-    OfferContent:
-      type: object
-      description: Available financing offer details for the requested purchase amount.
-      properties:
-        minimum_loan_amount:
-          type: number
-          description: Minimum purchase amount eligible for Affirm financing.
-          example: 1
-        maximum_loan_amount:
-          type: number
-          description: Maximum purchase amount eligible for Affirm financing.
-          example: 1
-        terms:
-          type: array
-          description: Array of available financing term options for this amount.
-          items:
-            $ref: '#/components/schemas/FinancingTerm'
-          example:
-          - example_value
     PromoContent:
       type: object
       description: Promotional messaging content including ALA text and modal content.
@@ -225,6 +165,82 @@ components:
           example: Example description text
         config:
           $ref: '#/components/schemas/PromoConfig'
+    Error:
+      type: object
+      description: Standard error response returned by the Affirm API.
+      properties:
+        status_code:
+          type: integer
+          description: HTTP status code of the error.
+          example: 1
+        code:
+          type: string
+          description: Machine-readable error code string.
+          example: example_value
+        message:
+          type: string
+          description: Human-readable description of the error.
+          example: example_value
+    OfferContent:
+      type: object
+      description: Available financing offer details for the requested purchase amount.
+      properties:
+        minimum_loan_amount:
+          type: number
+          description: Minimum purchase amount eligible for Affirm financing.
+          example: 1
+        maximum_loan_amount:
+          type: number
+          description: Maximum purchase amount eligible for Affirm financing.
+          example: 1
+        terms:
+          type: array
+          description: Array of available financing term options for this amount.
+          items:
+            $ref: '#/components/schemas/FinancingTerm'
+          example:
+          - example_value
+    PromoResponse:
+      type: object
+      description: Response containing promotional messaging content and financing offer details for the requested purchase amount.
+      properties:
+        promo:
+          $ref: '#/components/schemas/PromoContent'
+        offer:
+          $ref: '#/components/schemas/OfferContent'
+    FinancingTerm:
+      type: object
+      description: A single available financing term option including APR and payment details.
+      properties:
+        amount:
+          type: integer
+          description: Purchase amount this term applies to, in cents.
+          example: 1
+        loan_type:
+          type: string
+          description: Type of financing loan (e.g., split_pay, installment).
+          example: standard
+        apr:
+          type: number
+          description: Annual percentage rate for this financing term.
+          minimum: 0
+          example: 1
+        installment_amount:
+          type: integer
+          description: Monthly installment payment amount in cents.
+          example: 1
+        installment_count:
+          type: integer
+          description: Total number of installment payments.
+          example: 1
+        interest_amount:
+          type: integer
+          description: Total interest charged over the life of the loan in cents.
+          example: 1
+        total_amount:
+          type: integer
+          description: Total amount paid including principal and interest, in cents.
+          example: 1
     PromoConfig:
       type: object
       description: Internal configuration data returned with the promo response.
@@ -281,22 +297,6 @@ components:
             hero2x: https://example.com
             logo: https://example.com
             logo2x: https://example.com
-    Error:
-      type: object
-      description: Standard error response returned by the Affirm API.
-      properties:
-        status_code:
-          type: integer
-          description: HTTP status code of the error.
-          example: 1
-        code:
-          type: string
-          description: Machine-readable error code string.
-          example: example_value
-        message:
-          type: string
-          description: Human-readable description of the error.
-          example: example_value
   responses:
     BadRequest:
       description: Bad request. The query parameters are invalid or missing.

@@ -421,50 +421,6 @@ paths:
     - url: https://sandbox.affirm.com/api/v1
       description: Sandbox Server
 components:
-  parameters:
-    TransactionId:
-      name: id
-      in: path
-      required: true
-      description: The unique identifier of the transaction.
-      schema:
-        type: string
-    PageCursor:
-      name: cursor
-      in: query
-      required: false
-      description: Pagination cursor returned from a previous list response.
-      schema:
-        type: string
-    PageLimit:
-      name: limit
-      in: query
-      required: false
-      description: Maximum number of records to return per page.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 20
-  responses:
-    NotFound:
-      description: Not found. The requested resource does not exist.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad request. The request body or parameters are invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized. Authentication credentials are missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
     Error:
       type: object
@@ -530,6 +486,51 @@ components:
           format: date-time
           description: Timestamp after which the authorization can no longer be captured.
           example: '2025-03-15T14:30:00Z'
+    TransactionEvent:
+      type: object
+      description: Represents a single event in the lifecycle of a transaction, such as an authorization, capture, refund, or void.
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the transaction event.
+          example: '500123'
+        type:
+          type: string
+          description: The type of transaction event.
+          enum:
+          - auth
+          - capture
+          - refund
+          - void
+          - update
+          example: auth
+        amount:
+          type: integer
+          description: The amount associated with this event in the smallest currency unit.
+          example: 1
+        currency:
+          type: string
+          description: The ISO 4217 currency code for this event.
+          example: USD
+        fee:
+          type: integer
+          description: The fee charged by Affirm for this event in the smallest currency unit.
+          example: 1
+        created:
+          type: string
+          format: date-time
+          description: The time when this event was created, in RFC 3339 format.
+          example: '2025-03-15T14:30:00Z'
+        reference_id:
+          type: string
+          description: An external reference identifier associated with this event.
+          example: '500123'
+        metadata:
+          type: object
+          description: Additional key-value metadata associated with this event for merchant tracking purposes.
+          additionalProperties:
+            type: string
+          example: {}
     Error_2:
       type: object
       description: Standard error response returned by the Affirm API.
@@ -617,51 +618,50 @@ components:
           type: string
           description: A JWT signing the JSON response. If PII is included, this token is also encrypted.
           example: abc123def456abc123def456abc123de
-    TransactionEvent:
-      type: object
-      description: Represents a single event in the lifecycle of a transaction, such as an authorization, capture, refund, or void.
-      properties:
-        id:
-          type: string
-          description: A unique identifier for the transaction event.
-          example: '500123'
-        type:
-          type: string
-          description: The type of transaction event.
-          enum:
-          - auth
-          - capture
-          - refund
-          - void
-          - update
-          example: auth
-        amount:
-          type: integer
-          description: The amount associated with this event in the smallest currency unit.
-          example: 1
-        currency:
-          type: string
-          description: The ISO 4217 currency code for this event.
-          example: USD
-        fee:
-          type: integer
-          description: The fee charged by Affirm for this event in the smallest currency unit.
-          example: 1
-        created:
-          type: string
-          format: date-time
-          description: The time when this event was created, in RFC 3339 format.
-          example: '2025-03-15T14:30:00Z'
-        reference_id:
-          type: string
-          description: An external reference identifier associated with this event.
-          example: '500123'
-        metadata:
-          type: object
-          description: Additional key-value metadata associated with this event for merchant tracking purposes.
-          additionalProperties:
-            type: string
-          example: {}
+  parameters:
+    TransactionId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the transaction.
+      schema:
+        type: string
+    PageCursor:
+      name: cursor
+      in: query
+      required: false
+      description: Pagination cursor returned from a previous list response.
+      schema:
+        type: string
+    PageLimit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+  responses:
+    BadRequest:
+      description: Bad request. The request body or parameters are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized. Authentication credentials are missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found. The requested resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     basicAuth:
       type: http
