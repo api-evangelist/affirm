@@ -1,0 +1,26 @@
+slug: affirm
+provider: Affirm
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 1
+edges:
+- tag: Transactions
+  spec_file: affirm-transactions-api-openapi.yml
+  capability_id: BC-200.30
+  capability_id_l1: BC-200
+  capability_name: Accounts Receivable Management
+  confidence: 0.7
+  evidence: POST /transactions/{id}/capture 'Affirm Capture a Transaction'; POST /transactions 'Affirm
+    Authorize a Transaction'; POST /transactions/{id}/refund 'Affirm Refund a Transaction'
+  reason: Authorize, capture, void and refund of customer payment transactions — collection of money owed
+    by the customer, i.e. receivables/payment collection. Frame lacks a dedicated payment-processing capability,
+    so AR is the nearest fit.

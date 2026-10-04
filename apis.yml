@@ -181,6 +181,9 @@ apis:
   - type: OpenAPI
     url: openapi/affirm-transactions-api-openapi.yml
 common:
+- type: CapabilityMap
+  url: capabilities/affirm-capability-edges.yml
+  name: Affirm Business Capability Map
 - type: Documentation
   url: https://www.affirm.com/docs
 - type: ChangeLog
