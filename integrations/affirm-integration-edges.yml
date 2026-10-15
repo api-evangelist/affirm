@@ -1,0 +1,44 @@
+generated: '2026-10-15'
+method: searched
+checked:
+- shopify/integrations/shopify-integration-edges.yml
+- woocommerce/integrations/woocommerce-integration-edges.yml
+source:
+- shopify/integrations/shopify-integration-edges.yml
+- woocommerce/integrations/woocommerce-integration-edges.yml
+edges:
+- partner_name: Shopify (own)
+  partner: shopify
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://apps.shopify.com/affirm
+  mirror_of: shopify/integrations/shopify-integration-edges.yml
+  apps:
+  - Affirm pay‑over‑time messaging
+  listing_count: 1
+  detected: '2026-10-15'
+  detected_by: mirror-platform-listings.py
+  publisher_verified:
+  - Built for Shopify
+- partner_name: WooCommerce (own)
+  partner: woocommerce
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://woocommerce.com/products/woocommerce-gateway-affirm/
+  mirror_of: woocommerce/integrations/woocommerce-integration-edges.yml
+  apps:
+  - Affirm Payments
+  listing_count: 1
+  detected: '2026-10-15'
+  detected_by: mirror-platform-listings.py
+  category: extension
