@@ -325,31 +325,6 @@ components:
             $ref: '#/components/schemas/EvidenceItem'
           example:
           - example_value
-    EvidenceItem:
-      type: object
-      description: A single piece of evidence associated with a dispute.
-      properties:
-        id:
-          type: string
-          description: Unique identifier for this evidence item.
-          example: '500123'
-        type:
-          type: string
-          description: Type of evidence (file, text, tracking).
-          enum:
-          - file
-          - text
-          - tracking
-          example: file
-        content:
-          type: string
-          description: For text evidence, the content of the explanation. For file evidence, the file identifier.
-          example: example_value
-        submitted_at:
-          type: string
-          format: date-time
-          description: Timestamp when this evidence was submitted, in RFC 3339 format.
-          example: '2025-03-15T14:30:00Z'
     Error:
       type: object
       description: Standard error response returned by the Affirm API.
@@ -397,23 +372,40 @@ components:
           type: string
           description: Description of the merchant's refund policy as shown to the customer at the time of purchase.
           example: example_value
-  parameters:
-    DisputeId:
-      name: dispute_id
-      in: path
-      required: true
-      description: The unique identifier of the dispute.
-      schema:
-        type: string
+    EvidenceItem:
+      type: object
+      description: A single piece of evidence associated with a dispute.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for this evidence item.
+          example: '500123'
+        type:
+          type: string
+          description: Type of evidence (file, text, tracking).
+          enum:
+          - file
+          - text
+          - tracking
+          example: file
+        content:
+          type: string
+          description: For text evidence, the content of the explanation. For file evidence, the file identifier.
+          example: example_value
+        submitted_at:
+          type: string
+          format: date-time
+          description: Timestamp when this evidence was submitted, in RFC 3339 format.
+          example: '2025-03-15T14:30:00Z'
   responses:
-    BadRequest:
-      description: Bad request. The request body or parameters are invalid.
+    Unauthorized:
+      description: Unauthorized. Authentication credentials are missing or invalid.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized. Authentication credentials are missing or invalid.
+    BadRequest:
+      description: Bad request. The request body or parameters are invalid.
       content:
         application/json:
           schema:
@@ -424,6 +416,14 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+  parameters:
+    DisputeId:
+      name: dispute_id
+      in: path
+      required: true
+      description: The unique identifier of the dispute.
+      schema:
+        type: string
   securitySchemes:
     basicAuth:
       type: http

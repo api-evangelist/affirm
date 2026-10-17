@@ -421,6 +421,50 @@ paths:
     - url: https://sandbox.affirm.com/api/v1
       description: Sandbox Server
 components:
+  responses:
+    Unauthorized:
+      description: Unauthorized. Authentication credentials are missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request. The request body or parameters are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found. The requested resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    TransactionId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the transaction.
+      schema:
+        type: string
+    PageCursor:
+      name: cursor
+      in: query
+      required: false
+      description: Pagination cursor returned from a previous list response.
+      schema:
+        type: string
+    PageLimit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of records to return per page.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
   schemas:
     Error:
       type: object
@@ -618,50 +662,6 @@ components:
           type: string
           description: A JWT signing the JSON response. If PII is included, this token is also encrypted.
           example: abc123def456abc123def456abc123de
-  parameters:
-    TransactionId:
-      name: id
-      in: path
-      required: true
-      description: The unique identifier of the transaction.
-      schema:
-        type: string
-    PageCursor:
-      name: cursor
-      in: query
-      required: false
-      description: Pagination cursor returned from a previous list response.
-      schema:
-        type: string
-    PageLimit:
-      name: limit
-      in: query
-      required: false
-      description: Maximum number of records to return per page.
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 20
-  responses:
-    BadRequest:
-      description: Bad request. The request body or parameters are invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized. Authentication credentials are missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Not found. The requested resource does not exist.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   securitySchemes:
     basicAuth:
       type: http
