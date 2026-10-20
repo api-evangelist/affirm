@@ -1,11 +1,21 @@
-generated: '2026-10-15'
+generated: '2026-10-20'
 method: searched
-checked:
-- shopify/integrations/shopify-integration-edges.yml
-- woocommerce/integrations/woocommerce-integration-edges.yml
 source:
 - shopify/integrations/shopify-integration-edges.yml
 - woocommerce/integrations/woocommerce-integration-edges.yml
+- https://zapier.com/apps/affirm/integrations
+- https://n8n.io/integrations/affirm/
+- https://composio.dev/toolkits/affirm
+- https://monid.ai/tools/affirm
+checked:
+- shopify/integrations/shopify-integration-edges.yml
+- woocommerce/integrations/woocommerce-integration-edges.yml
+- https://composio.dev/toolkits/affirm
+- https://monid.ai/tools/affirm
+- https://n8n.io/integrations/affirm/
+- https://zapier.com/apps/affirm/integrations
+summary: null
+marketplace_apps: []
 edges:
 - partner_name: Shopify (own)
   partner: shopify
@@ -42,3 +52,4 @@ edges:
   detected: '2026-10-15'
   detected_by: mirror-platform-listings.py
   category: extension
+templates: []
