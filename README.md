@@ -1,4 +1,4 @@
-# Affirm (affirm)
+# Affirm
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -66,112 +66,275 @@
 
 Affirm is a buy-now-pay-later platform offering installment loans at point-of-sale via merchant SDKs and direct APIs. Public Series A through F-funded company.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/affirm/refs/heads/main/apis.yml)
+**Areas:** Fintech · Buy Now Pay Later · Lending · Payments · Consumer · Agentic Commerce · Consumer Finance
 
-## Tags
+## Affirm on APIs.io
 
-- Fintech
-- BNPL
-- Lending
-- Payments
-- Consumer
+Everything profiled for Affirm is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/affirm/](https://apis.io/providers/affirm/)** — or go straight to one of the APIs or properties below.
 
-## Timestamps
+### APIs (11)
 
-- **Created:** 2026-05-08
-- **Modified:** 2026-05-08
+- [Affirm Checkout API](https://apis.io/apis/affirm/affirm-checkout-api/) — Initialize and authorize Affirm checkout flows for online merchants.
+- [Affirm Charges API](https://apis.io/apis/affirm/affirm-charges-api/) — Capture, void, and refund Affirm charges; read transaction details.
+- [Affirm Transactions API](https://apis.io/apis/affirm/affirm-transactions-api/) — Read transactions, settlements, and disputes.
+- [Affirm Authorization API](https://apis.io/apis/affirm/affirm-authorization-api/) — Server-side operations for authorizing Affirm transactions after a customer completes the checkout flow and a checkout token is returned.
+- [Affirm Cards API](https://apis.io/apis/affirm/affirm-cards-api/) — Operations for managing virtual card numbers (VCN) issued via the Affirm Lite integration pattern.
+- [Affirm Checkouts API](https://apis.io/apis/affirm/affirm-checkouts-api/) — Operations for creating, retrieving, updating, and resending Affirm checkout sessions.
+- [Affirm Disputes API](https://apis.io/apis/affirm/affirm-disputes-api/) — Operations for listing, retrieving, contesting, and closing payment disputes initiated by customers.
+- [Affirm Promos API](https://apis.io/apis/affirm/affirm-promos-api/) — Operations for retrieving dynamic promotional messaging and financing term information to display on merchant web pages.
+- [Affirm Settlement Events API](https://apis.io/apis/affirm/affirm-settlement-events-api/) — Operations for listing settlement events and summaries that track disbursement activity.
+- [Affirm Transaction Events API](https://apis.io/apis/affirm/affirm-transaction-events-api/) — Operations for listing transaction event records associated with transaction lifecycle changes.
+- [Affirm Transactions API](https://apis.io/apis/affirm/affirm-transactions-api/) — Post-authorization transaction management operations including capture, void, and refund.
 
-## APIs
+### Published properties
 
-### Affirm Checkout API
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-Initialize and authorize Affirm checkout flows for online merchants.
+#### AsyncAPI (1)
 
-- **Human URL:** [https://docs.affirm.com/developers](https://docs.affirm.com/developers)
-- **Base URL:** `https://api.affirm.com`
+Event-driven and webhook contracts.
 
-#### Tags
+- [Affirm Webhooks](https://apis.io/asyncapis/affirm/affirm-webhooks-asyncapi/)
 
-- Checkout
-- BNPL
+#### Event channels (2)
 
-#### Properties
+Individual events and webhooks the provider emits.
 
-- [Documentation](https://docs.affirm.com/developers)
-- [Postman Collection](collections/affirm-checkout.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/affirm-checkout.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/affirm-direct-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/affirm-direct-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/affirm-disputes.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/affirm-disputes.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/affirm-promos.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/affirm-promos.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/affirm-transactions.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/affirm-transactions.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [/webhooks/checkout](https://apis.io/channels/affirm/webhooks-checkout/)
+- [/webhooks/prequal](https://apis.io/channels/affirm/webhooks-prequal/)
 
-### Affirm Charges API
+#### GraphQL (1)
 
-Capture, void, and refund Affirm charges; read transaction details.
+GraphQL schemas.
 
-- **Human URL:** [https://docs.affirm.com/developers](https://docs.affirm.com/developers)
-- **Base URL:** `https://api.affirm.com`
+- [Moved to /providers/affirm/](https://apis.io/graphqls/affirm/affirm-graphql/)
 
-#### Tags
+#### Agentic access (1)
 
-- Charges
-- Payments
+Which operations an agent can call, which act, and which need a human in the loop.
 
-#### Properties
+- [Affirm Agentic Access](https://apis.io/agentic-access/affirm/affirm-agentic-access/)
 
-- [Documentation](https://docs.affirm.com/developers)
-- [Postman Collection](collections/affirm-checkout.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/affirm-checkout.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/affirm-direct-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/affirm-direct-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/affirm-disputes.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/affirm-disputes.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/affirm-promos.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/affirm-promos.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/affirm-transactions.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/affirm-transactions.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+#### JSON Schema (27)
 
-### Affirm Transactions API
+The data models the API reads and writes.
 
-Read transactions, settlements, and disputes.
+- [Affirm Checkout](https://apis.io/schemas/affirm/affirm-checkout/)
+- [Affirm Dispute](https://apis.io/schemas/affirm/affirm-dispute/)
+- [Affirm Transaction](https://apis.io/schemas/affirm/affirm-transaction/)
+- [AddressObject](https://apis.io/schemas/affirm/checkout-address-object/)
+- [Checkout](https://apis.io/schemas/affirm/checkout-checkout/)
+- [CheckoutRequest](https://apis.io/schemas/affirm/checkout-checkout-request/)
+- [ContactObject](https://apis.io/schemas/affirm/checkout-contact-object/)
+- [DiscountObject](https://apis.io/schemas/affirm/checkout-discount-object/)
+- [ItemObject](https://apis.io/schemas/affirm/checkout-item-object/)
+- [MerchantObject](https://apis.io/schemas/affirm/checkout-merchant-object/)
+- [NameObject](https://apis.io/schemas/affirm/checkout-name-object/)
+- [StoreObject](https://apis.io/schemas/affirm/checkout-store-object/)
+- [Card](https://apis.io/schemas/affirm/direct-api-card/)
+- [FileObject](https://apis.io/schemas/affirm/direct-api-file-object/)
+- [Transaction](https://apis.io/schemas/affirm/direct-api-transaction/)
+- [Dispute](https://apis.io/schemas/affirm/disputes-dispute/)
+- [EvidenceItem](https://apis.io/schemas/affirm/disputes-evidence-item/)
+- [EvidenceRequest](https://apis.io/schemas/affirm/disputes-evidence-request/)
+- [FinancingTerm](https://apis.io/schemas/affirm/promos-financing-term/)
+- [OfferContent](https://apis.io/schemas/affirm/promos-offer-content/)
+- [PromoConfig](https://apis.io/schemas/affirm/promos-promo-config/)
+- [PromoContent](https://apis.io/schemas/affirm/promos-promo-content/)
+- [PromoResponse](https://apis.io/schemas/affirm/promos-promo-response/)
+- [SettlementEvent](https://apis.io/schemas/affirm/transactions-settlement-event/)
+- [SettlementEventSummary](https://apis.io/schemas/affirm/transactions-settlement-event-summary/)
+- …and 2 more published on APIs.io
 
-- **Human URL:** [https://docs.affirm.com/developers](https://docs.affirm.com/developers)
-- **Base URL:** `https://api.affirm.com`
+#### JSON Structure (27)
 
-#### Tags
+Data models expressed in JSON Structure.
 
-- Transactions
-- Settlements
+- [Affirm Checkout Structure](https://apis.io/json-structure/affirm/affirm-checkout-structure/)
+- [Affirm Dispute Structure](https://apis.io/json-structure/affirm/affirm-dispute-structure/)
+- [Affirm Transaction Structure](https://apis.io/json-structure/affirm/affirm-transaction-structure/)
+- [Checkout Address Object Structure](https://apis.io/json-structure/affirm/checkout-address-object-structure/)
+- [Checkout Checkout Request Structure](https://apis.io/json-structure/affirm/checkout-checkout-request-structure/)
+- [Checkout Checkout Structure](https://apis.io/json-structure/affirm/checkout-checkout-structure/)
+- [Checkout Contact Object Structure](https://apis.io/json-structure/affirm/checkout-contact-object-structure/)
+- [Checkout Discount Object Structure](https://apis.io/json-structure/affirm/checkout-discount-object-structure/)
+- [Checkout Item Object Structure](https://apis.io/json-structure/affirm/checkout-item-object-structure/)
+- [Checkout Merchant Object Structure](https://apis.io/json-structure/affirm/checkout-merchant-object-structure/)
+- [Checkout Name Object Structure](https://apis.io/json-structure/affirm/checkout-name-object-structure/)
+- [Checkout Store Object Structure](https://apis.io/json-structure/affirm/checkout-store-object-structure/)
+- [Direct Api Card Structure](https://apis.io/json-structure/affirm/direct-api-card-structure/)
+- [Direct Api File Object Structure](https://apis.io/json-structure/affirm/direct-api-file-object-structure/)
+- [Direct Api Transaction Structure](https://apis.io/json-structure/affirm/direct-api-transaction-structure/)
+- [Disputes Dispute Structure](https://apis.io/json-structure/affirm/disputes-dispute-structure/)
+- [Disputes Evidence Item Structure](https://apis.io/json-structure/affirm/disputes-evidence-item-structure/)
+- [Disputes Evidence Request Structure](https://apis.io/json-structure/affirm/disputes-evidence-request-structure/)
+- [Promos Financing Term Structure](https://apis.io/json-structure/affirm/promos-financing-term-structure/)
+- [Promos Offer Content Structure](https://apis.io/json-structure/affirm/promos-offer-content-structure/)
+- [Promos Promo Config Structure](https://apis.io/json-structure/affirm/promos-promo-config-structure/)
+- [Promos Promo Content Structure](https://apis.io/json-structure/affirm/promos-promo-content-structure/)
+- [Promos Promo Response Structure](https://apis.io/json-structure/affirm/promos-promo-response-structure/)
+- [Transactions Settlement Event Structure](https://apis.io/json-structure/affirm/transactions-settlement-event-structure/)
+- [Transactions Settlement Event Summary Structure](https://apis.io/json-structure/affirm/transactions-settlement-event-summary-structure/)
+- …and 2 more published on APIs.io
 
-#### Properties
+#### JSON-LD (6)
 
-- [Documentation](https://docs.affirm.com/developers)
-- [Postman Collection](collections/affirm-checkout.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/affirm-checkout.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/affirm-direct-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/affirm-direct-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/affirm-disputes.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/affirm-disputes.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/affirm-promos.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/affirm-promos.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/affirm-transactions.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/affirm-transactions.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+Linked-data contexts for the provider's vocabulary.
 
-## Common Properties
+- [Affirm Checkout Context](https://apis.io/jsonld/affirm/affirm-checkout-context/)
+- [Affirm Context](https://apis.io/jsonld/affirm/affirm-context/)
+- [Affirm Direct Context](https://apis.io/jsonld/affirm/affirm-direct-context/)
+- [Affirm Disputes Context](https://apis.io/jsonld/affirm/affirm-disputes-context/)
+- [Affirm Promos Context](https://apis.io/jsonld/affirm/affirm-promos-context/)
+- [Affirm Transactions Context](https://apis.io/jsonld/affirm/affirm-transactions-context/)
 
-- [GitHub Organization](https://github.com/Affirm)
-- [LinkedIn](https://www.linkedin.com/company/affirm)
+#### Vocabulary (1)
+
+The provider's domain terms, defined.
+
+- [Affirm Vocabulary](https://apis.io/vocabularies/affirm/affirm-vocabulary/)
+
+#### Examples (27)
+
+Example requests and responses.
+
+- [Affirm Checkout Example](https://apis.io/examples/affirm/affirm-checkout-example/)
+- [Affirm Dispute Example](https://apis.io/examples/affirm/affirm-dispute-example/)
+- [Affirm Transaction Example](https://apis.io/examples/affirm/affirm-transaction-example/)
+- [Checkout Address Object Example](https://apis.io/examples/affirm/checkout-address-object-example/)
+- [Checkout Checkout Example](https://apis.io/examples/affirm/checkout-checkout-example/)
+- [Checkout Checkout Request Example](https://apis.io/examples/affirm/checkout-checkout-request-example/)
+- [Checkout Contact Object Example](https://apis.io/examples/affirm/checkout-contact-object-example/)
+- [Checkout Discount Object Example](https://apis.io/examples/affirm/checkout-discount-object-example/)
+- [Checkout Item Object Example](https://apis.io/examples/affirm/checkout-item-object-example/)
+- [Checkout Merchant Object Example](https://apis.io/examples/affirm/checkout-merchant-object-example/)
+- [Checkout Name Object Example](https://apis.io/examples/affirm/checkout-name-object-example/)
+- [Checkout Store Object Example](https://apis.io/examples/affirm/checkout-store-object-example/)
+- [Direct Api Card Example](https://apis.io/examples/affirm/direct-api-card-example/)
+- [Direct Api File Object Example](https://apis.io/examples/affirm/direct-api-file-object-example/)
+- [Direct Api Transaction Example](https://apis.io/examples/affirm/direct-api-transaction-example/)
+- [Disputes Dispute Example](https://apis.io/examples/affirm/disputes-dispute-example/)
+- [Disputes Evidence Item Example](https://apis.io/examples/affirm/disputes-evidence-item-example/)
+- [Disputes Evidence Request Example](https://apis.io/examples/affirm/disputes-evidence-request-example/)
+- [Promos Financing Term Example](https://apis.io/examples/affirm/promos-financing-term-example/)
+- [Promos Offer Content Example](https://apis.io/examples/affirm/promos-offer-content-example/)
+- [Promos Promo Config Example](https://apis.io/examples/affirm/promos-promo-config-example/)
+- [Promos Promo Content Example](https://apis.io/examples/affirm/promos-promo-content-example/)
+- [Promos Promo Response Example](https://apis.io/examples/affirm/promos-promo-response-example/)
+- [Transactions Settlement Event Example](https://apis.io/examples/affirm/transactions-settlement-event-example/)
+- [Transactions Settlement Event Summary Example](https://apis.io/examples/affirm/transactions-settlement-event-summary-example/)
+- …and 2 more published on APIs.io
+
+#### Collections (13)
+
+Postman and Open Collection request collections.
+
+- [Affirm Checkout Authorization API](https://apis.io/collections/affirm/open-affirm-authorization-api/)
+- [Affirm Checkout Authorization Cards API](https://apis.io/collections/affirm/open-affirm-cards-api/)
+- [Affirm Checkout API](https://apis.io/collections/affirm/open-affirm-checkout/)
+- [Affirm Checkout Authorization Checkouts API](https://apis.io/collections/affirm/open-affirm-checkouts-api/)
+- [Affirm Direct API](https://apis.io/collections/affirm/open-affirm-direct-api/)
+- [Affirm Disputes API](https://apis.io/collections/affirm/open-affirm-disputes/)
+- [Affirm Checkout Authorization Disputes API](https://apis.io/collections/affirm/open-affirm-disputes-api/)
+- [Affirm Promos API](https://apis.io/collections/affirm/open-affirm-promos/)
+- [Affirm Checkout Authorization Promos API](https://apis.io/collections/affirm/open-affirm-promos-api/)
+- [Affirm Checkout Authorization Settlement Events API](https://apis.io/collections/affirm/open-affirm-settlement-events-api/)
+- [Affirm Checkout Authorization Transaction Events API](https://apis.io/collections/affirm/open-affirm-transaction-events-api/)
+- [Affirm Transactions API](https://apis.io/collections/affirm/open-affirm-transactions/)
+- [Affirm Checkout Authorization Transactions API](https://apis.io/collections/affirm/open-affirm-transactions-api/)
+
+#### Governance rules (3)
+
+Spectral rulesets for the provider's contracts.
+
+- [Affirm — asyncapi rules](https://apis.io/rules/affirm/affirm-asyncapi-spectral-rules/)
+- [Affirm — jsonschema rules](https://apis.io/rules/affirm/affirm-jsonschema-spectral-rules/)
+- [Affirm API Rules](https://apis.io/rules/affirm/affirm-spectral-rules/)
+
+#### Security (3)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Affirm Authentication](https://apis.io/security/affirm/affirm-authentication/)
+- [Affirm Domain Security](https://apis.io/security/affirm/affirm-domain-security/)
+- [Affirm Trust Center](https://apis.io/security/affirm/affirm-trust-center/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Affirm Plans Pricing](https://apis.io/plans/affirm/affirm-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Affirm Rate Limits](https://apis.io/rate-limits/affirm/affirm-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [Affirm Finops](https://apis.io/finops/affirm/affirm-finops/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
 - [Website](https://www.affirm.com/)
-- [Plans](plans/affirm-plans-pricing.yml)
-- [Rate Limits](rate-limits/affirm-rate-limits.yml)
-- [Fin Ops](finops/affirm-finops.yml)
-- [L L Ms Txt](https://docs.affirm.com/llms.txt)
+- [Documentation](https://www.affirm.com/docs)
+- [Changelog](https://docs.affirm.com/affirm-developers/changelog)
+- [GitHub](https://github.com/Affirm)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 33.0** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 69.6 |
+| Contract quality | 68.7 |
+| Contract governance | 13.6 |
+| Operational transparency | 7.9 |
+| Developer ergonomics | 21.4 |
+| Access clarity | 13.2 |
+
+**Agent readiness 25.7** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | documented (partial credit) |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | — |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | derived (partial credit) |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 19.6** — Payments
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/affirm/](https://apis.io/providers/affirm/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Affirm: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/affirm/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
